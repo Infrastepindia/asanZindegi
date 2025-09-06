@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Global utility: heading and primary gradient button */
+.heading-cta {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+.btn-primary-gradient,
+.btn-join {
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(123, 97, 255, 0.35);
+}
+.btn-primary-gradient:hover,
+.btn-join:hover {
+  filter: brightness(0.98);
+}

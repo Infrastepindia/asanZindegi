@@ -3,7 +3,9 @@
   <div class="container d-flex justify-content-between">
     <div class="text-secondary">Connect with nearby top-rated professionals</div>
     <div>
-      <a href="#" class="me-3 text-secondary text-decoration-none"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+      <a href="#" class="me-3 text-secondary text-decoration-none"
+        ><i class="bi bi-box-arrow-in-right me-1"></i>Login</a
+      >
       <a href="#" class="btn-join btn-sm">Join</a>
     </div>
   </div>
@@ -13,7 +15,15 @@
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
     <a class="navbar-brand topbar-brand heading-cta" href="#">AsanZindegi</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navMain"
+      aria-controls="navMain"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navMain">
@@ -35,53 +45,104 @@
     <div class="row align-items-center g-4">
       <div class="col-lg-7">
         <div class="d-flex align-items-center mb-2">
-          <span class="badge bg-warning-subtle text-warning-emphasis me-2"><i class="bi bi-star-fill me-1"></i>4.9 / 5</span>
+          <span class="badge bg-warning-subtle text-warning-emphasis me-2"
+            ><i class="bi bi-star-fill me-1"></i>4.9 / 5</span
+          >
           <small class="text-secondary">(255 reviews)</small>
         </div>
         <h1 class="hero-title heading-cta mb-3">Connect with Nearby Top‑rated Professional</h1>
-        <p class="hero-subtitle mb-4">We can connect you to the right Service, first time and every time.</p>
+        <p class="hero-subtitle mb-4">
+          We can connect you to the right Service, first time and every time.
+        </p>
         <div class="search-panel">
           <form class="row g-2 align-items-stretch" (submit)="onSearch($event)">
             <div class="col-md-4 search-field">
               <i class="bi bi-grid input-icon" aria-hidden="true"></i>
-              <select class="form-select form-select-lg" [(ngModel)]="search.category" name="category" aria-label="Select category">
+              <select
+                class="form-select form-select-lg"
+                [(ngModel)]="search.category"
+                name="category"
+                aria-label="Select category"
+              >
                 <option value="">All categories</option>
                 <option *ngFor="let c of categories" [value]="c.name">{{ c.name }}</option>
               </select>
             </div>
             <div class="col-md-4 search-field">
               <i class="bi bi-ui-checks-grid input-icon" aria-hidden="true"></i>
-              <select class="form-select form-select-lg" [(ngModel)]="search.serviceType" name="serviceType" aria-label="Select Service Type" [disabled]="!search.category">
-                <option value="">{{ search.category ? 'Service Type' : 'Choose category first' }}</option>
+              <select
+                class="form-select form-select-lg"
+                [(ngModel)]="search.serviceType"
+                name="serviceType"
+                aria-label="Select Service Type"
+                [disabled]="!search.category"
+              >
+                <option value="">
+                  {{ search.category ? 'Service Type' : 'Choose category first' }}
+                </option>
                 <option *ngFor="let t of serviceTypesForSelected" [value]="t">{{ t }}</option>
               </select>
             </div>
             <div class="col-md-3 search-field">
               <i class="bi bi-geo-alt input-icon" aria-hidden="true"></i>
-              <input class="form-control form-control-lg" placeholder="Enter Location" [(ngModel)]="search.location" (ngModelChange)="onLocationChange($event)" name="location" aria-label="Enter Location" autocomplete="off">
+              <input
+                class="form-control form-control-lg"
+                placeholder="Enter Location"
+                [(ngModel)]="search.location"
+                (ngModelChange)="onLocationChange($event)"
+                name="location"
+                aria-label="Enter Location"
+                autocomplete="off"
+              />
               <div class="suggest-list" *ngIf="locationResults.length">
-                <button type="button" class="suggest-item" *ngFor="let r of locationResults" (click)="selectLocation(r)">
+                <button
+                  type="button"
+                  class="suggest-item"
+                  *ngFor="let r of locationResults"
+                  (click)="selectLocation(r)"
+                >
                   <i class="bi bi-geo-alt me-2"></i>{{ r.display_name }}
                 </button>
               </div>
             </div>
             <div class="col-md-1 d-grid">
-              <button class="btn btn-lg btn-gradient" type="submit" aria-label="Search"><i class="bi bi-arrow-right"></i></button>
+              <button class="btn btn-lg btn-gradient" type="submit" aria-label="Search">
+                <i class="bi bi-arrow-right"></i>
+              </button>
             </div>
           </form>
           <div class="mt-2 small text-secondary popular-tags">
             Popular Searches:
-            <a href="#" class="tag-badge" *ngFor="let k of popularKeywords" (click)="$event.preventDefault(); search.keyword = k">{{ k }}</a>
+            <a
+              href="#"
+              class="tag-badge"
+              *ngFor="let k of popularKeywords"
+              (click)="$event.preventDefault(); search.keyword = k"
+              >{{ k }}</a
+            >
           </div>
         </div>
         <div class="d-flex metrics-row mt-4 small">
-          <div class="metric"><div class="fw-semibold">215,292+</div><small>Verified Providers</small></div>
-          <div class="metric"><div class="fw-semibold">90,000+</div><small>Services Completed</small></div>
-          <div class="metric"><div class="fw-semibold">300</div><small>Bookings Today</small></div>
+          <div class="metric">
+            <div class="fw-semibold">215,292+</div>
+            <small>Verified Providers</small>
+          </div>
+          <div class="metric">
+            <div class="fw-semibold">90,000+</div>
+            <small>Services Completed</small>
+          </div>
+          <div class="metric">
+            <div class="fw-semibold">300</div>
+            <small>Bookings Today</small>
+          </div>
         </div>
       </div>
       <div class="col-lg-5 d-none d-lg-block text-center">
-        <img src="https://cdn.builder.io/api/v1/image/assets%2Fa0f51ef05292403b9fb3ae2167903450%2F3aafee15751b49caa8f1f19fe3acd92c?format=webp&width=800" alt="AsanZindegi hero" class="img-fluid rounded-4 shadow">
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets%2Fa0f51ef05292403b9fb3ae2167903450%2F3aafee15751b49caa8f1f19fe3acd92c?format=webp&width=800"
+          alt="AsanZindegi hero"
+          class="img-fluid rounded-4 shadow"
+        />
       </div>
     </div>
   </div>
@@ -96,10 +157,14 @@
     </div>
     <div class="row g-3">
       <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of categories">
-        <a class="text-decoration-none text-dark" [routerLink]="'/listings'" [queryParams]="{ category: c.name }">
+        <a
+          class="text-decoration-none text-dark"
+          [routerLink]="'/listings'"
+          [queryParams]="{ category: c.name }"
+        >
           <div class="category-card p-3 text-center h-100">
             <span class="category-icon mb-2">
-              <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'"/>
+              <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'" />
               <ng-template #biIcon><i class="bi" [ngClass]="c.icon"></i></ng-template>
             </span>
             <div class="fw-semibold">{{ c.name }}</div>
@@ -121,13 +186,19 @@
     <div class="row g-3">
       <div class="col-md-6 col-lg-4" *ngFor="let ad of featuredAds">
         <div class="listing-card h-100">
-          <img class="listing-cover" [src]="ad.cover" [alt]="ad.title">
+          <img class="listing-cover" [src]="ad.cover" [alt]="ad.title" />
           <div class="p-3">
             <div class="d-flex align-items-center justify-content-between mb-1">
-              <a href="#" class="text-decoration-none"><h3 class="h6 mb-0">{{ ad.title }}</h3></a>
-              <span class="badge" [ngClass]="ad.type === 'B2B' ? 'badge-b2b' : 'badge-b2c'">{{ ad.type }}</span>
+              <a href="#" class="text-decoration-none"
+                ><h3 class="h6 mb-0">{{ ad.title }}</h3></a
+              >
+              <span class="badge" [ngClass]="ad.type === 'B2B' ? 'badge-b2b' : 'badge-b2c'">{{
+                ad.type
+              }}</span>
             </div>
-            <div class="text-secondary small mb-2"><i class="bi bi-geo-alt me-1"></i>{{ ad.location }}</div>
+            <div class="text-secondary small mb-2">
+              <i class="bi bi-geo-alt me-1"></i>{{ ad.location }}
+            </div>
             <div class="d-flex align-items-center justify-content-between">
               <div class="fw-bold">{{ ad.price }}</div>
               <button class="btn btn-sm btn-outline-primary">View</button>
@@ -149,13 +220,19 @@
     <div class="row g-3">
       <div class="col-md-6 col-lg-4" *ngFor="let ad of recentAds">
         <div class="listing-card h-100">
-          <img class="listing-cover" [src]="ad.cover" [alt]="ad.title">
+          <img class="listing-cover" [src]="ad.cover" [alt]="ad.title" />
           <div class="p-3">
             <div class="d-flex align-items-center justify-content-between mb-1">
-              <a href="#" class="text-decoration-none"><h3 class="h6 mb-0">{{ ad.title }}</h3></a>
-              <span class="badge" [ngClass]="ad.type === 'B2B' ? 'badge-b2b' : 'badge-b2c'">{{ ad.type }}</span>
+              <a href="#" class="text-decoration-none"
+                ><h3 class="h6 mb-0">{{ ad.title }}</h3></a
+              >
+              <span class="badge" [ngClass]="ad.type === 'B2B' ? 'badge-b2b' : 'badge-b2c'">{{
+                ad.type
+              }}</span>
             </div>
-            <div class="text-secondary small mb-2"><i class="bi bi-geo-alt me-1"></i>{{ ad.location }}</div>
+            <div class="text-secondary small mb-2">
+              <i class="bi bi-geo-alt me-1"></i>{{ ad.location }}
+            </div>
             <div class="d-flex align-items-center justify-content-between">
               <div class="fw-bold">{{ ad.price }}</div>
               <button class="btn btn-sm btn-outline-primary">View</button>
@@ -170,22 +247,30 @@
 <!-- How it works band -->
 <section id="how" class="works-band py-5 text-light">
   <div class="container">
-    <h2 class="h3 text-center mb-4 heading-cta">How AsanZindegi <span class="text-primary">Works</span></h2>
+    <h2 class="h3 text-center mb-4 heading-cta">
+      How AsanZindegi <span class="text-primary">Works</span>
+    </h2>
     <div class="row g-4">
       <div class="col-md-4 text-center">
         <i class="bi bi-clipboard-check fs-2 d-block mb-2"></i>
         <h3 class="h6">Post or find a service</h3>
-        <p class="text-white-50 small">Create a free ad or search thousands of listings by category and location.</p>
+        <p class="text-white-50 small">
+          Create a free ad or search thousands of listings by category and location.
+        </p>
       </div>
       <div class="col-md-4 text-center">
         <i class="bi bi-chat-dots fs-2 d-block mb-2"></i>
         <h3 class="h6">Chat & agree details</h3>
-        <p class="text-white-50 small">Contact by phone/email or use built‑in chat to discuss details.</p>
+        <p class="text-white-50 small">
+          Contact by phone/email or use built‑in chat to discuss details.
+        </p>
       </div>
       <div class="col-md-4 text-center">
         <i class="bi bi-bag-check fs-2 d-block mb-2"></i>
         <h3 class="h6">Get it done</h3>
-        <p class="text-white-50 small">Hire the right professional. Pay directly, no platform fees.</p>
+        <p class="text-white-50 small">
+          Hire the right professional. Pay directly, no platform fees.
+        </p>
       </div>
     </div>
   </div>
@@ -202,7 +287,7 @@
       <div class="col-6 col-md-3" *ngFor="let p of providers">
         <div class="card h-100 text-center border-0 shadow-sm">
           <div class="pt-4">
-            <img [src]="p.avatar" [alt]="p.name" class="rounded-circle avatar-md">
+            <img [src]="p.avatar" [alt]="p.name" class="rounded-circle avatar-md" />
           </div>
           <div class="card-body">
             <div class="fw-semibold">{{ p.name }}</div>
@@ -217,17 +302,23 @@
 <!-- Reviews -->
 <section class="py-5 bg-light">
   <div class="container">
-    <h2 class="h3 text-center mb-4 heading-cta">Genuine reviews from <span class="text-primary">Customers</span></h2>
+    <h2 class="h3 text-center mb-4 heading-cta">
+      Genuine reviews from <span class="text-primary">Customers</span>
+    </h2>
     <div class="row g-3">
       <div class="col-md-6 col-lg-4" *ngFor="let r of reviews">
         <div class="card h-100 border-0 shadow-sm">
           <div class="card-body">
             <div class="mb-2 text-warning">
-              <i class="bi bi-star-fill" *ngFor="let s of [1,2,3,4,5]; let i = index" [ngClass]="{'text-muted': i >= r.rating}"></i>
+              <i
+                class="bi bi-star-fill"
+                *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
+                [ngClass]="{ 'text-muted': i >= r.rating }"
+              ></i>
             </div>
             <p class="mb-3">{{ r.text }}</p>
             <div class="d-flex align-items-center">
-              <img [src]="r.avatar" class="rounded-circle me-2 avatar-sm" [alt]="r.author">
+              <img [src]="r.avatar" class="rounded-circle me-2 avatar-sm" [alt]="r.author" />
               <div>
                 <div class="small fw-semibold">{{ r.author }}</div>
                 <small class="text-secondary">{{ r.service }}</small>
@@ -244,7 +335,9 @@
 <section class="cta-dark text-light py-5">
   <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
     <div class="mb-3 mb-md-0">
-      <h2 class="h3 mb-1 cta-title">Post your service <span class="text-gradient-1">in a minute</span></h2>
+      <h2 class="h3 mb-1 cta-title">
+        Post your service <span class="text-gradient-1">in a minute</span>
+      </h2>
       <div class="text-white-50">Reach thousands of customers today</div>
     </div>
     <a class="btn btn-outline-light btn-lg" href="#post">Post Now</a>
@@ -255,15 +348,19 @@
 <section class="py-5">
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-0 heading-cta">Checkout our Recent <span class="text-primary">Blogs</span></h2>
+      <h2 class="h3 mb-0 heading-cta">
+        Checkout our Recent <span class="text-primary">Blogs</span>
+      </h2>
       <a href="#" class="text-decoration-none">View more</a>
     </div>
     <div class="row g-3">
       <div class="col-md-6 col-lg-3" *ngFor="let b of blogs">
         <div class="card h-100 border-0 shadow-sm">
-          <img [src]="b.cover" class="card-img-top" [alt]="b.title">
+          <img [src]="b.cover" class="card-img-top" [alt]="b.title" />
           <div class="card-body">
-            <a href="#" class="text-decoration-none"><h3 class="h6">{{ b.title }}</h3></a>
+            <a href="#" class="text-decoration-none"
+              ><h3 class="h6">{{ b.title }}</h3></a
+            >
             <small class="text-secondary">{{ b.date }}</small>
           </div>
         </div>
@@ -277,12 +374,25 @@
   <div class="container">
     <div class="row align-items-center g-4">
       <div class="col-lg-6">
-        <h2 class="display-5 mb-2">Add Services &<br>Grow your <span class="text-gradient-1">business</span> <span class="text-gradient-2">with us</span></h2>
-        <p class="text-white-50 mb-4">A versatile platform that connects you with local professionals across various categories, from home services like plumbing and electrical work to personal services like photography and tutoring.</p>
-        <a href="#post" class="btn btn-join btn-lg"><i class="bi bi-person-plus me-1"></i> Join Us</a>
+        <h2 class="display-5 mb-2">
+          Add Services &<br />Grow your <span class="text-gradient-1">business</span>
+          <span class="text-gradient-2">with us</span>
+        </h2>
+        <p class="text-white-50 mb-4">
+          A versatile platform that connects you with local professionals across various categories,
+          from home services like plumbing and electrical work to personal services like photography
+          and tutoring.
+        </p>
+        <a href="#post" class="btn btn-join btn-lg"
+          ><i class="bi bi-person-plus me-1"></i> Join Us</a
+        >
       </div>
       <div class="col-lg-6 text-center">
-        <img src="https://images.unsplash.com/photo-1567784177951-6fa58317e16b?q=80&w=1200&auto=format&fit=crop" class="img-fluid rounded-4 shadow" alt="Grow business">
+        <img
+          src="https://images.unsplash.com/photo-1567784177951-6fa58317e16b?q=80&w=1200&auto=format&fit=crop"
+          class="img-fluid rounded-4 shadow"
+          alt="Grow business"
+        />
       </div>
     </div>
   </div>
@@ -325,16 +435,22 @@
       <div class="col-md-3">
         <h5 class="footer-title">SignUp For Subscription</h5>
         <form (submit)="onSearch($event)" class="subscribe-group mb-3">
-          <input class="form-control" placeholder="Enter your email" name="email">
+          <input class="form-control" placeholder="Enter your email" name="email" />
           <button class="btn-subscribe" type="submit">Subscribe</button>
         </form>
         <div class="app-badges d-flex align-items-center gap-2">
-          <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred.png" alt="App Store badge">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play badge">
+          <img
+            src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred.png"
+            alt="App Store badge"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+            alt="Google Play badge"
+          />
         </div>
       </div>
     </div>
-    <hr class="my-4">
+    <hr class="my-4" />
     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
       <div class="small text-secondary">&copy; {{ year }} AsanZindegi — All Rights Reserved</div>
       <div class="social-icons">

@@ -24,7 +24,21 @@ interface ListingItem {
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css'
 })
-export class ListingsComponent {
+export class ListingsComponent implements OnInit {
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    const cat = this.route.snapshot.queryParamMap.get('category') || '';
+    if (cat) {
+      this.filters.category = cat;
+      this.setPage(1);
+    }
+    this.route.queryParamMap.subscribe((map) => {
+      const c = map.get('category') || '';
+      this.filters.category = c;
+      this.setPage(1);
+    });
+  }
   filters = {
     category: '',
     type: '',

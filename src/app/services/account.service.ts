@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ProviderAccount, CompanyAccount, IndividualAccount, Personnel } from '../models/provider-account.model';
+import {
+  ProviderAccount,
+  CompanyAccount,
+  IndividualAccount,
+  Personnel,
+} from '../models/provider-account.model';
 
 const KEY = 'az_account';
 
@@ -30,7 +35,7 @@ export class AccountService {
     try {
       const acc = JSON.parse(raw) as ProviderAccount;
       if ((acc as any).personnel) {
-        const maxId = Math.max(0, ...((acc as any).personnel as Personnel[]).map(p => p.id));
+        const maxId = Math.max(0, ...((acc as any).personnel as Personnel[]).map((p) => p.id));
         this.nextPersonnelId = Math.max(1, maxId + 1);
       }
       return acc;
@@ -60,7 +65,12 @@ export class AccountService {
     return acc;
   }
 
-  registerCompany(data: { companyName: string; contactName: string; email: string; phone: string }): CompanyAccount {
+  registerCompany(data: {
+    companyName: string;
+    contactName: string;
+    email: string;
+    phone: string;
+  }): CompanyAccount {
     const acc: CompanyAccount = {
       id: 1,
       type: 'Company',
@@ -78,7 +88,12 @@ export class AccountService {
   addPersonnel(p: { name: string; email: string; phone: string }): CompanyAccount | null {
     const acc = this.getAccount();
     if (!acc || acc.type !== 'Company') return null;
-    const person: Personnel = { id: this.nextPersonnelId++, name: p.name, email: p.email, phone: p.phone };
+    const person: Personnel = {
+      id: this.nextPersonnelId++,
+      name: p.name,
+      email: p.email,
+      phone: p.phone,
+    };
     acc.personnel.push(person);
     this.setAccount(acc);
     return acc;
@@ -87,7 +102,7 @@ export class AccountService {
   removePersonnel(id: number): CompanyAccount | null {
     const acc = this.getAccount();
     if (!acc || acc.type !== 'Company') return null;
-    acc.personnel = acc.personnel.filter(p => p.id !== id);
+    acc.personnel = acc.personnel.filter((p) => p.id !== id);
     this.setAccount(acc);
     return acc;
   }

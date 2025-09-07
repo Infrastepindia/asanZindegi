@@ -21,13 +21,13 @@ export class PostAdComponent {
   private listings = inject(ListingsService);
 
   acc = this.accounts.getAccount();
-  categories = this.listings.getCategories().map(c => c.name);
-  types: Array<'Sell'|'Rent'|'Exchange'|'Service'> = ['Sell','Rent','Exchange','Service'];
+  categories = this.listings.getCategories().map((c) => c.name);
+  types: Array<'Sell' | 'Rent' | 'Exchange' | 'Service'> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
   model = {
     title: '',
     category: '',
-    type: 'Service' as 'Sell'|'Rent'|'Exchange'|'Service',
+    type: 'Service' as 'Sell' | 'Rent' | 'Exchange' | 'Service',
     location: '',
     price: 0,
     unit: 'per visit',
@@ -53,8 +53,10 @@ export class PostAdComponent {
       location: this.model.location,
       price: Number(this.model.price),
       unit: this.model.unit || undefined,
-      cover: this.model.cover || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
-      personnelId: this.acc.type === 'Company' ? (this.model.personnelId || undefined) : undefined,
+      cover:
+        this.model.cover ||
+        'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+      personnelId: this.acc.type === 'Company' ? this.model.personnelId || undefined : undefined,
     });
     if (ad) this.router.navigate(['/ad', ad.id]);
   }

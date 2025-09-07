@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { PostedAd } from '../models/ad.model';
 import { AccountService } from './account.service';
-import { ProviderAccount, CompanyAccount, IndividualAccount } from '../models/provider-account.model';
+import {
+  ProviderAccount,
+  CompanyAccount,
+  IndividualAccount,
+} from '../models/provider-account.model';
 
 const KEY = 'az_ads';
 const BASE_ID = 100000; // avoid collisions with generated listings
@@ -42,15 +46,31 @@ export class AdsService {
   }
 
   getById(id: number): PostedAd | undefined {
-    return this.load().find(a => a.id === id);
+    return this.load().find((a) => a.id === id);
   }
 
-  addAd(input: Omit<PostedAd, 'id' | 'date' | 'views' | 'rating' | 'verified' | 'verifiedType' | 'accountId' | 'accountType' | 'companyName' | 'contactName' | 'contactEmail' | 'contactPhone'> & { personnelId?: number }): PostedAd | null {
+  addAd(
+    input: Omit<
+      PostedAd,
+      | 'id'
+      | 'date'
+      | 'views'
+      | 'rating'
+      | 'verified'
+      | 'verifiedType'
+      | 'accountId'
+      | 'accountType'
+      | 'companyName'
+      | 'contactName'
+      | 'contactEmail'
+      | 'contactPhone'
+    > & { personnelId?: number },
+  ): PostedAd | null {
     const account = this.accounts.getAccount();
     if (!account) return null;
 
     const all = this.load();
-    const nextId = BASE_ID + (all.length ? (all[all.length - 1].id - BASE_ID + 1) : 1);
+    const nextId = BASE_ID + (all.length ? all[all.length - 1].id - BASE_ID + 1 : 1);
 
     const provider = this.buildProviderMeta(account, input.personnelId);
 
@@ -87,7 +107,7 @@ export class AdsService {
       let contactEmail = company.email;
       let contactPhone = company.phone;
       if (personnelId) {
-        const p = company.personnel.find(x => x.id === personnelId);
+        const p = company.personnel.find((x) => x.id === personnelId);
         if (p) {
           contactName = p.name;
           contactEmail = p.email;
@@ -111,7 +131,14 @@ export class AdsService {
     }
   }
 
-  getProviderMeta(listingId: number): { companyName: string; contactName: string; contactEmail: string; contactPhone: string } | null {
+  getProviderMeta(
+    listingId: number,
+  ): {
+    companyName: string;
+    contactName: string;
+    contactEmail: string;
+    contactPhone: string;
+  } | null {
     const ad = this.getById(listingId);
     if (!ad) return null;
     return {

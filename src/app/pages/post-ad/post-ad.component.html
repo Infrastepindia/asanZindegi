@@ -28,7 +28,12 @@
               <div class="row g-3 mt-1">
                 <div class="col-md-6">
                   <label class="form-label">Location</label>
-                  <input class="form-control" [(ngModel)]="model.location" name="location" required />
+                  <input
+                    class="form-control"
+                    [(ngModel)]="model.location"
+                    name="location"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Cover Image URL</label>
@@ -38,11 +43,22 @@
               <div class="row g-3 mt-1">
                 <div class="col-md-6">
                   <label class="form-label">Price</label>
-                  <input type="number" class="form-control" [(ngModel)]="model.price" name="price" required />
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="model.price"
+                    name="price"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Unit (optional)</label>
-                  <input class="form-control" [(ngModel)]="model.unit" name="unit" placeholder="per visit" />
+                  <input
+                    class="form-control"
+                    [(ngModel)]="model.unit"
+                    name="unit"
+                    placeholder="per visit"
+                  />
                 </div>
               </div>
 
@@ -50,10 +66,13 @@
                 <label class="form-label">Assign Personnel (contact on listing)</label>
                 <select class="form-select" [(ngModel)]="model.personnelId" name="personnel">
                   <option [value]="0" disabled>Select personnel</option>
-                  <option *ngFor="let p of (a as any).personnel" [value]="p.id">{{ p.name }} — {{ p.phone }}</option>
+                  <option *ngFor="let p of (a as any).personnel" [value]="p.id">
+                    {{ p.name }} — {{ p.phone }}
+                  </option>
                 </select>
                 <div class="small text-secondary mt-1" *ngIf="!(a as any).personnel.length">
-                  No personnel added. Go to <a routerLink="/provider/dashboard">Provider Dashboard</a> to add personnel.
+                  No personnel added. Go to
+                  <a routerLink="/provider/dashboard">Provider Dashboard</a> to add personnel.
                 </div>
               </div>
 

@@ -15,8 +15,17 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'Login' },
   { path: 'signup', component: SignupComponent, title: 'Sign Up' },
   { path: 'provider/register', component: ProviderRegisterComponent, title: 'Provider Register' },
-  { path: 'provider/dashboard', component: ProviderDashboardComponent, title: 'Provider Dashboard' },
+  {
+    path: 'provider/dashboard',
+    component: ProviderDashboardComponent,
+    title: 'Provider Dashboard',
+  },
   { path: 'post-ad', component: PostAdComponent, title: 'Post an Ad' },
-  { path: 'ad/:id', component: ListingDetailsComponent, title: 'Ad Details', data: { renderMode: 'ssr' } },
+  {
+    path: 'ad/:id',
+    component: ListingDetailsComponent,
+    title: 'Ad Details',
+    data: { renderMode: 'ssr' },
+  },
   { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];

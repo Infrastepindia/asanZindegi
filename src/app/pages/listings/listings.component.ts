@@ -216,7 +216,7 @@ export class ListingsComponent implements OnInit {
   }
 
   private posted(): ListingItem[] {
-    return this.ads.getAll().map(ad => ({
+    return this.ads.getAll().map((ad) => ({
       id: ad.id,
       title: ad.title,
       category: ad.category,

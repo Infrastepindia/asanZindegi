@@ -27,6 +27,10 @@ export class ListingDetailsComponent {
   includes: string[] = [];
   overview = '';
 
+  // Contact visibility flags
+  showPhone = false;
+  showEmail = false;
+
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!isNaN(id)) {

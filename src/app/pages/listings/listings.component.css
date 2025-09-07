@@ -3,11 +3,16 @@
   border: 1px solid #e7e9f3;
   border-radius: 12px;
 }
+.list-group-v {
+  display: grid;
+  gap: 16px;
+}
 .list-group-v .listing-row {
   background: #fff;
   border: 1px solid #e7e9f3;
   border-radius: 12px;
   padding: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 .thumb-wrap {
   position: relative;
@@ -48,6 +53,17 @@
 .badge-service {
   background: #ede7f6;
   color: #4a148c;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e8f5e9;
+  color: #1b5e20;
+  font-size: 12px;
 }
 
 @media (max-width: 575px) {

@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
-import { ProviderAccount, CompanyAccount, IndividualAccount } from '../../../models/provider-account.model';
+import {
+  ProviderAccount,
+  CompanyAccount,
+  IndividualAccount,
+} from '../../../models/provider-account.model';
 
 @Component({
   selector: 'app-provider-dashboard',

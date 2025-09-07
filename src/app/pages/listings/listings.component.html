@@ -94,7 +94,7 @@
         <div class="listing-row" *ngFor="let it of paged">
           <div class="row g-3 align-items-stretch">
             <div class="col-md-4">
-              <a href="#" class="thumb-wrap">
+              <a class="thumb-wrap" [routerLink]="['/ad', it.id]">
                 <img [src]="it.cover" [alt]="it.title" class="thumb" />
                 <span class="tag badge bg-light text-dark">{{ it.category }}</span>
               </a>
@@ -103,7 +103,7 @@
               <div class="d-flex align-items-start justify-content-between">
                 <div>
                   <div class="d-flex align-items-center gap-2">
-                    <a href="#" class="text-decoration-none"><h3 class="h6 mb-1">{{ it.title }}</h3></a>
+                    <a [routerLink]="['/ad', it.id]" class="text-decoration-none"><h3 class="h6 mb-1">{{ it.title }}</h3></a>
                     <span *ngIf="it.verified" class="verified-badge" [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'">
                       <i class="bi" [ngClass]="it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'"></i>
                       <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
@@ -140,7 +140,7 @@
                     >{{ it.type }}</span
                   >
                   <div class="mt-2">
-                    <a class="btn btn-join btn-lg" href="#">Details</a>
+                    <a class="btn btn-join btn-lg" [routerLink]="['/ad', it.id]">Details</a>
                   </div>
                 </div>
               </div>

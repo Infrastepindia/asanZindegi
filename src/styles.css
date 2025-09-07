@@ -23,7 +23,9 @@
   border: 1px solid #eee;
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   background: #fff;
 }
 .listing-card:hover {
@@ -37,8 +39,13 @@
 }
 
 /* Header */
-.top-strip { font-size: 12px; }
-.topbar-brand { font-weight: 700; letter-spacing: 0.5px; }
+.top-strip {
+  font-size: 12px;
+}
+.topbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
 
 /* Ad slot */
 .ad-slot {
@@ -53,20 +60,54 @@
 }
 
 /* Footer */
-.site-footer { background: #f8f9fb; }
-.site-footer a { color: inherit; text-decoration: none; }
-.site-footer a:hover { text-decoration: underline; }
-.footer-title { font-weight: 700; margin-bottom: 12px; }
-.subscribe-group { display: flex; gap: 8px; }
-.subscribe-group .form-control { height: 48px; border-radius: 10px; border: 1px solid #e7e9f3; }
-.social-icons { display: flex; align-items: center; gap: 10px; }
-.social-icons .si { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: #eef1f6; color: #475467; }
-.app-badges img { height: 40px; }
+.site-footer {
+  background: #f8f9fb;
+}
+.site-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+.site-footer a:hover {
+  text-decoration: underline;
+}
+.footer-title {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.subscribe-group {
+  display: flex;
+  gap: 8px;
+}
+.subscribe-group .form-control {
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #e7e9f3;
+}
+.social-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.social-icons .si {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #eef1f6;
+  color: #475467;
+}
+.app-badges img {
+  height: 40px;
+}
 
 /* Responsive */
 @media screen and (max-width: 767px) {
   /* no-op placeholder for future responsive global styles */
 }
 @media screen and (max-width: 575px) {
-  .listing-cover { height: 140px; }
+  .listing-cover {
+    height: 140px;
+  }
 }

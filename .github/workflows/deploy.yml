@@ -49,4 +49,4 @@ jobs:
          password: ${{ secrets.ASANZINDEGI_PASSWORD }}
          server-dir: '/asanzindegi/'
          local-dir: dist/asanZindegi/browser/
-         dangerous-clean-slate: true'
+         dangerous-clean-slate: true

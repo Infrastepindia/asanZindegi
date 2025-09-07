@@ -15,6 +15,9 @@
           &nbsp;•&nbsp;
           <i class="bi bi-eye me-1"></i>{{ it.views }} views
         </div>
+        <div class="mb-2">
+          <a class="badge bg-light text-dark text-decoration-none" [routerLink]="['/listings']" [queryParams]="{ category: it.category }"># {{ it.category }}</a>
+        </div>
         <div class="mb-2" *ngIf="it.verified">
           <span class="verified-badge" [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'">
             <i class="bi" [ngClass]="it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'"></i>

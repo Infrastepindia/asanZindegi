@@ -42,7 +42,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-browser
-          path: dist
+          path: dist-browser
+
+      - name: Show downloaded files (debug)
+        run: ls -R dist-browser
 
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -50,4 +53,5 @@ jobs:
          server: ${{ secrets.ASANZINDEGI_HOST }}
          username: ${{ secrets.ASANZINDEGI_USER }}
          password: ${{ secrets.ASANZINDEGI_PASSWORD }}
-         local-dir: dist/asanZindegi/browser/
+         local-dir: dist-browser/
+         dangerous-clean-slate: true

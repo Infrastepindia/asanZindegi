@@ -1,0 +1,8 @@
+.details-wrap { background: #f8f9fb; }
+.media-wrap img { width: 100%; height: auto; }
+.verified-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; background: #e8f5e9; color: #1b5e20; font-size: 12px; }
+.price { font-size: 20px; }
+.badge-sell { background: #e3f2fd; color: #0d47a1; }
+.badge-rent { background: #e8f5e9; color: #1b5e20; }
+.badge-exchange { background: #fff3e0; color: #e65100; }
+.badge-service { background: #ede7f6; color: #4a148c; }

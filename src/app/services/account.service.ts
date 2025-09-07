@@ -6,9 +6,26 @@ const KEY = 'az_account';
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private nextPersonnelId = 1;
+  private mem: string | null = null; // SSR-safe fallback
+
+  private get storageAvailable() {
+    return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+  }
+  private storageGet(): string | null {
+    if (this.storageAvailable) return window.localStorage.getItem(KEY);
+    return this.mem;
+  }
+  private storageSet(val: string) {
+    if (this.storageAvailable) window.localStorage.setItem(KEY, val);
+    else this.mem = val;
+  }
+  private storageClear() {
+    if (this.storageAvailable) window.localStorage.removeItem(KEY);
+    else this.mem = null;
+  }
 
   getAccount(): ProviderAccount | null {
-    const raw = localStorage.getItem(KEY);
+    const raw = this.storageGet();
     if (!raw) return null;
     try {
       const acc = JSON.parse(raw) as ProviderAccount;
@@ -23,11 +40,11 @@ export class AccountService {
   }
 
   setAccount(acc: ProviderAccount) {
-    localStorage.setItem(KEY, JSON.stringify(acc));
+    this.storageSet(JSON.stringify(acc));
   }
 
   clearAccount() {
-    localStorage.removeItem(KEY);
+    this.storageClear();
   }
 
   registerIndividual(data: { fullName: string; email: string; phone: string }): IndividualAccount {

@@ -8,14 +8,14 @@
             <div class="small text-secondary mb-2">
               Created {{ a.createdAt | date: 'mediumDate' }}
             </div>
-            <div *ngIf="a.type === 'Company'; else ind">
-              <div class="mb-2"><strong>Company:</strong> {{ (a as any).companyName }}</div>
-              <div class="mb-2"><strong>Primary Contact:</strong> {{ (a as any).contactName }}</div>
+            <div *ngIf="isCompany; else ind">
+              <div class="mb-2"><strong>Company:</strong> {{ company?.companyName }}</div>
+              <div class="mb-2"><strong>Primary Contact:</strong> {{ company?.contactName }}</div>
               <div class="mb-2"><strong>Email:</strong> {{ a.email }}</div>
               <div class="mb-2"><strong>Phone:</strong> {{ a.phone }}</div>
             </div>
             <ng-template #ind>
-              <div class="mb-2"><strong>Name:</strong> {{ (a as any).fullName }}</div>
+              <div class="mb-2"><strong>Name:</strong> {{ individual?.fullName }}</div>
               <div class="mb-2"><strong>Email:</strong> {{ a.email }}</div>
               <div class="mb-2"><strong>Phone:</strong> {{ a.phone }}</div>
             </ng-template>
@@ -23,7 +23,7 @@
           </div>
         </div>
 
-        <div class="card border-0 shadow-sm" *ngIf="a.type === 'Company'">
+        <div class="card border-0 shadow-sm" *ngIf="isCompany">
           <div class="card-body p-4">
             <h3 class="h6 mb-3">Personnel</h3>
             <form class="row g-2 align-items-end" (submit)="addPersonnel($event)">
@@ -53,7 +53,7 @@
               <div class="list-group">
                 <div
                   class="list-group-item d-flex align-items-center justify-content-between"
-                  *ngFor="let p of (a as any).personnel"
+                  *ngFor="let p of (company?.personnel || [])"
                 >
                   <div>
                     <div class="fw-semibold">{{ p.name }}</div>

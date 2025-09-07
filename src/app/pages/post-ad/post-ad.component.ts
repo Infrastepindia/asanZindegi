@@ -43,6 +43,10 @@ export class PostAdComponent {
     }
   }
 
+  get company(): CompanyAccount | null {
+    return this.acc && this.acc.type === 'Company' ? (this.acc as CompanyAccount) : null;
+  }
+
   submit(e: Event) {
     e.preventDefault();
     if (!this.acc) return;

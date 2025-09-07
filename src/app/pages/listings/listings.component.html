@@ -12,8 +12,42 @@
             [id]="'t-' + t"
             [value]="t"
             [(ngModel)]="filters.type"
+            (change)="setPage(1)"
           />
           <label class="form-check-label" [for]="'t-' + t">{{ t }}</label>
+        </div>
+      </div>
+
+      <div class="filter-card p-3 mb-3">
+        <h6 class="mb-3">Rating</h6>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="r-any" [value]="0" name="rating" [(ngModel)]="filters.minRating" (change)="setPage(1)" />
+          <label class="form-check-label" for="r-any">Any</label>
+        </div>
+        <div class="form-check" *ngFor="let r of [5,4,3,2,1]">
+          <input class="form-check-input" type="radio" [id]="'r-' + r" [value]="r" name="rating" [(ngModel)]="filters.minRating" (change)="setPage(1)" />
+          <label class="form-check-label" [for]="'r-' + r">
+            <span class="text-warning">
+              <i class="bi bi-star-fill" *ngFor="let s of [].constructor(r)"></i>
+            </span>
+            &nbsp;and up
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-card p-3 mb-3">
+        <h6 class="mb-3">Verification</h6>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="v-all" value="all" name="verified" [(ngModel)]="filters.verified" (change)="setPage(1)" />
+          <label class="form-check-label" for="v-all">All</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="v-yes" value="verified" name="verified" [(ngModel)]="filters.verified" (change)="setPage(1)" />
+          <label class="form-check-label" for="v-yes">Verified only</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="v-no" value="unverified" name="verified" [(ngModel)]="filters.verified" (change)="setPage(1)" />
+          <label class="form-check-label" for="v-no">Unverified only</label>
         </div>
       </div>
 
@@ -36,7 +70,7 @@
           <input class="form-control" placeholder="min" [(ngModel)]="filters.minPrice" />
           <input class="form-control" placeholder="max" [(ngModel)]="filters.maxPrice" />
         </div>
-        <button class="btn btn-gradient w-100 mt-3" (click)="setPage(1)">Apply Filters</button>
+        <button class="btn btn-join btn-lg w-100 mt-3" (click)="setPage(1)">Apply Filters</button>
       </div>
     </aside>
 
@@ -68,9 +102,13 @@
             <div class="col-md-8">
               <div class="d-flex align-items-start justify-content-between">
                 <div>
-                  <a href="#" class="text-decoration-none"
-                    ><h3 class="h6 mb-1">{{ it.title }}</h3></a
-                  >
+                  <div class="d-flex align-items-center gap-2">
+                    <a href="#" class="text-decoration-none"><h3 class="h6 mb-1">{{ it.title }}</h3></a>
+                    <span *ngIf="it.verified" class="verified-badge" [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'">
+                      <i class="bi" [ngClass]="it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'"></i>
+                      <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
+                    </span>
+                  </div>
                   <div class="small text-secondary mb-2">
                     <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
                     &nbsp;•&nbsp;
@@ -102,7 +140,7 @@
                     >{{ it.type }}</span
                   >
                   <div class="mt-2">
-                    <a class="btn btn-sm btn-outline-primary" href="#">Details</a>
+                    <a class="btn btn-join btn-lg" href="#">Details</a>
                   </div>
                 </div>
               </div>

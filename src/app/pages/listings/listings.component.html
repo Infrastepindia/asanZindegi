@@ -219,7 +219,7 @@
               <span class="page-link">…</span>
             </li>
             <li class="page-item" [class.active]="page === p" *ngIf="p !== '...'">
-              <button class="page-link" (click)="setPage(p as number)">{{ p }}</button>
+              <button class="page-link" (click)="setPage(+p)">{{ p }}</button>
             </li>
           </ng-container>
           <li class="page-item" [class.disabled]="page >= totalPages">

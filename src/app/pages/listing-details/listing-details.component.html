@@ -239,6 +239,38 @@
     </div>
   </div>
 
+  <!-- Service Types Modal -->
+  <div class="modal fade" id="typesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Service types for {{ item?.category }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group mb-3" *ngIf="serviceTypes.length; else noTypes">
+            <li class="list-group-item" *ngFor="let t of serviceTypes">{{ t }}</li>
+          </ul>
+          <ng-template #noTypes>
+            <div class="text-secondary small">No service types configured for this category.</div>
+          </ng-template>
+          <div class="border rounded p-2 bg-light small text-secondary">
+            <div class="fw-semibold mb-1">Entity relations</div>
+            <ul class="mb-0 ps-3">
+              <li>Category 1 → many Provider</li>
+              <li>Category 1 → many Listing</li>
+              <li>Category 1 → many Service Type</li>
+              <li>Service Type many ↔ many Listing</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <ng-template #notFound>
     <div class="container py-5">
       <h2 class="h5">Listing not found</h2>

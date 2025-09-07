@@ -1,1 +1,101 @@
+<!-- Global Header -->
+<div class="top-strip py-1 small bg-light border-bottom d-none d-md-block">
+  <div class="container d-flex justify-content-between">
+    <div class="text-secondary">Connect with nearby top-rated professionals</div>
+    <div>
+      <a href="#" class="me-3 text-secondary text-decoration-none"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+      <a href="#" class="btn btn-join btn-lg">Join</a>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+  <div class="container">
+    <a class="navbar-brand topbar-brand heading-cta" href="#">AsanZindegi</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="#featured">Featured</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
+        <li class="nav-item"><a class="btn btn-join btn-lg ms-lg-2" href="#post">Post an Ad</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Global Ad Slot -->
+<div class="container my-3">
+  <div class="ad-slot">Advertisement</div>
+</div>
+
+<!-- Page Content -->
 <router-outlet />
+
+<!-- Bottom Ad Slot -->
+<div class="container my-4">
+  <div class="ad-slot">Advertisement</div>
+</div>
+
+<!-- Global Footer -->
+<footer class="site-footer pt-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3">
+        <h5 class="footer-title">Product</h5>
+        <ul class="list-unstyled small text-secondary mb-0">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">FAQ's</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5 class="footer-title">Support</h5>
+        <ul class="list-unstyled small text-secondary mb-0">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Case studies</a></li>
+          <li><a href="#">Reviews</a></li>
+          <li><a href="#">Updates</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5 class="footer-title">For Provider</h5>
+        <ul class="list-unstyled small text-secondary mb-0">
+          <li><a href="#">Getting started</a></li>
+          <li><a href="#">Help center</a></li>
+          <li><a href="#">Server status</a></li>
+          <li><a href="#">Report a bug</a></li>
+          <li><a href="#">Chat support</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5 class="footer-title">SignUp For Subscription</h5>
+        <form class="subscribe-group mb-3">
+          <input class="form-control" placeholder="Enter your email" name="email" />
+          <button class="btn btn-join btn-lg" type="submit">Subscribe</button>
+        </form>
+        <div class="app-badges d-flex align-items-center gap-2">
+          <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred.png" alt="App Store badge" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play badge" />
+        </div>
+      </div>
+    </div>
+    <hr class="my-4" />
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+      <div class="small text-secondary">&copy; {{ year }} AsanZindegi — All Rights Reserved</div>
+      <div class="social-icons">
+        <a class="si" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a class="si" href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a class="si" href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        <a class="si" href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+        <a class="si" href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>

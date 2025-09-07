@@ -141,7 +141,15 @@
                   </div>
                   <div class="d-flex align-items-center justify-content-between">
                     <div class="fw-bold">₹{{ r.price }}</div>
-                    <a class="btn btn-join btn-lg" [routerLink]="['/ad', r.id]">Book Now</a>
+                    <button
+                      type="button"
+                      class="btn btn-join btn-lg"
+                      (click)="openPrice(r)"
+                      data-bs-toggle="modal"
+                      data-bs-target="#priceModal"
+                    >
+                      View price
+                    </button>
                   </div>
                 </div>
               </div>
@@ -165,6 +173,14 @@
             </button>
             <button type="button" class="btn btn-join btn-lg" (click)="showEmail = true">
               See email
+            </button>
+            <button
+              type="button"
+              class="btn btn-join btn-lg"
+              data-bs-toggle="modal"
+              data-bs-target="#typesModal"
+            >
+              See service types
             </button>
           </div>
         </div>
@@ -199,6 +215,82 @@
           </ul>
         </div>
       </aside>
+    </div>
+  </div>
+
+  <!-- Pricing Modal -->
+  <div class="modal fade" id="priceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ modalItem?.title }}</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div>
+              <div class="small text-secondary">Exact price</div>
+              <div class="h5 mb-0">
+                ₹{{ modalItem?.price | number
+                }}<small class="text-secondary" *ngIf="modalItem?.unit">
+                  / {{ modalItem?.unit }}</small
+                >
+              </div>
+            </div>
+            <span
+              class="badge pill-badge"
+              [ngClass]="{
+                'badge-sell': modalItem?.type === 'Sell',
+                'badge-rent': modalItem?.type === 'Rent',
+                'badge-exchange': modalItem?.type === 'Exchange',
+                'badge-service': modalItem?.type === 'Service',
+              }"
+              >{{ modalItem?.type }}</span
+            >
+          </div>
+          <div class="small text-secondary" *ngIf="priceRange as pr">
+            Estimated range for {{ modalItem?.category }}: ₹{{ pr[0] | number }} – ₹{{
+              pr[1] | number
+            }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Types Modal -->
+  <div class="modal fade" id="typesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Service types for {{ item?.category }}</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group mb-3" *ngIf="serviceTypes.length; else noTypes">
+            <li class="list-group-item" *ngFor="let t of serviceTypes">{{ t }}</li>
+          </ul>
+          <ng-template #noTypes>
+            <div class="text-secondary small">No service types configured for this category.</div>
+          </ng-template>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Category } from '../models/category.model';
+import { ServiceType } from '../models/service-type.model';
+import { Provider } from '../models/provider.model';
 
 export interface ListingItem {
   id: number;
@@ -18,7 +21,8 @@ export interface ListingItem {
 
 @Injectable({ providedIn: 'root' })
 export class ListingsService {
-  private categories = [
+  // Relational data
+  private categoriesData: Category[] = [
     'Plumbing',
     'Electrical',
     'Cleaning',
@@ -27,7 +31,35 @@ export class ListingsService {
     'Painting',
     'Moving',
     'Appliance Repair',
+  ].map((name, idx) => ({ id: idx + 1, name }));
+
+  private serviceTypesData: ServiceType[] = [
+    { cat: 'Plumbing', types: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings'] },
+    { cat: 'Electrical', types: ['Wiring', 'Appliance Install', 'Lighting'] },
+    { cat: 'Cleaning', types: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning'] },
+    { cat: 'Tutoring', types: ['Math', 'English', 'Science'] },
+    { cat: 'Carpentry', types: ['Furniture Repair', 'Custom Shelves'] },
+    { cat: 'Painting', types: ['Interior', 'Exterior'] },
+    { cat: 'Moving', types: ['House Shifting', 'Office Relocation'] },
+    { cat: 'Appliance Repair', types: ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'] },
+  ].flatMap(({ cat, types }, baseIdx) => {
+    const category = this.categoriesData.find((c) => c.name === cat)!;
+    return types.map(
+      (name, i) => ({ id: baseIdx * 10 + i + 1, name, categoryId: category.id }) as ServiceType,
+    );
+  });
+
+  private providersData: Provider[] = [
+    { id: 1, name: 'Provider Demo', categoryId: 1, avatar: 'https://i.pravatar.cc/100?img=12' },
+    { id: 2, name: 'Leslie Davis', categoryId: 3, avatar: 'https://i.pravatar.cc/100?img=32' },
+    { id: 3, name: 'Marcus Hassan', categoryId: 5, avatar: 'https://i.pravatar.cc/100?img=56' },
   ];
+
+  // Non-relational helper for existing UI
+  private categories = this.categoriesData.map((c) => c.name);
+
+  // listingId -> serviceTypeIds (many-to-many)
+  private listingServiceTypes: Record<number, number[]> = {};
 
   private types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
@@ -140,6 +172,7 @@ export class ListingsService {
   getAll(): ListingItem[] {
     const rnd = this.prng(42);
     const out: ListingItem[] = [];
+    this.listingServiceTypes = {};
     let id = 1;
     const now = Date.now();
     for (const cat of this.categories) {
@@ -157,8 +190,18 @@ export class ListingsService {
           const rating = 3 + Math.floor(rnd() * 3);
           const verified = rnd() < 0.6;
           const verifiedType = verified ? (rnd() < 0.5 ? 'Company' : 'KYC') : undefined;
+          const listingId = id++;
+          const categoryId = this.categoriesData.find((c) => c.name === cat)!.id;
+          const typesForCat = this.serviceTypesData.filter((t) => t.categoryId === categoryId);
+          const chosen: number[] = [];
+          for (let k = 0; k < Math.min(3, typesForCat.length); k++) {
+            const tIdx = (i + k) % typesForCat.length;
+            chosen.push(typesForCat[tIdx].id);
+          }
+          this.listingServiceTypes[listingId] = chosen;
+
           out.push({
-            id: id++,
+            id: listingId,
             title: this.createTitle(cat, typ, i),
             category: cat,
             type: typ,
@@ -180,5 +223,28 @@ export class ListingsService {
 
   getById(id: number): ListingItem | undefined {
     return this.getAll().find((i) => i.id === id);
+  }
+
+  // Relations API
+  getCategories(): Category[] {
+    return this.categoriesData.slice();
+  }
+  getServiceTypes(): ServiceType[] {
+    return this.serviceTypesData.slice();
+  }
+  getServiceTypesByCategoryName(name: string): ServiceType[] {
+    const cat = this.categoriesData.find((c) => c.name === name);
+    if (!cat) return [];
+    return this.serviceTypesData.filter((t) => t.categoryId === cat.id);
+  }
+  getProvidersByCategoryName(name: string): Provider[] {
+    const cat = this.categoriesData.find((c) => c.name === name);
+    if (!cat) return [];
+    return this.providersData.filter((p) => p.categoryId === cat.id);
+  }
+  getServiceTypesForListing(listingId: number): ServiceType[] {
+    const ids = this.listingServiceTypes[listingId] || [];
+    const byId = new Map(this.serviceTypesData.map((t) => [t.id, t] as const));
+    return ids.map((id) => byId.get(id)!).filter(Boolean);
   }
 }

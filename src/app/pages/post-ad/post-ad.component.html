@@ -1,0 +1,74 @@
+<section class="py-5">
+  <div class="container" *ngIf="acc as a; else needAccount">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h4 mb-3 heading-cta">Post an <span class="text-gradient-1">Ad</span></h1>
+            <form (submit)="submit($event)" class="post-form">
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input class="form-control" [(ngModel)]="model.title" name="title" required />
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Category</label>
+                  <select class="form-select" [(ngModel)]="model.category" name="category" required>
+                    <option value="">Select category</option>
+                    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Type</label>
+                  <select class="form-select" [(ngModel)]="model.type" name="type">
+                    <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                  <label class="form-label">Location</label>
+                  <input class="form-control" [(ngModel)]="model.location" name="location" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Cover Image URL</label>
+                  <input class="form-control" [(ngModel)]="model.cover" name="cover" />
+                </div>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                  <label class="form-label">Price</label>
+                  <input type="number" class="form-control" [(ngModel)]="model.price" name="price" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Unit (optional)</label>
+                  <input class="form-control" [(ngModel)]="model.unit" name="unit" placeholder="per visit" />
+                </div>
+              </div>
+
+              <div class="mt-3" *ngIf="a.type === 'Company'">
+                <label class="form-label">Assign Personnel (contact on listing)</label>
+                <select class="form-select" [(ngModel)]="model.personnelId" name="personnel">
+                  <option [value]="0" disabled>Select personnel</option>
+                  <option *ngFor="let p of (a as any).personnel" [value]="p.id">{{ p.name }} — {{ p.phone }}</option>
+                </select>
+                <div class="small text-secondary mt-1" *ngIf="!(a as any).personnel.length">
+                  No personnel added. Go to <a routerLink="/provider/dashboard">Provider Dashboard</a> to add personnel.
+                </div>
+              </div>
+
+              <button class="btn btn-join btn-lg mt-3" type="submit">Publish</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #needAccount>
+    <div class="container py-5">
+      <h2 class="h5">Register as a provider to post an ad</h2>
+      <a routerLink="/provider/register" class="btn btn-join btn-lg mt-2">Register now</a>
+    </div>
+  </ng-template>
+</section>

@@ -21,8 +21,9 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build Angular app
+        run: npm run build -- --configuration production
+
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -47,6 +48,4 @@ jobs:
          server: ${{ secrets.ASANZINDEGI_HOST }}
          username: ${{ secrets.ASANZINDEGI_USER }}
          password: ${{ secrets.ASANZINDEGI_PASSWORD }}
-         server-dir: '/asanzindegi/'
          local-dir: dist/asanZindegi/browser/
-         dangerous-clean-slate: true

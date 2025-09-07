@@ -10,8 +10,21 @@ const BASE_ID = 100000; // avoid collisions with generated listings
 export class AdsService {
   constructor(private accounts: AccountService) {}
 
+  private mem: string | null = null; // SSR-safe fallback
+  private get storageAvailable() {
+    return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+  }
+  private storageGet(): string | null {
+    if (this.storageAvailable) return window.localStorage.getItem(KEY);
+    return this.mem;
+  }
+  private storageSet(val: string) {
+    if (this.storageAvailable) window.localStorage.setItem(KEY, val);
+    else this.mem = val;
+  }
+
   private load(): PostedAd[] {
-    const raw = localStorage.getItem(KEY);
+    const raw = this.storageGet();
     if (!raw) return [];
     try {
       return JSON.parse(raw) as PostedAd[];
@@ -21,7 +34,7 @@ export class AdsService {
   }
 
   private save(all: PostedAd[]) {
-    localStorage.setItem(KEY, JSON.stringify(all));
+    this.storageSet(JSON.stringify(all));
   }
 
   getAll(): PostedAd[] {

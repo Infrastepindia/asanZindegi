@@ -2,6 +2,7 @@ import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
+import { AdsService } from '../../services/ads.service';
 
 declare const L: any;
 
@@ -15,6 +16,7 @@ declare const L: any;
 export class ListingDetailsComponent {
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
+  private ads = inject(AdsService);
   private platformId = inject(PLATFORM_ID);
 
   item?: ListingItem;
@@ -86,6 +88,30 @@ export class ListingDetailsComponent {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!isNaN(id)) {
       this.item = this.svc.getById(id);
+      if (!this.item && isPlatformBrowser(this.platformId)) {
+        const ad = this.ads.getById(id);
+        if (ad) {
+          this.item = {
+            id: ad.id,
+            title: ad.title,
+            category: ad.category,
+            type: ad.type,
+            location: ad.location,
+            price: ad.price,
+            unit: ad.unit,
+            cover: ad.cover,
+            date: ad.date,
+            views: ad.views,
+            rating: ad.rating,
+            verified: ad.verified,
+            verifiedType: ad.verifiedType,
+          };
+          // Set provider contact details (company and personnel contact)
+          this.provider.name = ad.companyName || '';
+          this.provider.email = ad.contactEmail;
+          this.provider.phone = ad.contactPhone;
+        }
+      }
     }
     if (this.item) {
       const all = this.svc.getAll();
@@ -93,6 +119,14 @@ export class ListingDetailsComponent {
         .filter((i) => i.category === this.item!.category && i.id !== this.item!.id)
         .slice(0, 6);
       this.thumbnails = [this.item.cover, ...this.related.map((r) => r.cover)].slice(0, 6);
+      if (this.provider.name === 'Provider Demo' && isPlatformBrowser(this.platformId)) {
+        const adMeta = this.ads.getProviderMeta(this.item.id);
+        if (adMeta) {
+          this.provider.name = adMeta.companyName;
+          this.provider.email = adMeta.contactEmail;
+          this.provider.phone = adMeta.contactPhone;
+        }
+      }
       const map: Record<string, string[]> = {
         Plumbing: [
           'Inspection and Diagnosis',

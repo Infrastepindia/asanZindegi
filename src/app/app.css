@@ -1,2 +1,6 @@
 /* App shell styles */
-.brand-logo { height: 36px; width: auto; display: block; }
+.brand-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+}

@@ -44,7 +44,9 @@ export class ListingsService {
     { cat: 'Appliance Repair', types: ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'] },
   ].flatMap(({ cat, types }, baseIdx) => {
     const category = this.categoriesData.find((c) => c.name === cat)!;
-    return types.map((name, i) => ({ id: baseIdx * 10 + i + 1, name, categoryId: category.id } as ServiceType));
+    return types.map(
+      (name, i) => ({ id: baseIdx * 10 + i + 1, name, categoryId: category.id }) as ServiceType,
+    );
   });
 
   private providersData: Provider[] = [

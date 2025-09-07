@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AdsService } from '../../services/ads.service';
 
 interface ListingItem {
   id: number;
@@ -27,6 +28,7 @@ interface ListingItem {
   styleUrl: './listings.component.css',
 })
 export class ListingsComponent implements OnInit {
+  private ads = inject(AdsService);
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
@@ -213,7 +215,25 @@ export class ListingsComponent implements OnInit {
     return out;
   }
 
-  all: ListingItem[] = this.generateListings();
+  private posted(): ListingItem[] {
+    return this.ads.getAll().map(ad => ({
+      id: ad.id,
+      title: ad.title,
+      category: ad.category,
+      type: ad.type,
+      location: ad.location,
+      price: ad.price,
+      unit: ad.unit,
+      cover: ad.cover,
+      date: ad.date,
+      views: ad.views,
+      rating: ad.rating,
+      verified: ad.verified,
+      verifiedType: ad.verifiedType,
+    }));
+  }
+
+  all: ListingItem[] = [...this.posted(), ...this.generateListings()];
 
   page = 1;
   perPage = 5;

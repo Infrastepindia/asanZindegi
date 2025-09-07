@@ -34,14 +34,18 @@ export class ListingsComponent implements OnInit {
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const typ = this.route.snapshot.queryParamMap.get('type') || '';
+    const loc = this.route.snapshot.queryParamMap.get('location') || '';
     if (cat) this.filters.category = cat;
     if (typ) this.filters.type = typ as any;
-    if (cat || typ) this.setPage(1);
+    if (loc) this.filters.location = loc;
+    if (cat || typ || loc) this.setPage(1);
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
       const t = map.get('type') || '';
+      const l = map.get('location') || '';
       this.filters.category = c;
       this.filters.type = (t as any) || '';
+      this.filters.location = l;
       this.setPage(1);
     });
   }

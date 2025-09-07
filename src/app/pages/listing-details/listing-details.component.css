@@ -27,6 +27,11 @@
 .video-box iframe {
   border: 0;
 }
+.map-box {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
 .verified-badge {
   display: inline-flex;
   align-items: center;
@@ -60,5 +65,8 @@
   .thumbs .thumb-sm {
     width: 72px;
     height: 54px;
+  }
+  .map-box {
+    height: 260px;
   }
 }

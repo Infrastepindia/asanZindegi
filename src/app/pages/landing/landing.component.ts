@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 interface CategoryItem {
@@ -48,6 +48,7 @@ interface BlogItem {
 })
 export class LandingComponent {
   private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
 
   readonly year = new Date().getFullYear();
 
@@ -208,7 +209,10 @@ export class LandingComponent {
 
   onSearch(e: Event) {
     e.preventDefault();
-    console.log('Search:', this.search);
+    const params: any = {};
+    if (this.search.category) params.category = this.search.category;
+    if (this.search.location) params.location = this.search.location;
+    this.router.navigate(['/listings'], { queryParams: params });
   }
 
   onLocationChange(value: string) {

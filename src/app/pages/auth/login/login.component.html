@@ -5,6 +5,17 @@
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
             <h1 class="h4 mb-3 heading-cta">Login to <span class="text-gradient-1">AsanZindegi</span></h1>
+            <div class="social-auth mb-3">
+              <div class="social-buttons d-grid gap-2">
+                <button type="button" class="btn btn-social btn-google w-100" aria-label="Continue with Google">
+                  <i class="bi bi-google me-2"></i>Continue with Google
+                </button>
+                <button type="button" class="btn btn-social btn-facebook w-100" aria-label="Continue with Facebook">
+                  <i class="bi bi-facebook me-2"></i>Continue with Facebook
+                </button>
+              </div>
+            </div>
+            <div class="auth-sep text-center text-secondary small mb-3">or</div>
             <form (submit)="onSubmit($event)" class="auth-form">
               <div class="mb-3">
                 <label class="form-label">Email</label>

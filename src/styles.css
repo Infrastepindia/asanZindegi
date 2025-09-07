@@ -18,6 +18,24 @@
   filter: brightness(0.98);
 }
 
+/* Shared listing card styles */
+.listing-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+}
+.listing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+.listing-cover {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
 /* Header */
 .top-strip { font-size: 12px; }
 .topbar-brand { font-weight: 700; letter-spacing: 0.5px; }
@@ -44,3 +62,11 @@
 .social-icons { display: flex; align-items: center; gap: 10px; }
 .social-icons .si { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: #eef1f6; color: #475467; }
 .app-badges img { height: 40px; }
+
+/* Responsive */
+@media screen and (max-width: 767px) {
+  /* no-op placeholder for future responsive global styles */
+}
+@media screen and (max-width: 575px) {
+  .listing-cover { height: 140px; }
+}

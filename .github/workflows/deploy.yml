@@ -41,13 +41,12 @@ jobs:
           name: dist-browser
           path: dist
 
-      - name: Deploy to server via SSH (rsync)
-        uses: easingthemes/ssh-deploy@v4
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.ASANZINDEGI_SECRET_KEY }}
-          REMOTE_HOST: ${{ secrets.ASANZINDEGI_HOST }}
-          REMOTE_USER: ${{ secrets.ASANZINDEGI_USER }}
-          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
-          ARGS: '-avzr --delete'
-          SOURCE: 'dist/asanZindegi/browser/'
-          TARGET: '/home/asanZindegi/'
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+         server: ${{ secrets.ASANZINDEGI_HOST }}
+         username: ${{ secrets.ASANZINDEGI_USER }}
+         password: ${{ secrets.ASANZINDEGI_PASSWORD }}
+         server-dir: '/asanzindegi/'
+         local-dir: dist/asanZindegi/browser/
+         dangerous-clean-slate: true'

@@ -15,6 +15,8 @@ interface ListingItem {
   date: string;
   views: number;
   rating: number;
+  verified: boolean;
+  verifiedType?: 'Company' | 'KYC';
 }
 
 @Component({
@@ -45,6 +47,8 @@ export class ListingsComponent implements OnInit {
     location: '',
     minPrice: '',
     maxPrice: '',
+    minRating: 0 as number,
+    verified: 'all' as 'all' | 'verified' | 'unverified',
   };
 
   categories = [
@@ -183,6 +187,8 @@ export class ListingsComponent implements OnInit {
           const price = this.priceFor(cat, typ, rnd);
           const views = Math.floor(50 + rnd() * 2000);
           const rating = 3 + Math.floor(rnd() * 3);
+          const verified = rnd() < 0.6;
+          const verifiedType = verified ? (rnd() < 0.5 ? 'Company' : 'KYC') : undefined;
           out.push({
             id: id++,
             title: this.createTitle(cat, typ, i),
@@ -195,6 +201,8 @@ export class ListingsComponent implements OnInit {
             date,
             views,
             rating,
+            verified,
+            verifiedType,
           });
         }
       }
@@ -219,6 +227,13 @@ export class ListingsComponent implements OnInit {
     const max = this.filters.maxPrice ? parseFloat(this.filters.maxPrice) : null;
     if (min !== null) out = out.filter((i) => i.price >= (min as number));
     if (max !== null) out = out.filter((i) => i.price <= (max as number));
+
+    const minR = Number(this.filters.minRating) || 0;
+    if (minR > 0) out = out.filter((i) => i.rating >= minR);
+
+    if (this.filters.verified === 'verified') out = out.filter((i) => i.verified);
+    if (this.filters.verified === 'unverified') out = out.filter((i) => !i.verified);
+
     return out;
   }
 

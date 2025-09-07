@@ -22,7 +22,7 @@ interface ListingItem {
 @Component({
   selector: 'app-listings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css',
 })

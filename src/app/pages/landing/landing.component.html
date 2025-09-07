@@ -6,7 +6,7 @@
       <a href="#" class="me-3 text-secondary text-decoration-none"
         ><i class="bi bi-box-arrow-in-right me-1"></i>Login</a
       >
-      <a href="#" class="btn-join btn-sm">Join</a>
+      <a href="#" class="btn btn-join btn-lg">Join</a>
     </div>
   </div>
 </div>
@@ -32,7 +32,7 @@
         <li class="nav-item"><a class="nav-link" href="#featured">Featured</a></li>
         <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
-        <li class="nav-item"><a class="btn-join ms-lg-2" href="#post">Post an Ad</a></li>
+        <li class="nav-item"><a class="btn btn-join btn-lg ms-lg-2" href="#post">Post an Ad</a></li>
       </ul>
     </div>
   </div>
@@ -106,7 +106,7 @@
               </div>
             </div>
             <div class="col-md-1 d-grid">
-              <button class="btn btn-lg btn-gradient" type="submit" aria-label="Search">
+              <button class="btn btn-join btn-lg" type="submit" aria-label="Search">
                 <i class="bi bi-arrow-right"></i>
               </button>
             </div>
@@ -152,7 +152,7 @@
 <section id="categories" class="py-5 bg-light">
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-0 heading-cta">Explore our <span class="text-primary">Categories</span></h2>
+      <h2 class="h3 mb-1 cta-title">Explore our <span class="text-primary">Categories</span></h2>
       <a class="text-decoration-none" [routerLink]="'/listings'">View all</a>
     </div>
     <div class="row g-3">
@@ -180,7 +180,7 @@
 <section id="featured" class="py-5">
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-0 heading-cta">Our Featured <span class="text-primary">Services</span></h2>
+      <h2 class="h3 mb-1 cta-title">Our Featured <span class="text-primary">Services</span></h2>
       <a href="#" class="text-decoration-none">View more</a>
     </div>
     <div class="row g-3">
@@ -201,7 +201,7 @@
             </div>
             <div class="d-flex align-items-center justify-content-between">
               <div class="fw-bold">{{ ad.price }}</div>
-              <button class="btn btn-sm btn-outline-primary">View</button>
+              <button class="btn btn-join btn-lg">View</button>
             </div>
           </div>
         </div>
@@ -214,7 +214,7 @@
 <section class="py-5 bg-light">
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-0 heading-cta">Our Recent <span class="text-primary">Services</span></h2>
+      <h2 class="h3 mb-1 cta-title">Our Recent <span class="text-primary">Services</span></h2>
       <a href="#" class="text-decoration-none">View more</a>
     </div>
     <div class="row g-3">
@@ -235,7 +235,7 @@
             </div>
             <div class="d-flex align-items-center justify-content-between">
               <div class="fw-bold">{{ ad.price }}</div>
-              <button class="btn btn-sm btn-outline-primary">View</button>
+              <button class="btn btn-join btn-lg">View</button>
             </div>
           </div>
         </div>
@@ -247,7 +247,7 @@
 <!-- How it works band -->
 <section id="how" class="works-band py-5 text-light">
   <div class="container">
-    <h2 class="h3 text-center mb-4 heading-cta">
+    <h2 class="h3 mb-1 cta-title">
       How AsanZindegi <span class="text-primary">Works</span>
     </h2>
     <div class="row g-4">
@@ -280,7 +280,7 @@
 <section class="py-5">
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-0 heading-cta">Popular <span class="text-primary">Providers</span></h2>
+      <h2 class="h3 mb-1 cta-title">Popular <span class="text-primary">Providers</span></h2>
       <a href="#" class="text-decoration-none">View more</a>
     </div>
     <div class="row g-3">
@@ -302,7 +302,7 @@
 <!-- Reviews -->
 <section class="py-5 bg-light">
   <div class="container">
-    <h2 class="h3 text-center mb-4 heading-cta">
+    <h2 class="h3 mb-1 cta-title">
       Genuine reviews from <span class="text-primary">Customers</span>
     </h2>
     <div class="row g-3">
@@ -340,7 +340,7 @@
       </h2>
       <div class="text-white-50">Reach thousands of customers today</div>
     </div>
-    <a class="btn btn-outline-light btn-lg" href="#post">Post Now</a>
+    <a class="btn btn-join btn-lg" href="#post">Post Now</a>
   </div>
 </section>
 
@@ -348,7 +348,7 @@
 <section class="py-5">
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-0 heading-cta">
+      <h2 class="h3 mb-1 cta-title">
         Checkout our Recent <span class="text-primary">Blogs</span>
       </h2>
       <a href="#" class="text-decoration-none">View more</a>
@@ -374,7 +374,7 @@
   <div class="container">
     <div class="row align-items-center g-4">
       <div class="col-lg-6">
-        <h2 class="display-5 mb-2">
+        <h2 class="h3 mb-1 cta-title">
           Add Services &<br />Grow your <span class="text-gradient-1">business</span>
           <span class="text-gradient-2">with us</span>
         </h2>
@@ -436,7 +436,7 @@
         <h5 class="footer-title">SignUp For Subscription</h5>
         <form (submit)="onSearch($event)" class="subscribe-group mb-3">
           <input class="form-control" placeholder="Enter your email" name="email" />
-          <button class="btn-subscribe" type="submit">Subscribe</button>
+          <button class="btn btn-join btn-lg" type="submit">Subscribe</button>
         </form>
         <div class="app-badges d-flex align-items-center gap-2">
           <img

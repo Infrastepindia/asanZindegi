@@ -1,0 +1,65 @@
+<section class="auth-wrap py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h4 mb-3 heading-cta">
+              Create your <span class="text-gradient-1">account</span>
+            </h1>
+            <div class="social-auth mb-3">
+              <div class="social-buttons d-grid gap-2">
+                <button
+                  type="button"
+                  class="btn btn-social btn-google w-100"
+                  aria-label="Continue with Google"
+                >
+                  <i class="bi bi-google me-2"></i>Continue with Google
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-social btn-facebook w-100"
+                  aria-label="Continue with Facebook"
+                >
+                  <i class="bi bi-facebook me-2"></i>Continue with Facebook
+                </button>
+              </div>
+            </div>
+            <div class="auth-sep text-center text-secondary small mb-3">or</div>
+            <form (submit)="onSubmit($event)" class="auth-form">
+              <div class="mb-3">
+                <label class="form-label">Full name</label>
+                <input class="form-control" [(ngModel)]="model.name" name="name" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input
+                  class="form-control"
+                  type="email"
+                  [(ngModel)]="model.email"
+                  name="email"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input
+                  class="form-control"
+                  type="password"
+                  [(ngModel)]="model.password"
+                  name="password"
+                  required
+                />
+              </div>
+              <button class="btn btn-join btn-lg w-100" type="submit">Sign up</button>
+            </form>
+            <div class="text-center small mt-3 text-secondary">
+              Already have an account?
+              <a routerLink="/login" class="text-decoration-none">Login</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Injectable } from '@angular/core';
 
-interface ListingItem {
+export interface ListingItem {
   id: number;
   title: string;
   category: string;
@@ -19,41 +16,9 @@ interface ListingItem {
   verifiedType?: 'Company' | 'KYC';
 }
 
-@Component({
-  selector: 'app-listings',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './listings.component.html',
-  styleUrl: './listings.component.css',
-})
-export class ListingsComponent implements OnInit {
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    const cat = this.route.snapshot.queryParamMap.get('category') || '';
-    const typ = this.route.snapshot.queryParamMap.get('type') || '';
-    if (cat) this.filters.category = cat;
-    if (typ) this.filters.type = typ as any;
-    if (cat || typ) this.setPage(1);
-    this.route.queryParamMap.subscribe((map) => {
-      const c = map.get('category') || '';
-      const t = map.get('type') || '';
-      this.filters.category = c;
-      this.filters.type = (t as any) || '';
-      this.setPage(1);
-    });
-  }
-  filters = {
-    category: '',
-    type: '',
-    location: '',
-    minPrice: '',
-    maxPrice: '',
-    minRating: 0 as number,
-    verified: 'all' as 'all' | 'verified' | 'unverified',
-  };
-
-  categories = [
+@Injectable({ providedIn: 'root' })
+export class ListingsService {
+  private categories = [
     'Plumbing',
     'Electrical',
     'Cleaning',
@@ -64,7 +29,7 @@ export class ListingsComponent implements OnInit {
     'Appliance Repair',
   ];
 
-  types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
+  private types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
   private prng(seed: number) {
     return function () {
@@ -172,7 +137,7 @@ export class ListingsComponent implements OnInit {
     return undefined;
   }
 
-  private generateListings(): ListingItem[] {
+  getAll(): ListingItem[] {
     const rnd = this.prng(42);
     const out: ListingItem[] = [];
     let id = 1;
@@ -213,56 +178,7 @@ export class ListingsComponent implements OnInit {
     return out;
   }
 
-  all: ListingItem[] = this.generateListings();
-
-  page = 1;
-  perPage = 5;
-
-  get filtered(): ListingItem[] {
-    let out = this.all.slice();
-    if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
-    if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
-    if (this.filters.location)
-      out = out.filter((i) =>
-        i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
-      );
-    const min = this.filters.minPrice ? parseFloat(this.filters.minPrice) : null;
-    const max = this.filters.maxPrice ? parseFloat(this.filters.maxPrice) : null;
-    if (min !== null) out = out.filter((i) => i.price >= (min as number));
-    if (max !== null) out = out.filter((i) => i.price <= (max as number));
-
-    const minR = Number(this.filters.minRating) || 0;
-    if (minR > 0) out = out.filter((i) => i.rating >= minR);
-
-    if (this.filters.verified === 'verified') out = out.filter((i) => i.verified);
-    if (this.filters.verified === 'unverified') out = out.filter((i) => !i.verified);
-
-    return out;
-  }
-
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.filtered.length / this.perPage));
-  }
-
-  get pages(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  }
-
-  get showingStart(): number {
-    return this.filtered.length ? (this.page - 1) * this.perPage + 1 : 0;
-  }
-
-  get showingEnd(): number {
-    return Math.min(this.page * this.perPage, this.filtered.length);
-  }
-
-  get paged(): ListingItem[] {
-    const start = (this.page - 1) * this.perPage;
-    return this.filtered.slice(start, start + this.perPage);
-  }
-
-  setPage(p: number) {
-    const pages = this.totalPages;
-    this.page = Math.max(1, Math.min(p, pages));
+  getById(id: number): ListingItem | undefined {
+    return this.getAll().find((i) => i.id === id);
   }
 }

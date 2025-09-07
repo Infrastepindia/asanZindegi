@@ -17,3 +17,30 @@
 .btn-join:hover {
   filter: brightness(0.98);
 }
+
+/* Header */
+.top-strip { font-size: 12px; }
+.topbar-brand { font-weight: 700; letter-spacing: 0.5px; }
+
+/* Ad slot */
+.ad-slot {
+  height: 90px;
+  border: 2px dashed #e7e9f3;
+  border-radius: 12px;
+  background: #f8f9fb;
+  color: #667085;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Footer */
+.site-footer { background: #f8f9fb; }
+.site-footer a { color: inherit; text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+.footer-title { font-weight: 700; margin-bottom: 12px; }
+.subscribe-group { display: flex; gap: 8px; }
+.subscribe-group .form-control { height: 48px; border-radius: 10px; border: 1px solid #e7e9f3; }
+.social-icons { display: flex; align-items: center; gap: 10px; }
+.social-icons .si { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: #eef1f6; color: #475467; }
+.app-badges img { height: 40px; }

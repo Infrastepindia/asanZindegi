@@ -272,6 +272,29 @@ export class ListingsComponent implements OnInit {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
+  get visiblePages(): Array<number | '...'> {
+    const total = this.totalPages;
+    const current = this.page;
+    const windowSize = 2;
+    if (total <= 7) return this.pages as any;
+
+    const set = new Set<number>();
+    set.add(1);
+    set.add(total);
+    for (let i = current - windowSize; i <= current + windowSize; i++) {
+      if (i > 1 && i < total) set.add(i);
+    }
+    const arr = Array.from(set).sort((a, b) => a - b);
+    const out: Array<number | '...'> = [];
+    let prev: number | null = null;
+    for (const n of arr) {
+      if (prev !== null && n - prev > 1) out.push('...');
+      out.push(n);
+      prev = n;
+    }
+    return out;
+  }
+
   get showingStart(): number {
     return this.filtered.length ? (this.page - 1) * this.perPage + 1 : 0;
   }

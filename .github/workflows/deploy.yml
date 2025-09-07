@@ -44,10 +44,10 @@ jobs:
       - name: Deploy to server via SSH (rsync)
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          SSH_PRIVATE_KEY: ${{ secrets.ASANZINDEGI_SECRET_KEY }}
+          REMOTE_HOST: ${{ secrets.ASANZINDEGI_HOST }}
+          REMOTE_USER: ${{ secrets.ASANZINDEGI_USER }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
           ARGS: '-avzr --delete'
           SOURCE: 'dist/asanZindegi/browser/'
-          TARGET: ${{ secrets.REMOTE_PATH }}
+          TARGET: '/home/asanZindegi/'

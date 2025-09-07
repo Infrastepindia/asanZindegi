@@ -34,6 +34,22 @@ export class ListingDetailsComponent {
   showPhone = false;
   showEmail = false;
 
+  // Service types per category
+  private serviceTypeMap: Record<string, string[]> = {
+    Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings'],
+    Electrical: ['Wiring', 'Appliance Install', 'Lighting'],
+    Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning'],
+    Tutoring: ['Math', 'English', 'Science'],
+    Carpentry: ['Furniture Repair', 'Custom Shelves'],
+    Painting: ['Interior', 'Exterior'],
+    Moving: ['House Shifting', 'Office Relocation'],
+    'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
+  };
+  get serviceTypes(): string[] {
+    const cat = this.item?.category || '';
+    return cat && this.serviceTypeMap[cat] ? this.serviceTypeMap[cat] : [];
+  }
+
   // Map vars
   private map: any;
   private circle: any;

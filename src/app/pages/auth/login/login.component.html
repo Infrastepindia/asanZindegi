@@ -1,0 +1,28 @@
+<section class="auth-wrap py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h4 mb-3 heading-cta">Login to <span class="text-gradient-1">AsanZindegi</span></h1>
+            <form (submit)="onSubmit($event)" class="auth-form">
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" type="email" [(ngModel)]="model.email" name="email" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input class="form-control" type="password" [(ngModel)]="model.password" name="password" required />
+              </div>
+              <button class="btn btn-join btn-lg w-100" type="submit">Login</button>
+            </form>
+            <div class="text-center small mt-3 text-secondary">
+              Dont have an account?
+              <a routerLink="/signup" class="text-decoration-none">Sign up</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

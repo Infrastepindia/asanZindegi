@@ -210,13 +210,18 @@
 
       <!-- Pagination -->
       <nav class="mt-3 d-flex justify-content-center">
-        <ul class="pagination">
+        <ul class="pagination smart-pagination">
           <li class="page-item" [class.disabled]="page === 1">
             <button class="page-link" (click)="setPage(page - 1)">Previous</button>
           </li>
-          <li class="page-item" [class.active]="page === p" *ngFor="let p of pages">
-            <button class="page-link" (click)="setPage(p)">{{ p }}</button>
-          </li>
+          <ng-container *ngFor="let p of visiblePages">
+            <li class="page-item ellipsis" *ngIf="p === '...'">
+              <span class="page-link">…</span>
+            </li>
+            <li class="page-item" [class.active]="page === p" *ngIf="p !== '...'">
+              <button class="page-link" (click)="setPage(+p)">{{ p }}</button>
+            </li>
+          </ng-container>
           <li class="page-item" [class.disabled]="page >= totalPages">
             <button class="page-link" (click)="setPage(page + 1)">Next</button>
           </li>

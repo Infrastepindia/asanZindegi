@@ -34,14 +34,18 @@ export class ListingsComponent implements OnInit {
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const typ = this.route.snapshot.queryParamMap.get('type') || '';
+    const loc = this.route.snapshot.queryParamMap.get('location') || '';
     if (cat) this.filters.category = cat;
     if (typ) this.filters.type = typ as any;
-    if (cat || typ) this.setPage(1);
+    if (loc) this.filters.location = loc;
+    if (cat || typ || loc) this.setPage(1);
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
       const t = map.get('type') || '';
+      const l = map.get('location') || '';
       this.filters.category = c;
       this.filters.type = (t as any) || '';
+      this.filters.location = l;
       this.setPage(1);
     });
   }
@@ -266,6 +270,29 @@ export class ListingsComponent implements OnInit {
 
   get pages(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get visiblePages(): Array<number | '...'> {
+    const total = this.totalPages;
+    const current = this.page;
+    const windowSize = 2;
+    if (total <= 7) return this.pages as any;
+
+    const set = new Set<number>();
+    set.add(1);
+    set.add(total);
+    for (let i = current - windowSize; i <= current + windowSize; i++) {
+      if (i > 1 && i < total) set.add(i);
+    }
+    const arr = Array.from(set).sort((a, b) => a - b);
+    const out: Array<number | '...'> = [];
+    let prev: number | null = null;
+    for (const n of arr) {
+      if (prev !== null && n - prev > 1) out.push('...');
+      out.push(n);
+      prev = n;
+    }
+    return out;
   }
 
   get showingStart(): number {

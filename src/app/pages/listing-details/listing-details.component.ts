@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
+
+declare const L: any;
 
 @Component({
   selector: 'app-listing-details',
@@ -13,6 +15,7 @@ import { ListingsService, ListingItem } from '../../services/listings.service';
 export class ListingDetailsComponent {
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
+  private platformId = inject(PLATFORM_ID);
 
   item?: ListingItem;
   thumbnails: string[] = [];
@@ -26,6 +29,16 @@ export class ListingDetailsComponent {
   };
   includes: string[] = [];
   overview = '';
+
+  // Contact visibility flags
+  showPhone = false;
+  showEmail = false;
+
+  // Map vars
+  private map: any;
+  private circle: any;
+  private center: [number, number] = [22.9734, 78.6569]; // default India center
+  private radiusMeters = 15000;
 
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -61,5 +74,50 @@ export class ListingDetailsComponent {
       this.includes = map[this.item.category] || ['Consultation', 'Standard Service'];
       this.overview = `${this.item.title} available in ${this.item.location}. Professional ${this.item.category.toLowerCase()} service performed by verified providers with transparent pricing. Reach out to schedule and get an exact quote for your requirement.`;
     }
+  }
+
+  private coordsForLocation(loc: string | undefined): [number, number] {
+    if (!loc) return this.center;
+    const city = loc.split(',')[0].trim();
+    const table: Record<string, [number, number]> = {
+      Delhi: [28.6139, 77.209],
+      Mumbai: [19.076, 72.8777],
+      Bengaluru: [12.9716, 77.5946],
+      Hyderabad: [17.385, 78.4867],
+      Chennai: [13.0827, 80.2707],
+      Kolkata: [22.5726, 88.3639],
+      Pune: [18.5204, 73.8567],
+      Ahmedabad: [23.0225, 72.5714],
+      Jaipur: [26.9124, 75.7873],
+      Surat: [21.1702, 72.8311],
+    };
+    return table[city] || this.center;
+  }
+
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.item) return;
+    this.center = this.coordsForLocation(this.item.location);
+
+    const el = document.getElementById('serviceAreaMap');
+    if (!el) return;
+
+    this.map = L.map(el).setView(this.center, 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(this.map);
+
+    this.circle = L.circle(this.center, {
+      radius: this.radiusMeters,
+      color: '#7b61ff',
+      weight: 2,
+      fillColor: '#7b61ff',
+      fillOpacity: 0.12,
+    }).addTo(this.map);
+  }
+
+  ngOnDestroy() {
+    if (this.map && this.map.remove) this.map.remove();
   }
 }

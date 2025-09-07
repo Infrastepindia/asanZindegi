@@ -117,6 +117,12 @@
           </div>
         </div>
 
+        <!-- Service Area Map -->
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-2">Service Area</h2>
+          <div id="serviceAreaMap" class="map-box rounded-3"></div>
+        </div>
+
         <!-- Related -->
         <div class="details-card p-3 p-md-4">
           <div class="d-flex align-items-center justify-content-between mb-2">
@@ -153,8 +159,13 @@
               <div class="h4 mb-0">₹{{ it.price }}</div>
             </div>
           </div>
-          <div class="d-grid mt-3">
-            <a class="btn btn-join btn-lg" href="#">Book Service</a>
+          <div class="d-grid mt-3 gap-2">
+            <button type="button" class="btn btn-join btn-lg" (click)="showPhone = true">
+              See phone number
+            </button>
+            <button type="button" class="btn btn-join btn-lg" (click)="showEmail = true">
+              See email
+            </button>
           </div>
         </div>
         <div class="details-card p-3 p-md-4">
@@ -176,10 +187,14 @@
               <i class="bi bi-geo-alt me-2"></i>{{ it.location }}
             </li>
             <li class="d-flex align-items-center mb-1">
-              <i class="bi bi-envelope me-2"></i>{{ provider.email }}
+              <i class="bi bi-envelope me-2"></i>
+              <ng-container *ngIf="showEmail; else emailHidden">{{ provider.email }}</ng-container>
+              <ng-template #emailHidden>Hidden</ng-template>
             </li>
             <li class="d-flex align-items-center">
-              <i class="bi bi-telephone me-2"></i>{{ provider.phone }}
+              <i class="bi bi-telephone me-2"></i>
+              <ng-container *ngIf="showPhone; else phoneHidden">{{ provider.phone }}</ng-container>
+              <ng-template #phoneHidden>Hidden</ng-template>
             </li>
           </ul>
         </div>

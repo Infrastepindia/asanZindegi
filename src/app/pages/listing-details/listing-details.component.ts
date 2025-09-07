@@ -51,7 +51,12 @@ export class ListingDetailsComponent {
         Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Alignment', 'Hardware Replacement'],
         Painting: ['Interior Painting', 'Exterior Painting', 'Primer and Putty', 'Touch‑ups'],
         Moving: ['Packing', 'Loading & Unloading', 'Transport', 'Placement'],
-        'Appliance Repair': ['Diagnosis', 'Spare Parts Replacement', 'Performance Test', 'Warranty Support'],
+        'Appliance Repair': [
+          'Diagnosis',
+          'Spare Parts Replacement',
+          'Performance Test',
+          'Warranty Support',
+        ],
       };
       this.includes = map[this.item.category] || ['Consultation', 'Standard Service'];
       this.overview = `${this.item.title} available in ${this.item.location}. Professional ${this.item.category.toLowerCase()} service performed by verified providers with transparent pricing. Reach out to schedule and get an exact quote for your requirement.`;

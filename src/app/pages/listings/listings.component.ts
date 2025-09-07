@@ -181,8 +181,9 @@ export class ListingsComponent implements OnInit {
       for (const typ of this.types) {
         for (let i = 0; i < 20; i++) {
           const covers = this.coverByCategory[cat] || [];
-          const cover = covers.length ? covers[i % covers.length] :
-            'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop';
+          const cover = covers.length
+            ? covers[i % covers.length]
+            : 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop';
           const daysAgo = Math.floor(rnd() * 120);
           const date = new Date(now - daysAgo * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
           const location = this.cities[Math.floor(rnd() * this.cities.length)];

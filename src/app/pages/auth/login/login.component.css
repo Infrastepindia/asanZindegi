@@ -1,13 +1,46 @@
 /* Auth page styles */
-.auth-wrap { background: #f8f9fb; }
-.auth-form .form-control { border-radius: 10px; border: 1px solid #e7e9f3; }
+.auth-wrap {
+  background: #f8f9fb;
+}
+.auth-form .form-control {
+  border-radius: 10px;
+  border: 1px solid #e7e9f3;
+}
 
 /* Social auth */
-.social-buttons .btn-social { border-radius: 10px; border: 1px solid #e7e9f3; background: #ffffff; color: #0b1220; }
-.social-buttons .btn-social:hover { filter: brightness(0.98); }
-.btn-google { background: #ffffff; color: #0b1220; }
-.btn-facebook { background: #1877f2; color: #ffffff; border-color: #1877f2; }
-.auth-sep { position: relative; }
-.auth-sep::before, .auth-sep::after { content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: #eaecf0; }
-.auth-sep::before { left: 0; }
-.auth-sep::after { right: 0; }
+.social-buttons .btn-social {
+  border-radius: 10px;
+  border: 1px solid #e7e9f3;
+  background: #ffffff;
+  color: #0b1220;
+}
+.social-buttons .btn-social:hover {
+  filter: brightness(0.98);
+}
+.btn-google {
+  background: #ffffff;
+  color: #0b1220;
+}
+.btn-facebook {
+  background: #1877f2;
+  color: #ffffff;
+  border-color: #1877f2;
+}
+.auth-sep {
+  position: relative;
+}
+.auth-sep::before,
+.auth-sep::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #eaecf0;
+}
+.auth-sep::before {
+  left: 0;
+}
+.auth-sep::after {
+  right: 0;
+}

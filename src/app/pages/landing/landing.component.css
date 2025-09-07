@@ -189,8 +189,15 @@
 }
 
 /* How section ad */
-.how-ad-wrap { display: block; }
-.ad-slot.ad-square { width: 100%; max-width: 300px; aspect-ratio: 1 / 1; height: auto; }
+.how-ad-wrap {
+  display: block;
+}
+.ad-slot.ad-square {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+  height: auto;
+}
 
 /* CTA sections */
 .cta-gradient {

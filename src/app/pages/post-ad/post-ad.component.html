@@ -62,15 +62,15 @@
                 </div>
               </div>
 
-              <div class="mt-3" *ngIf="a.type === 'Company'">
+              <div class="mt-3" *ngIf="company as c">
                 <label class="form-label">Assign Personnel (contact on listing)</label>
                 <select class="form-select" [(ngModel)]="model.personnelId" name="personnel">
                   <option [value]="0" disabled>Select personnel</option>
-                  <option *ngFor="let p of (a as any).personnel" [value]="p.id">
+                  <option *ngFor="let p of (c.personnel || [])" [value]="p.id">
                     {{ p.name }} — {{ p.phone }}
                   </option>
                 </select>
-                <div class="small text-secondary mt-1" *ngIf="!(a as any).personnel.length">
+                <div class="small text-secondary mt-1" *ngIf="c.personnel.length === 0">
                   No personnel added. Go to
                   <a routerLink="/provider/dashboard">Provider Dashboard</a> to add personnel.
                 </div>

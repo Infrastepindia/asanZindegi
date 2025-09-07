@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
-import { ProviderAccount, CompanyAccount } from '../../../models/provider-account.model';
+import { ProviderAccount, CompanyAccount, IndividualAccount } from '../../../models/provider-account.model';
 
 @Component({
   selector: 'app-provider-dashboard',
@@ -20,6 +20,16 @@ export class ProviderDashboardComponent {
 
   ngOnInit() {
     this.acc = this.accounts.getAccount();
+  }
+
+  get isCompany(): boolean {
+    return this.acc?.type === 'Company';
+  }
+  get company(): CompanyAccount | null {
+    return this.acc && this.acc.type === 'Company' ? (this.acc as CompanyAccount) : null;
+  }
+  get individual(): IndividualAccount | null {
+    return this.acc && this.acc.type === 'Individual' ? (this.acc as IndividualAccount) : null;
   }
 
   addPersonnel(e: Event) {

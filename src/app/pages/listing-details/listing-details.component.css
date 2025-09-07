@@ -70,3 +70,10 @@
     height: 260px;
   }
 }
+
+/* Ad size modifiers (use with global .ad-slot) */
+.ad-banner-sm { height: 60px; }
+.ad-banner-lg { height: 120px; }
+.ad-rect-md { height: 200px; }
+.ad-square-md { height: 250px; }
+.ad-tall { height: 320px; }

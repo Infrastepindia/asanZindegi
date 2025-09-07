@@ -11,6 +11,6 @@ export const routes: Routes = [
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },
   { path: 'signup', component: SignupComponent, title: 'Sign Up' },
-  { path: 'ad/:id', component: ListingDetailsComponent, title: 'Ad Details' },
+  { path: 'ad/:id', component: ListingDetailsComponent, title: 'Ad Details', data: { renderMode: 'ssr' } },
   { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];

@@ -42,7 +42,7 @@ jobs:
           path: dist
 
       - name: Deploy to cPanel via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
          server: ${{ secrets.ASANZINDEGI_HOST }}
          username: ${{ secrets.ASANZINDEGI_USER }}

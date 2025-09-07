@@ -40,6 +40,42 @@ export class ListingDetailsComponent {
   private center: [number, number] = [22.9734, 78.6569]; // default India center
   private radiusMeters = 15000;
 
+  // Pricing modal
+  selectedForPricing?: ListingItem;
+  private baseRanges: Record<string, [number, number]> = {
+    Plumbing: [299, 1499],
+    Electrical: [249, 1799],
+    Cleaning: [399, 2499],
+    Tutoring: [199, 999],
+    Carpentry: [349, 1999],
+    Painting: [499, 3999],
+    Moving: [999, 9999],
+    'Appliance Repair': [299, 2499],
+  };
+
+  openPrice(item: ListingItem) {
+    this.selectedForPricing = item;
+  }
+
+  get modalItem(): ListingItem | undefined {
+    return this.selectedForPricing || this.item;
+  }
+
+  get priceRange(): [number, number] | null {
+    const it = this.modalItem;
+    if (!it) return null;
+    const base = this.baseRanges[it.category] || [199, 1999];
+    let [min, max] = base;
+    if (it.type === 'Rent') {
+      min = Math.round(min * 0.8);
+      max = Math.round(max * 0.8);
+    } else if (it.type === 'Exchange') {
+      min = Math.round(min * 0.6);
+      max = Math.round(max * 0.6);
+    }
+    return [min, max];
+  }
+
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!isNaN(id)) {

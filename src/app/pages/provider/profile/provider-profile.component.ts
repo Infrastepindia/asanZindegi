@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
-import { CompanyAccount, IndividualAccount, ProviderAccount } from '../../../models/provider-account.model';
+import {
+  CompanyAccount,
+  IndividualAccount,
+  ProviderAccount,
+} from '../../../models/provider-account.model';
 
 @Component({
   selector: 'app-provider-profile',

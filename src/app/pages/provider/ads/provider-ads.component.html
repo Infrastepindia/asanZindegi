@@ -23,11 +23,18 @@
                 <td>{{ ad.title }}</td>
                 <td>{{ ad.category }}</td>
                 <td>{{ ad.type }}</td>
-                <td>{{ ad.price }} <span *ngIf="ad.unit" class="text-secondary small">/ {{ ad.unit }}</span></td>
+                <td>
+                  {{ ad.price }}
+                  <span *ngIf="ad.unit" class="text-secondary small">/ {{ ad.unit }}</span>
+                </td>
                 <td>{{ ad.date }}</td>
                 <td class="text-end">
-                  <a [routerLink]="['/ad', ad.id, 'edit']" class="btn btn-sm btn-outline-secondary">Edit</a>
-                  <button class="btn btn-sm btn-outline-danger ms-2" (click)="remove(ad.id)">Delete</button>
+                  <a [routerLink]="['/ad', ad.id, 'edit']" class="btn btn-sm btn-outline-secondary"
+                    >Edit</a
+                  >
+                  <button class="btn btn-sm btn-outline-danger ms-2" (click)="remove(ad.id)">
+                    Delete
+                  </button>
                 </td>
               </tr>
               <tr *ngIf="ads.length === 0">

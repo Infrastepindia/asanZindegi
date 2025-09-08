@@ -104,7 +104,10 @@ export class AdsService {
     return ad;
   }
 
-  updateAd(id: number, changes: Partial<Omit<PostedAd, 'id' | 'accountId' | 'accountType'>>): PostedAd | null {
+  updateAd(
+    id: number,
+    changes: Partial<Omit<PostedAd, 'id' | 'accountId' | 'accountType'>>,
+  ): PostedAd | null {
     const all = this.load();
     const idx = all.findIndex((a) => a.id === id);
     if (idx === -1) return null;
@@ -154,9 +157,7 @@ export class AdsService {
     }
   }
 
-  getProviderMeta(
-    listingId: number,
-  ): {
+  getProviderMeta(listingId: number): {
     companyName: string;
     contactName: string;
     contactEmail: string;

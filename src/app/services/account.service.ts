@@ -118,7 +118,11 @@ export class AccountService {
     return acc;
   }
 
-  updateIndividualProfile(data: { fullName: string; email: string; phone: string }): IndividualAccount | null {
+  updateIndividualProfile(data: {
+    fullName: string;
+    email: string;
+    phone: string;
+  }): IndividualAccount | null {
     const acc = this.getAccount();
     if (!acc || acc.type !== 'Individual') return null;
     const updated: IndividualAccount = {

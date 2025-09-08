@@ -1,8 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
+import { Meta } from '@angular/platform-browser';
+import { REQUEST } from '@angular/ssr';
 
 interface ListingItem {
   id: number;
@@ -29,24 +31,36 @@ interface ListingItem {
 })
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private meta: Meta) {}
+
+  private doc = inject(DOCUMENT);
+  private req = inject(REQUEST, { optional: true }) as
+    | (import('http').IncomingMessage & { protocol?: string })
+    | null;
 
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const typ = this.route.snapshot.queryParamMap.get('type') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
+    const pageParam = this.route.snapshot.queryParamMap.get('page');
     if (cat) this.filters.category = cat;
     if (typ) this.filters.type = typ as any;
     if (loc) this.filters.location = loc;
-    if (cat || typ || loc) this.setPage(1);
+    if (pageParam) this.page = Math.max(1, parseInt(pageParam, 10) || 1);
+    if (cat || typ || loc || pageParam) this.setPage(this.page);
+    this.updateSEO();
+
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
       const t = map.get('type') || '';
       const l = map.get('location') || '';
+      const p = map.get('page');
       this.filters.category = c;
       this.filters.type = (t as any) || '';
       this.filters.location = l;
-      this.setPage(1);
+      this.page = p ? Math.max(1, parseInt(p, 10) || 1) : 1;
+      this.setPage(this.page);
+      this.updateSEO();
     });
   }
   filters = {
@@ -311,5 +325,100 @@ export class ListingsComponent implements OnInit {
   setPage(p: number) {
     const pages = this.totalPages;
     this.page = Math.max(1, Math.min(p, pages));
+    this.updateSEO();
+  }
+
+  private getOrigin(): string {
+    if (this.req && this.req.headers) {
+      const proto = (this.req.headers['x-forwarded-proto'] as string) || (this.req as any).protocol || 'http';
+      const host = (this.req.headers['x-forwarded-host'] as string) || (this.req.headers['host'] as string) || 'localhost';
+      return `${proto}://${host}`;
+    }
+    return (globalThis as any).location?.origin || '';
+  }
+
+  private slugify(input: string): string {
+    return input
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  private hasTrackingParams(map: import('@angular/router').ParamMap): boolean {
+    const keys = (map as any).keys as string[];
+    const hasUtm = keys.some((k) => /^utm_/i.test(k));
+    const trackingKeys = ['gclid', 'fbclid', 'msclkid', 'dclid', 'icid', 'ref', 'referrer', 'session', 'sid'];
+    const hasOther = keys.some((k) => trackingKeys.includes(k.toLowerCase()));
+    return hasUtm || hasOther;
+  }
+
+  private hasFilterParams(map: import('@angular/router').ParamMap): boolean {
+    const f = ['category', 'type', 'location', 'minPrice', 'maxPrice', 'minRating', 'verified', 'city'];
+    const keys = (map as any).keys as string[];
+    return keys.some((k) => f.includes(k));
+  }
+
+  private isSEOValuableFilters(map: import('@angular/router').ParamMap): boolean {
+    const keys = (map as any).keys as string[];
+    const disallowed = ['minPrice', 'maxPrice', 'minRating', 'verified'];
+    if (keys.some((k) => disallowed.includes(k))) return false;
+    const allowed = ['category', 'type', 'city'];
+    return keys.some((k) => allowed.includes(k));
+  }
+
+  private extractCityName(map: import('@angular/router').ParamMap): string | null {
+    const city = map.get('city');
+    if (city) return city;
+    if (this.filters.location) return this.filters.location.split(',')[0].trim();
+    return null;
+  }
+
+  private buildFilterQuery(map: import('@angular/router').ParamMap): string {
+    const params = new URLSearchParams();
+    const category = map.get('category') || this.filters.category || '';
+    const type = map.get('type') || this.filters.type || '';
+    if (category) params.set('category', category);
+    if (type) params.set('type', type);
+    return params.toString() ? `?${params.toString()}` : '';
+  }
+
+  private updateSEO(): void {
+    const map = this.route.snapshot.queryParamMap;
+    const origin = this.getOrigin();
+    const cityName = this.extractCityName(map);
+    const basePath = cityName ? `/listings/${this.slugify(cityName)}` : '/listings';
+
+    let canonical = origin + basePath;
+
+    const hasTracking = this.hasTrackingParams(map);
+    const hasFilters = this.hasFilterParams(map);
+
+    if (hasFilters && this.isSEOValuableFilters(map)) {
+      canonical = origin + basePath + this.buildFilterQuery(map);
+    } else if (hasFilters && !this.isSEOValuableFilters(map)) {
+      this.meta.updateTag({ name: 'robots', content: 'noindex,follow' });
+      canonical = origin + basePath;
+    } else {
+      this.meta.removeTag("name='robots'");
+    }
+
+    if (this.page > 1) {
+      const sep = canonical.includes('?') ? '&' : '?';
+      canonical = `${canonical}${sep}page=${this.page}`;
+    }
+
+    if (hasTracking) {
+      canonical = origin + basePath + (this.page > 1 ? `?page=${this.page}` : '');
+    }
+
+    let link: HTMLLinkElement | null = this.doc.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', canonical);
   }
 }

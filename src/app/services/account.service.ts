@@ -79,6 +79,7 @@ export class AccountService {
       email: data.email,
       phone: data.phone,
       personnel: [],
+      verification: { status: 'Unverified' },
       createdAt: new Date().toISOString(),
     };
     this.setAccount(acc);
@@ -105,5 +106,74 @@ export class AccountService {
     acc.personnel = acc.personnel.filter((p) => p.id !== id);
     this.setAccount(acc);
     return acc;
+  }
+
+  updatePersonnel(person: Personnel): CompanyAccount | null {
+    const acc = this.getAccount();
+    if (!acc || acc.type !== 'Company') return null;
+    const idx = acc.personnel.findIndex((p) => p.id === person.id);
+    if (idx === -1) return acc;
+    acc.personnel[idx] = { ...person };
+    this.setAccount(acc);
+    return acc;
+  }
+
+  updateIndividualProfile(data: { fullName: string; email: string; phone: string }): IndividualAccount | null {
+    const acc = this.getAccount();
+    if (!acc || acc.type !== 'Individual') return null;
+    const updated: IndividualAccount = {
+      ...acc,
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+    } as IndividualAccount;
+    this.setAccount(updated);
+    return updated;
+  }
+
+  updateCompanyProfile(data: {
+    companyName: string;
+    contactName: string;
+    email: string;
+    phone: string;
+  }): CompanyAccount | null {
+    const acc = this.getAccount();
+    if (!acc || acc.type !== 'Company') return null;
+    const updated: CompanyAccount = {
+      ...(acc as CompanyAccount),
+      companyName: data.companyName,
+      contactName: data.contactName,
+      email: data.email,
+      phone: data.phone,
+    } as CompanyAccount;
+    this.setAccount(updated);
+    return updated;
+  }
+
+  submitCompanyVerification(data: { note?: string; documents?: string[] }): CompanyAccount | null {
+    const acc = this.getAccount();
+    if (!acc || acc.type !== 'Company') return null;
+    const c = acc as CompanyAccount;
+    c.verification = {
+      status: 'Pending',
+      submittedAt: new Date().toISOString(),
+      note: data.note,
+    };
+    this.setAccount(c);
+    return c;
+  }
+
+  markCompanyVerified(note?: string): CompanyAccount | null {
+    const acc = this.getAccount();
+    if (!acc || acc.type !== 'Company') return null;
+    const c = acc as CompanyAccount;
+    c.verification = {
+      status: 'Verified',
+      submittedAt: c.verification?.submittedAt,
+      verifiedAt: new Date().toISOString(),
+      note,
+    };
+    this.setAccount(c);
+    return c;
   }
 }

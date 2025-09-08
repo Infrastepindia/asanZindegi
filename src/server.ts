@@ -78,9 +78,9 @@ app.get('/api/providers', async (req, res, next) => {
       const cat = cats.find((c) => c.name.toLowerCase() === String(categoryName).toLowerCase());
       return res.json(cat ? all.filter((p) => p.categoryId === cat.id) : []);
     }
-    res.json(all);
+    return res.json(all);
   } catch (e) {
-    next(e);
+    return next(e);
   }
 });
 

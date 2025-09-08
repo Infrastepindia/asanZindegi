@@ -23,7 +23,10 @@ export const routes: Routes = [
     component: ProviderDashboardComponent,
     title: 'Provider Dashboard',
   },
+  { path: 'provider/profile', component: ProviderProfileComponent, title: 'Provider Profile' },
+  { path: 'provider/ads', component: ProviderAdsComponent, title: 'My Ads' },
   { path: 'post-ad', component: PostAdComponent, title: 'Post an Ad' },
+  { path: 'ad/:id/edit', component: AdEditComponent, title: 'Edit Ad' },
   {
     path: 'ad/:id',
     component: ListingDetailsComponent,

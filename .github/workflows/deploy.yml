@@ -33,14 +33,6 @@ jobs:
           name: dist-ssr
           path: dist/asanZindegi
 
-      - name: Upload package files
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-files
-          path: |
-            package.json
-            package-lock.json
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -52,31 +44,14 @@ jobs:
           name: dist-ssr
           path: dist-ssr
 
-      - name: Download package files
-        uses: actions/download-artifact@v4
-        with:
-          name: package-files
-          path: package-files
-
       - name: Show downloaded files (debug)
-        run: ls -R
+        run: ls -R dist-ssr
 
-      - name: Deploy dist (SSR) to cPanel via FTP
+      - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.ASANZINDEGI_HOST }}
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
           local-dir: dist-ssr/
-          server-dir: /home8/hirenqco/asanzindegi/
           dangerous-clean-slate: true
-
-      - name: Deploy package.json to cPanel root
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.ASANZINDEGI_HOST }}
-          username: ${{ secrets.ASANZINDEGI_USER }}
-          password: ${{ secrets.ASANZINDEGI_PASSWORD }}
-          local-dir: package-files/
-          server-dir: /home8/hirenqco/asanzindegi/
-          dangerous-clean-slate: false

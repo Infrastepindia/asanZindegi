@@ -8,6 +8,9 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ProviderRegisterComponent } from './pages/provider/register/provider-register.component';
 import { ProviderDashboardComponent } from './pages/provider/dashboard/provider-dashboard.component';
 import { PostAdComponent } from './pages/post-ad/post-ad.component';
+import { ProviderProfileComponent } from './pages/provider/profile/provider-profile.component';
+import { ProviderAdsComponent } from './pages/provider/ads/provider-ads.component';
+import { AdEditComponent } from './pages/ad-edit/ad-edit.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },

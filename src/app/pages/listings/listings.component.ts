@@ -19,6 +19,7 @@ interface ListingItem {
   rating: number;
   verified: boolean;
   verifiedType?: 'Company' | 'KYC';
+  serviceType?: string;
 }
 
 @Component({
@@ -73,11 +74,13 @@ export class ListingsComponent implements OnInit {
   filters = {
     category: '',
     type: '',
+    serviceType: '',
     location: '',
     minPrice: '',
     maxPrice: '',
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
+    provider: 'all' as 'all' | 'company' | 'individual',
   };
 
   categories = [
@@ -92,6 +95,22 @@ export class ListingsComponent implements OnInit {
   ];
 
   types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
+
+  private serviceTypeMap: Record<string, string[]> = {
+    Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings', 'Kitchen Plumbing'],
+    Electrical: ['Wiring Service', 'Appliance Install', 'Lighting Setup', 'Panel Repair'],
+    Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning', 'Sofa Shampoo'],
+    Tutoring: ['Math Tuition', 'English Coaching', 'Science Tutor', 'Exam Prep'],
+    Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Fix', 'Wardrobe Build'],
+    Painting: ['Interior Paint', 'Exterior Paint', 'Texture Work', 'Ceiling Paint'],
+    Moving: ['House Shifting', 'Office Relocation', 'Packing Service', 'Local Transport'],
+    'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washer Repair', 'Microwave Fix'],
+  };
+
+  get serviceTypesForSelected(): string[] {
+    const cat = this.filters.category;
+    return cat && (this.serviceTypeMap as any)[cat] ? this.serviceTypeMap[cat] : [];
+  }
 
   private prng(seed: number) {
     return function () {
@@ -219,9 +238,11 @@ export class ListingsComponent implements OnInit {
           const rating = 3 + Math.floor(rnd() * 3);
           const verified = rnd() < 0.6;
           const verifiedType = verified ? (rnd() < 0.5 ? 'Company' : 'KYC') : undefined;
+          const title = this.createTitle(cat, typ, i);
+          const serviceType = title.split(' - ')[0];
           out.push({
             id: id++,
-            title: this.createTitle(cat, typ, i),
+            title,
             category: cat,
             type: typ,
             location,
@@ -233,6 +254,7 @@ export class ListingsComponent implements OnInit {
             rating,
             verified,
             verifiedType,
+            serviceType,
           });
         }
       }
@@ -241,21 +263,25 @@ export class ListingsComponent implements OnInit {
   }
 
   private posted(): ListingItem[] {
-    return this.ads.getAll().map((ad) => ({
-      id: ad.id,
-      title: ad.title,
-      category: ad.category,
-      type: ad.type,
-      location: ad.location,
-      price: ad.price,
-      unit: ad.unit,
-      cover: ad.cover,
-      date: ad.date,
-      views: ad.views,
-      rating: ad.rating,
-      verified: ad.verified,
-      verifiedType: ad.verifiedType,
-    }));
+    return this.ads.getAll().map((ad) => {
+      const st = (ad.title || '').split(' - ')[0].trim() || ad.title;
+      return {
+        id: ad.id,
+        title: ad.title,
+        category: ad.category,
+        type: ad.type,
+        location: ad.location,
+        price: ad.price,
+        unit: ad.unit,
+        cover: ad.cover,
+        date: ad.date,
+        views: ad.views,
+        rating: ad.rating,
+        verified: ad.verified,
+        verifiedType: ad.verifiedType,
+        serviceType: st,
+      } as ListingItem;
+    });
   }
 
   all: ListingItem[] = [...this.posted(), ...this.generateListings()];
@@ -267,6 +293,8 @@ export class ListingsComponent implements OnInit {
     let out = this.all.slice();
     if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
     if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
+    if (this.filters.serviceType)
+      out = out.filter((i) => (i.serviceType || i.title).toLowerCase().includes(this.filters.serviceType.toLowerCase()));
     if (this.filters.location)
       out = out.filter((i) =>
         i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
@@ -281,6 +309,9 @@ export class ListingsComponent implements OnInit {
 
     if (this.filters.verified === 'verified') out = out.filter((i) => i.verified);
     if (this.filters.verified === 'unverified') out = out.filter((i) => !i.verified);
+
+    if (this.filters.provider === 'company') out = out.filter((i) => i.verifiedType === 'Company');
+    if (this.filters.provider === 'individual') out = out.filter((i) => i.verifiedType !== 'Company');
 
     return out;
   }

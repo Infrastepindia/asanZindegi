@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "Leak Fix - Plumbing",
+    "category": "Plumbing",
+    "type": "Service",
+    "location": "Chennai, India",
+    "price": 499,
+    "unit": "per visit",
+    "cover": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1200&auto=format&fit=crop",
+    "date": "2024-08-01",
+    "views": 250,
+    "rating": 5,
+    "verified": true,
+    "verifiedType": "Company"
+  },
+  {
+    "id": 2,
+    "title": "Pipe Installation - Plumbing",
+    "category": "Plumbing",
+    "type": "Service",
+    "location": "Jaipur, India",
+    "price": 1299,
+    "unit": "per visit",
+    "cover": "https://images.unsplash.com/photo-1605652866327-96ae58c6ba86?q=80&w=1200&auto=format&fit=crop",
+    "date": "2024-07-18",
+    "views": 180,
+    "rating": 4,
+    "verified": false,
+    "verifiedType": "KYC"
+  }
+]

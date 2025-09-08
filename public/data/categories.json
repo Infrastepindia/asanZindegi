@@ -1,0 +1,10 @@
+[
+  { "id": 1, "name": "Plumbing" },
+  { "id": 2, "name": "Electrical" },
+  { "id": 3, "name": "Cleaning" },
+  { "id": 4, "name": "Tutoring" },
+  { "id": 5, "name": "Carpentry" },
+  { "id": 6, "name": "Painting" },
+  { "id": 7, "name": "Moving" },
+  { "id": 8, "name": "Appliance Repair" }
+]

@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main-new]
   workflow_dispatch:
 
 jobs:
@@ -36,16 +36,13 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main-new'
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: dist-browser
           path: dist-browser
-
-      - name: Show downloaded files (debug)
-        run: ls -R dist-browser
 
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

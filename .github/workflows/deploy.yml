@@ -1,4 +1,4 @@
-name: Build and Deploy (SSR)
+name: Build and Deploy
 
 on:
   push:
@@ -21,17 +21,25 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build Angular SSR app
+      - name: Build Angular app
         run: npm run build -- --configuration production
         
       - name: Show dist folder (debug)
         run: ls -R dist/asanZindegi
 
-      - name: Upload build artifact (SSR)
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist-ssr
-          path: dist/asanZindegi
+          name: dist-browser
+          path: dist/asanZindegi/browser
+
+      - name: Upload package files
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-files
+          path: |
+            package.json
+            package-lock.json
 
   deploy:
     needs: build
@@ -41,17 +49,34 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-ssr
-          path: dist-ssr
+          name: dist-browser
+          path: dist-browser
+
+      - name: Download package files
+        uses: actions/download-artifact@v4
+        with:
+          name: package-files
+          path: package-files
 
       - name: Show downloaded files (debug)
-        run: ls -R dist-ssr
+        run: ls -R
 
-      - name: Deploy to cPanel via FTP
+      - name: Deploy dist to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.ASANZINDEGI_HOST }}
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
-          local-dir: dist-ssr/
+          local-dir: dist-browser/
+          server-dir: /home8/hirenqco/asanzindegi/browser/
           dangerous-clean-slate: true
+
+      - name: Deploy package.json to cPanel root
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.ASANZINDEGI_HOST }}
+          username: ${{ secrets.ASANZINDEGI_USER }}
+          password: ${{ secrets.ASANZINDEGI_PASSWORD }}
+          local-dir: package-files/
+          server-dir: /home8/hirenqco/asanzindegi/
+          dangerous-clean-slate: false

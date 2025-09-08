@@ -44,9 +44,6 @@ jobs:
           name: dist-browser
           path: dist-browser
 
-      - name: Show downloaded files (debug)
-        run: ls -R dist-browser
-
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:

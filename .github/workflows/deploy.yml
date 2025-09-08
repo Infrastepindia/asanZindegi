@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy (SSR)
 
 on:
   push:
@@ -21,17 +21,17 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build Angular app
+      - name: Build Angular SSR app
         run: npm run build -- --configuration production
         
       - name: Show dist folder (debug)
         run: ls -R dist/asanZindegi
 
-      - name: Upload build artifact
+      - name: Upload build artifact (SSR)
         uses: actions/upload-artifact@v4
         with:
-          name: dist-browser
-          path: dist/asanZindegi/browser
+          name: dist-ssr
+          path: dist/asanZindegi
 
   deploy:
     needs: build
@@ -41,17 +41,17 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-browser
-          path: dist-browser
+          name: dist-ssr
+          path: dist-ssr
 
       - name: Show downloaded files (debug)
-        run: ls -R dist-browser
+        run: ls -R dist-ssr
 
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-         server: ${{ secrets.ASANZINDEGI_HOST }}
-         username: ${{ secrets.ASANZINDEGI_USER }}
-         password: ${{ secrets.ASANZINDEGI_PASSWORD }}
-         local-dir: dist-browser/
-         dangerous-clean-slate: true
+          server: ${{ secrets.ASANZINDEGI_HOST }}
+          username: ${{ secrets.ASANZINDEGI_USER }}
+          password: ${{ secrets.ASANZINDEGI_PASSWORD }}
+          local-dir: dist-ssr/
+          dangerous-clean-slate: true

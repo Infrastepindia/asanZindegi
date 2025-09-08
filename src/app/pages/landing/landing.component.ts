@@ -287,9 +287,22 @@ export class LandingComponent {
     const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
-        const allowed = new Set(['city', 'town', 'village', 'suburb', 'state', 'district', 'county', 'locality']);
-        const onlyIn = (res || []).filter((r) => (r.address?.country_code || '').toLowerCase() === 'in');
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) => allowed.has((r.type || '').toLowerCase()));
+        const allowed = new Set([
+          'city',
+          'town',
+          'village',
+          'suburb',
+          'state',
+          'district',
+          'county',
+          'locality',
+        ]);
+        const onlyIn = (res || []).filter(
+          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+        );
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+          allowed.has((r.type || '').toLowerCase()),
+        );
         this.locationResults = cleaned.slice(0, 8);
         this.locationLoading = false;
       },

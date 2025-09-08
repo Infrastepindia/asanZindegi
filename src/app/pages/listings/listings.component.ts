@@ -32,7 +32,10 @@ interface ListingItem {
 })
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
-  constructor(private route: ActivatedRoute, private meta: Meta) {}
+  constructor(
+    private route: ActivatedRoute,
+    private meta: Meta,
+  ) {}
 
   private doc = inject(DOCUMENT);
   private http = inject(HttpClient);
@@ -300,7 +303,9 @@ export class ListingsComponent implements OnInit {
     if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
     if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
     if (this.filters.serviceType)
-      out = out.filter((i) => (i.serviceType || i.title).toLowerCase().includes(this.filters.serviceType.toLowerCase()));
+      out = out.filter((i) =>
+        (i.serviceType || i.title).toLowerCase().includes(this.filters.serviceType.toLowerCase()),
+      );
     if (this.filters.location)
       out = out.filter((i) =>
         i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
@@ -317,7 +322,8 @@ export class ListingsComponent implements OnInit {
     if (this.filters.verified === 'unverified') out = out.filter((i) => !i.verified);
 
     if (this.filters.provider === 'company') out = out.filter((i) => i.verifiedType === 'Company');
-    if (this.filters.provider === 'individual') out = out.filter((i) => i.verifiedType !== 'Company');
+    if (this.filters.provider === 'individual')
+      out = out.filter((i) => i.verifiedType !== 'Company');
 
     return out;
   }
@@ -409,9 +415,22 @@ export class ListingsComponent implements OnInit {
     const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
-        const allowed = new Set(['city', 'town', 'village', 'suburb', 'state', 'district', 'county', 'locality']);
-        const onlyIn = (res || []).filter((r) => (r.address?.country_code || '').toLowerCase() === 'in');
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) => allowed.has((r.type || '').toLowerCase()));
+        const allowed = new Set([
+          'city',
+          'town',
+          'village',
+          'suburb',
+          'state',
+          'district',
+          'county',
+          'locality',
+        ]);
+        const onlyIn = (res || []).filter(
+          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+        );
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+          allowed.has((r.type || '').toLowerCase()),
+        );
         this.locationResults = cleaned.slice(0, 8);
         this.locationLoading = false;
       },
@@ -437,10 +456,13 @@ export class ListingsComponent implements OnInit {
       service: 'Service',
     };
 
-    const catBySlug: Record<string, string> = this.categories.reduce((acc, c) => {
-      acc[this.slugify(c)] = c;
-      return acc;
-    }, {} as Record<string, string>);
+    const catBySlug: Record<string, string> = this.categories.reduce(
+      (acc, c) => {
+        acc[this.slugify(c)] = c;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
 
     const tokens = s.split('-').filter(Boolean);
     for (const tk of tokens) {
@@ -449,7 +471,12 @@ export class ListingsComponent implements OnInit {
 
     let assignedCat = '';
     for (const [slugCat, original] of Object.entries(catBySlug)) {
-      if (s === slugCat || s.endsWith('-' + slugCat) || s.startsWith(slugCat + '-') || s.includes('-' + slugCat + '-')) {
+      if (
+        s === slugCat ||
+        s.endsWith('-' + slugCat) ||
+        s.startsWith(slugCat + '-') ||
+        s.includes('-' + slugCat + '-')
+      ) {
         assignedCat = original;
         break;
       }
@@ -469,13 +496,32 @@ export class ListingsComponent implements OnInit {
   private hasTrackingParams(map: import('@angular/router').ParamMap): boolean {
     const keys = (map as any).keys as string[];
     const hasUtm = keys.some((k) => /^utm_/i.test(k));
-    const trackingKeys = ['gclid', 'fbclid', 'msclkid', 'dclid', 'icid', 'ref', 'referrer', 'session', 'sid'];
+    const trackingKeys = [
+      'gclid',
+      'fbclid',
+      'msclkid',
+      'dclid',
+      'icid',
+      'ref',
+      'referrer',
+      'session',
+      'sid',
+    ];
     const hasOther = keys.some((k) => trackingKeys.includes(k.toLowerCase()));
     return hasUtm || hasOther;
   }
 
   private hasFilterParams(map: import('@angular/router').ParamMap): boolean {
-    const f = ['category', 'type', 'location', 'minPrice', 'maxPrice', 'minRating', 'verified', 'city'];
+    const f = [
+      'category',
+      'type',
+      'location',
+      'minPrice',
+      'maxPrice',
+      'minRating',
+      'verified',
+      'city',
+    ];
     const keys = (map as any).keys as string[];
     return keys.some((k) => f.includes(k));
   }

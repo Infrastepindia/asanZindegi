@@ -196,7 +196,17 @@ export class ListingDetailsComponent {
     const sp = new URLSearchParams(qs);
     const keys = Array.from(sp.keys());
     const hasUtm = keys.some((k) => /^utm_/i.test(k));
-    const tracking = ['gclid', 'fbclid', 'msclkid', 'dclid', 'icid', 'ref', 'referrer', 'session', 'sid'];
+    const tracking = [
+      'gclid',
+      'fbclid',
+      'msclkid',
+      'dclid',
+      'icid',
+      'ref',
+      'referrer',
+      'session',
+      'sid',
+    ];
     return hasUtm || keys.some((k) => tracking.includes(k.toLowerCase()));
   }
 

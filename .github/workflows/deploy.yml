@@ -78,5 +78,5 @@ jobs:
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
           local-dir: package-files/
-          server-dir: /asanzindegi/
+          server-dir: /
           dangerous-clean-slate: false

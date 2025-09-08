@@ -217,9 +217,9 @@ app.get('/api/listings', async (req, res, next) => {
     const start = (page - 1) * perPage;
     const items = filtered.slice(start, start + perPage);
 
-    res.json({ page, perPage, total, items });
+    return res.json({ page, perPage, total, items });
   } catch (e) {
-    next(e);
+    return next(e);
   }
 });
 
@@ -230,9 +230,9 @@ app.get('/api/listings/:id', async (req, res, next) => {
     const all = (await resp.json()) as any;
     const item = (all.items || []).find((x: any) => x.id === id);
     if (!item) return res.status(404).json({ message: 'Not found' });
-    res.json(item);
+    return res.json(item);
   } catch (e) {
-    next(e);
+    return next(e);
   }
 });
 

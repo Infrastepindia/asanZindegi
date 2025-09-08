@@ -1,0 +1,49 @@
+<section class="py-5">
+  <div class="container" *ngIf="ads; else needAccount">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h5 heading-cta mb-0">My Ads</h1>
+      <a routerLink="/post-ad" class="btn btn-join btn-lg">Post New</a>
+    </div>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Posted</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ad of ads">
+                <td>{{ ad.title }}</td>
+                <td>{{ ad.category }}</td>
+                <td>{{ ad.type }}</td>
+                <td>{{ ad.price }} <span *ngIf="ad.unit" class="text-secondary small">/ {{ ad.unit }}</span></td>
+                <td>{{ ad.date }}</td>
+                <td class="text-end">
+                  <a [routerLink]="['/ad', ad.id, 'edit']" class="btn btn-sm btn-outline-secondary">Edit</a>
+                  <button class="btn btn-sm btn-outline-danger ms-2" (click)="remove(ad.id)">Delete</button>
+                </td>
+              </tr>
+              <tr *ngIf="ads.length === 0">
+                <td colspan="6" class="text-center text-secondary">No ads yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #needAccount>
+    <div class="container py-5">
+      <h2 class="h5">Register as a provider to manage ads</h2>
+      <a routerLink="/provider/register" class="btn btn-join btn-lg mt-2">Register now</a>
+    </div>
+  </ng-template>
+</section>

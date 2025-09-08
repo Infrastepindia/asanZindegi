@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy (SSR)
 
 on:
   push:
@@ -21,17 +21,17 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build Angular app
+      - name: Build Angular SSR app
         run: npm run build -- --configuration production
         
       - name: Show dist folder (debug)
         run: ls -R dist/asanZindegi
 
-      - name: Upload build artifact
+      - name: Upload build artifact (SSR)
         uses: actions/upload-artifact@v4
         with:
-          name: dist-browser
-          path: dist/asanZindegi/browser
+          name: dist-ssr
+          path: dist/asanZindegi
 
       - name: Upload package files
         uses: actions/upload-artifact@v4
@@ -49,8 +49,8 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-browser
-          path: dist-browser
+          name: dist-ssr
+          path: dist-ssr
 
       - name: Download package files
         uses: actions/download-artifact@v4
@@ -61,14 +61,14 @@ jobs:
       - name: Show downloaded files (debug)
         run: ls -R
 
-      - name: Deploy dist to cPanel via FTP
+      - name: Deploy dist (SSR) to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.ASANZINDEGI_HOST }}
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
-          local-dir: dist-browser/
-          server-dir: /asanzindegi/browser/
+          local-dir: dist-ssr/
+          server-dir: /home8/hirenqco/asanzindegi/
           dangerous-clean-slate: true
 
       - name: Deploy package.json to cPanel root
@@ -78,5 +78,5 @@ jobs:
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
           local-dir: package-files/
-          server-dir: /
+          server-dir: /home8/hirenqco/asanzindegi/
           dangerous-clean-slate: false

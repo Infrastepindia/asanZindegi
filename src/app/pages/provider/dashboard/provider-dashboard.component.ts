@@ -21,6 +21,8 @@ export class ProviderDashboardComponent {
   acc: ProviderAccount | null = null;
 
   person = { name: '', email: '', phone: '' };
+  editingId: number | null = null;
+  editModel = { id: 0, name: '', email: '', phone: '' };
 
   ngOnInit() {
     this.acc = this.accounts.getAccount();
@@ -48,5 +50,22 @@ export class ProviderDashboardComponent {
   removePersonnel(id: number) {
     const res = this.accounts.removePersonnel(id);
     if (res) this.acc = res as CompanyAccount;
+  }
+
+  startEdit(p: { id: number; name: string; email: string; phone: string }) {
+    this.editingId = p.id;
+    this.editModel = { ...p };
+  }
+
+  cancelEdit() {
+    this.editingId = null;
+  }
+
+  saveEdit() {
+    const res = this.accounts.updatePersonnel(this.editModel);
+    if (res) {
+      this.acc = res as CompanyAccount;
+      this.editingId = null;
+    }
   }
 }

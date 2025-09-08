@@ -49,6 +49,10 @@ export class AdsService {
     return this.load().find((a) => a.id === id);
   }
 
+  getByAccount(accountId: number): PostedAd[] {
+    return this.load().filter((a) => a.accountId === accountId);
+  }
+
   addAd(
     input: Omit<
       PostedAd,
@@ -100,6 +104,28 @@ export class AdsService {
     return ad;
   }
 
+  updateAd(
+    id: number,
+    changes: Partial<Omit<PostedAd, 'id' | 'accountId' | 'accountType'>>,
+  ): PostedAd | null {
+    const all = this.load();
+    const idx = all.findIndex((a) => a.id === id);
+    if (idx === -1) return null;
+    const current = all[idx];
+    const updated: PostedAd = { ...current, ...changes };
+    all[idx] = updated;
+    this.save(all);
+    return updated;
+  }
+
+  removeById(id: number): boolean {
+    const all = this.load();
+    const next = all.filter((a) => a.id !== id);
+    const changed = next.length !== all.length;
+    if (changed) this.save(next);
+    return changed;
+  }
+
   private buildProviderMeta(account: ProviderAccount, personnelId?: number) {
     if (account.type === 'Company') {
       const company = account as CompanyAccount;
@@ -131,9 +157,7 @@ export class AdsService {
     }
   }
 
-  getProviderMeta(
-    listingId: number,
-  ): {
+  getProviderMeta(listingId: number): {
     companyName: string;
     contactName: string;
     contactEmail: string;

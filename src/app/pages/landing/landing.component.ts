@@ -272,13 +272,25 @@ export class LandingComponent {
       right = 97.395561,
       bottom = 6.554607,
       top = 35.674545; // India bbox
-    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=in&viewbox=${left},${top},${right},${bottom}&bounded=1&accept-language=en-IN&q=${encodeURIComponent(q)}`;
+    const params = new URLSearchParams({
+      format: 'jsonv2',
+      addressdetails: '1',
+      namedetails: '1',
+      extratags: '0',
+      limit: '8',
+      countrycodes: 'in',
+      viewbox: `${left},${top},${right},${bottom}`,
+      bounded: '1',
+      'accept-language': 'en-IN,hi-IN',
+      q,
+    });
+    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
-        const filtered = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
-        );
-        this.locationResults = filtered.length ? filtered : res || [];
+        const allowed = new Set(['city', 'town', 'village', 'suburb', 'state', 'district', 'county', 'locality']);
+        const onlyIn = (res || []).filter((r) => (r.address?.country_code || '').toLowerCase() === 'in');
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) => allowed.has((r.type || '').toLowerCase()));
+        this.locationResults = cleaned.slice(0, 8);
         this.locationLoading = false;
       },
       error: () => {

@@ -53,6 +53,26 @@ export class LandingComponent {
 
   readonly year = new Date().getFullYear();
 
+  constructor() {
+    this.updateCanonical();
+  }
+
+  private getOrigin(): string {
+    return (globalThis as any).location?.origin || '';
+  }
+
+  private updateCanonical() {
+    const origin = this.getOrigin();
+    const href = origin ? `${origin}/` : '/';
+    let link: HTMLLinkElement | null = this.doc.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', href);
+  }
+
   search = {
     keyword: '',
     location: '',

@@ -55,13 +55,31 @@
                   class="list-group-item d-flex align-items-center justify-content-between"
                   *ngFor="let p of company?.personnel || []"
                 >
-                  <div>
-                    <div class="fw-semibold">{{ p.name }}</div>
-                    <div class="small text-secondary">{{ p.email }} • {{ p.phone }}</div>
+                  <div class="flex-grow-1">
+                    <ng-container *ngIf="editingId !== p.id; else editRow">
+                      <div class="fw-semibold">{{ p.name }}</div>
+                      <div class="small text-secondary">{{ p.email }} • {{ p.phone }}</div>
+                    </ng-container>
+                    <ng-template #editRow>
+                      <div class="row g-2">
+                        <div class="col-md-4"><input class="form-control" [(ngModel)]="editModel.name" name="ename{{p.id}}" /></div>
+                        <div class="col-md-4"><input type="email" class="form-control" [(ngModel)]="editModel.email" name="eemail{{p.id}}" /></div>
+                        <div class="col-md-3"><input class="form-control" [(ngModel)]="editModel.phone" name="ephone{{p.id}}" /></div>
+                      </div>
+                    </ng-template>
                   </div>
-                  <button class="btn btn-sm btn-outline-danger" (click)="removePersonnel(p.id)">
-                    Remove
-                  </button>
+                  <div class="d-flex gap-2">
+                    <ng-container *ngIf="editingId !== p.id; else editBtns">
+                      <button class="btn btn-sm btn-outline-secondary" (click)="startEdit(p)">Edit</button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="removePersonnel(p.id)">
+                        Remove
+                      </button>
+                    </ng-container>
+                    <ng-template #editBtns>
+                      <button class="btn btn-sm btn-join" (click)="saveEdit()">Save</button>
+                      <button class="btn btn-sm btn-outline-secondary" (click)="cancelEdit()">Cancel</button>
+                    </ng-template>
+                  </div>
                 </div>
               </div>
             </div>

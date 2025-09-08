@@ -325,11 +325,6 @@ export class ListingsComponent implements OnInit {
   }
 
   private getOrigin(): string {
-    if (this.req && this.req.headers) {
-      const proto = (this.req.headers['x-forwarded-proto'] as string) || (this.req as any).protocol || 'http';
-      const host = (this.req.headers['x-forwarded-host'] as string) || (this.req.headers['host'] as string) || 'localhost';
-      return `${proto}://${host}`;
-    }
     return (globalThis as any).location?.origin || '';
   }
 

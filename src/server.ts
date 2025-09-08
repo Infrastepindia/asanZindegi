@@ -42,9 +42,9 @@ function prng(seed: number) {
 app.get('/api/categories', async (_req, res, next) => {
   try {
     const data = await readJson('categories.json');
-    res.json(data);
+    return res.json(data);
   } catch (e) {
-    next(e);
+    return next(e);
   }
 });
 

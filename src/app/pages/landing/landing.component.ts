@@ -239,10 +239,19 @@ export class LandingComponent {
 
   onSearch(e: Event) {
     e.preventDefault();
+    const parts: string[] = [];
+    if (this.search.location) {
+      const city = this.search.location.split(',')[0].trim();
+      if (city) parts.push(this.slugify(city));
+    }
+    if (this.search.category) parts.push(this.slugify(this.search.category));
+    const slug = parts.join('-');
+
     const params: any = {};
-    if (this.search.category) params.category = this.search.category;
     if (this.search.location) params.location = this.search.location;
-    this.router.navigate(['/listings'], { queryParams: params });
+
+    if (slug) this.router.navigate(['/listings', slug], { queryParams: params });
+    else this.router.navigate(['/listings'], { queryParams: params });
   }
 
   onLocationChange(value: string) {

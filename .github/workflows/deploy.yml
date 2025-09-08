@@ -68,7 +68,7 @@ jobs:
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
           local-dir: dist-browser/
-          server-dir: /home8/hirenqco/asanzindegi/browser/
+          server-dir: /asanzindegi/browser/
           dangerous-clean-slate: true
 
       - name: Deploy package.json to cPanel root
@@ -78,5 +78,5 @@ jobs:
           username: ${{ secrets.ASANZINDEGI_USER }}
           password: ${{ secrets.ASANZINDEGI_PASSWORD }}
           local-dir: package-files/
-          server-dir: /home8/hirenqco/asanzindegi/
+          server-dir: /asanzindegi/
           dangerous-clean-slate: false

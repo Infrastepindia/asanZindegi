@@ -1,0 +1,60 @@
+<section class="py-5">
+  <div class="container" *ngIf="ad as a; else back">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h4 mb-3 heading-cta">Edit <span class="text-gradient-1">Ad</span></h1>
+            <form (submit)="save($event)" class="edit-form">
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input class="form-control" [(ngModel)]="model.title" name="title" required />
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Category</label>
+                  <select class="form-select" [(ngModel)]="model.category" name="category" required>
+                    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Type</label>
+                  <select class="form-select" [(ngModel)]="model.type" name="type">
+                    <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                  <label class="form-label">Location</label>
+                  <input class="form-control" [(ngModel)]="model.location" name="location" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Cover Image URL</label>
+                  <input class="form-control" [(ngModel)]="model.cover" name="cover" />
+                </div>
+              </div>
+              <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                  <label class="form-label">Price</label>
+                  <input type="number" class="form-control" [(ngModel)]="model.price" name="price" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Unit</label>
+                  <input class="form-control" [(ngModel)]="model.unit" name="unit" />
+                </div>
+              </div>
+              <button class="btn btn-join btn-lg mt-3" type="submit">Save Changes</button>
+              <a [routerLink]="['/ad', a.id]" class="btn btn-outline-secondary btn-lg mt-3 ms-2">Cancel</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #back>
+    <div class="container py-5">
+      <a routerLink="/provider/ads" class="btn btn-join btn-lg">Back to My Ads</a>
+    </div>
+  </ng-template>
+</section>

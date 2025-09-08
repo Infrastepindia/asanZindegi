@@ -3,22 +3,6 @@
     <!-- Sidebar -->
     <aside class="col-lg-3">
       <div class="filter-card p-3 mb-3">
-        <h6 class="mb-3">Type</h6>
-        <div class="form-check" *ngFor="let t of types">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="type"
-            [id]="'t-' + t"
-            [value]="t"
-            [(ngModel)]="filters.type"
-            (change)="setPage(1)"
-          />
-          <label class="form-check-label" [for]="'t-' + t">{{ t }}</label>
-        </div>
-      </div>
-
-      <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Rating</h6>
         <div class="form-check">
           <input
@@ -93,15 +77,83 @@
 
       <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Category</h6>
-        <select class="form-select" [(ngModel)]="filters.category">
+        <select class="form-select" [(ngModel)]="filters.category" (change)="setPage(1)">
           <option value="">All Categories</option>
           <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
         </select>
       </div>
 
       <div class="filter-card p-3 mb-3">
+        <h6 class="mb-3">Service Type</h6>
+        <select
+          class="form-select"
+          [(ngModel)]="filters.serviceType"
+          [disabled]="!serviceTypesForSelected.length"
+          (change)="setPage(1)"
+        >
+          <option value="">All Service Types</option>
+          <option *ngFor="let t of serviceTypesForSelected" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Location</h6>
-        <input class="form-control" placeholder="Enter location" [(ngModel)]="filters.location" />
+        <input
+          class="form-control"
+          placeholder="Enter location"
+          [(ngModel)]="filters.location"
+          (ngModelChange)="onLocationChange($event)"
+        />
+        <div class="suggest-list" *ngIf="locationResults.length">
+          <button
+            type="button"
+            class="suggest-item"
+            *ngFor="let r of locationResults"
+            (click)="selectLocation(r)"
+          >
+            <i class="bi bi-geo-alt me-2"></i>{{ r.display_name }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-card p-3 mb-3">
+        <h6 class="mb-3">Provider Type</h6>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="p-all"
+            value="all"
+            name="provider"
+            [(ngModel)]="filters.provider"
+            (change)="setPage(1)"
+          />
+          <label class="form-check-label" for="p-all">All</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="p-company"
+            value="company"
+            name="provider"
+            [(ngModel)]="filters.provider"
+            (change)="setPage(1)"
+          />
+          <label class="form-check-label" for="p-company">Company</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="p-individual"
+            value="individual"
+            name="provider"
+            [(ngModel)]="filters.provider"
+            (change)="setPage(1)"
+          />
+          <label class="form-check-label" for="p-individual">Individual</label>
+        </div>
       </div>
 
       <div class="filter-card p-3 mb-3">

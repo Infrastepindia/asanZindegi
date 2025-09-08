@@ -11,6 +11,7 @@ import { PostAdComponent } from './pages/post-ad/post-ad.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },
+  { path: 'listings/:slug', component: ListingsComponent, title: 'Listings' },
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },
   { path: 'signup', component: SignupComponent, title: 'Sign Up' },

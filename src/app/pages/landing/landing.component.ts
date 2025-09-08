@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -49,8 +49,38 @@ interface BlogItem {
 export class LandingComponent {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly doc = inject(DOCUMENT);
 
   readonly year = new Date().getFullYear();
+
+  constructor() {
+    this.updateCanonical();
+  }
+
+  private getOrigin(): string {
+    return (globalThis as any).location?.origin || '';
+  }
+
+  private updateCanonical() {
+    const origin = this.getOrigin();
+    const href = origin ? `${origin}/` : '/';
+    let link: HTMLLinkElement | null = this.doc.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', href);
+  }
+
+  slugify(input: string): string {
+    return (input || '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
 
   search = {
     keyword: '',
@@ -209,10 +239,19 @@ export class LandingComponent {
 
   onSearch(e: Event) {
     e.preventDefault();
+    const parts: string[] = [];
+    if (this.search.location) {
+      const city = this.search.location.split(',')[0].trim();
+      if (city) parts.push(this.slugify(city));
+    }
+    if (this.search.category) parts.push(this.slugify(this.search.category));
+    const slug = parts.join('-');
+
     const params: any = {};
-    if (this.search.category) params.category = this.search.category;
     if (this.search.location) params.location = this.search.location;
-    this.router.navigate(['/listings'], { queryParams: params });
+
+    if (slug) this.router.navigate(['/listings', slug], { queryParams: params });
+    else this.router.navigate(['/listings'], { queryParams: params });
   }
 
   onLocationChange(value: string) {
@@ -233,13 +272,38 @@ export class LandingComponent {
       right = 97.395561,
       bottom = 6.554607,
       top = 35.674545; // India bbox
-    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=in&viewbox=${left},${top},${right},${bottom}&bounded=1&accept-language=en-IN&q=${encodeURIComponent(q)}`;
+    const params = new URLSearchParams({
+      format: 'jsonv2',
+      addressdetails: '1',
+      namedetails: '1',
+      extratags: '0',
+      limit: '8',
+      countrycodes: 'in',
+      viewbox: `${left},${top},${right},${bottom}`,
+      bounded: '1',
+      'accept-language': 'en-IN,hi-IN',
+      q,
+    });
+    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
-        const filtered = (res || []).filter(
+        const allowed = new Set([
+          'city',
+          'town',
+          'village',
+          'suburb',
+          'state',
+          'district',
+          'county',
+          'locality',
+        ]);
+        const onlyIn = (res || []).filter(
           (r) => (r.address?.country_code || '').toLowerCase() === 'in',
         );
-        this.locationResults = filtered.length ? filtered : res || [];
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+          allowed.has((r.type || '').toLowerCase()),
+        );
+        this.locationResults = cleaned.slice(0, 8);
         this.locationLoading = false;
       },
       error: () => {

@@ -43,8 +43,19 @@ export class ListingsComponent implements OnInit {
     if (typ) this.filters.type = typ as any;
     if (loc) this.filters.location = loc;
     if (pageParam) this.page = Math.max(1, parseInt(pageParam, 10) || 1);
-    if (cat || typ || loc || pageParam) this.setPage(this.page);
+
+    const slugInit = this.route.snapshot.paramMap.get('slug');
+    this.applySlug(slugInit);
+
+    if (cat || typ || loc || pageParam || slugInit) this.setPage(this.page);
     this.updateSEO();
+
+    this.route.paramMap.subscribe((pmap) => {
+      const slug = pmap.get('slug');
+      this.applySlug(slug);
+      this.setPage(1);
+      this.updateSEO();
+    });
 
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
@@ -326,6 +337,37 @@ export class ListingsComponent implements OnInit {
 
   private getOrigin(): string {
     return (globalThis as any).location?.origin || '';
+  }
+
+  private applySlug(slug: string | null) {
+    if (!slug) return;
+    const s = slug.toLowerCase();
+
+    const typeMap: Record<string, ListingItem['type']> = {
+      sell: 'Sell',
+      rent: 'Rent',
+      exchange: 'Exchange',
+      service: 'Service',
+    };
+
+    const catBySlug: Record<string, string> = this.categories.reduce((acc, c) => {
+      acc[this.slugify(c)] = c;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const tokens = s.split('-').filter(Boolean);
+    for (const tk of tokens) {
+      if (typeMap[tk]) this.filters.type = typeMap[tk];
+    }
+
+    let assignedCat = '';
+    for (const [slugCat, original] of Object.entries(catBySlug)) {
+      if (s === slugCat || s.endsWith('-' + slugCat) || s.startsWith(slugCat + '-') || s.includes('-' + slugCat + '-')) {
+        assignedCat = original;
+        break;
+      }
+    }
+    if (assignedCat) this.filters.category = assignedCat;
   }
 
   private slugify(input: string): string {

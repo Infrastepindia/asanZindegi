@@ -178,7 +178,12 @@ app.get('/api/listings', async (req, res, next) => {
           const rating = 3 + Math.floor(rng() * 3);
           const verified = rng() < 0.6;
           const verifiedType = verified ? (rng() < 0.5 ? 'Company' : 'KYC') : undefined;
-          const nameBase = ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings', 'Kitchen Plumbing'];
+          const nameBase = [
+            'Leak Fix',
+            'Pipe Installation',
+            'Bathroom Fittings',
+            'Kitchen Plumbing',
+          ];
           const baseName = nameBase[i % nameBase.length];
           out.push({
             id: id++,
@@ -202,9 +207,16 @@ app.get('/api/listings', async (req, res, next) => {
     // Filter & paginate
     let filtered = out;
     const q = req.query as any;
-    if (q.category) filtered = filtered.filter((i) => i.category.toLowerCase() === String(q.category).toLowerCase());
-    if (q.type) filtered = filtered.filter((i) => i.type.toLowerCase() === String(q.type).toLowerCase());
-    if (q.location) filtered = filtered.filter((i) => i.location.toLowerCase().includes(String(q.location).toLowerCase()));
+    if (q.category)
+      filtered = filtered.filter(
+        (i) => i.category.toLowerCase() === String(q.category).toLowerCase(),
+      );
+    if (q.type)
+      filtered = filtered.filter((i) => i.type.toLowerCase() === String(q.type).toLowerCase());
+    if (q.location)
+      filtered = filtered.filter((i) =>
+        i.location.toLowerCase().includes(String(q.location).toLowerCase()),
+      );
     if (q.minPrice) filtered = filtered.filter((i) => i.price >= Number(q.minPrice));
     if (q.maxPrice) filtered = filtered.filter((i) => i.price <= Number(q.maxPrice));
     if (q.minRating) filtered = filtered.filter((i) => i.rating >= Number(q.minRating));
@@ -265,9 +277,7 @@ app.use(
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 

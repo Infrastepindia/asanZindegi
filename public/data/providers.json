@@ -1,8 +1,28 @@
 [
-  { "id": 1, "name": "Provider Demo", "categoryId": 1, "avatar": "https://i.pravatar.cc/100?img=12" },
-  { "id": 2, "name": "Leslie Davis", "categoryId": 3, "avatar": "https://i.pravatar.cc/100?img=32" },
-  { "id": 3, "name": "Marcus Hassan", "categoryId": 5, "avatar": "https://i.pravatar.cc/100?img=56" },
-  { "id": 4, "name": "Daniel Morrison", "categoryId": 1, "avatar": "https://i.pravatar.cc/100?img=25" },
+  {
+    "id": 1,
+    "name": "Provider Demo",
+    "categoryId": 1,
+    "avatar": "https://i.pravatar.cc/100?img=12"
+  },
+  {
+    "id": 2,
+    "name": "Leslie Davis",
+    "categoryId": 3,
+    "avatar": "https://i.pravatar.cc/100?img=32"
+  },
+  {
+    "id": 3,
+    "name": "Marcus Hassan",
+    "categoryId": 5,
+    "avatar": "https://i.pravatar.cc/100?img=56"
+  },
+  {
+    "id": 4,
+    "name": "Daniel Morrison",
+    "categoryId": 1,
+    "avatar": "https://i.pravatar.cc/100?img=25"
+  },
   { "id": 5, "name": "Asha Verma", "categoryId": 2, "avatar": "https://i.pravatar.cc/100?img=68" },
   { "id": 6, "name": "Ravi Kumar", "categoryId": 8, "avatar": "https://i.pravatar.cc/100?img=14" }
 ]

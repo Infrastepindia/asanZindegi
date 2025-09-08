@@ -1,0 +1,30 @@
+[
+  { "id": 1, "name": "Leak Fix", "categoryId": 1 },
+  { "id": 2, "name": "Pipe Installation", "categoryId": 1 },
+  { "id": 3, "name": "Bathroom Fittings", "categoryId": 1 },
+
+  { "id": 11, "name": "Wiring", "categoryId": 2 },
+  { "id": 12, "name": "Appliance Install", "categoryId": 2 },
+  { "id": 13, "name": "Lighting", "categoryId": 2 },
+
+  { "id": 21, "name": "Home Cleaning", "categoryId": 3 },
+  { "id": 22, "name": "Deep Cleaning", "categoryId": 3 },
+  { "id": 23, "name": "Office Cleaning", "categoryId": 3 },
+
+  { "id": 31, "name": "Math", "categoryId": 4 },
+  { "id": 32, "name": "English", "categoryId": 4 },
+  { "id": 33, "name": "Science", "categoryId": 4 },
+
+  { "id": 41, "name": "Furniture Repair", "categoryId": 5 },
+  { "id": 42, "name": "Custom Shelves", "categoryId": 5 },
+
+  { "id": 51, "name": "Interior", "categoryId": 6 },
+  { "id": 52, "name": "Exterior", "categoryId": 6 },
+
+  { "id": 61, "name": "House Shifting", "categoryId": 7 },
+  { "id": 62, "name": "Office Relocation", "categoryId": 7 },
+
+  { "id": 71, "name": "AC Repair", "categoryId": 8 },
+  { "id": 72, "name": "Fridge Repair", "categoryId": 8 },
+  { "id": 73, "name": "Washing Machine Repair", "categoryId": 8 }
+]

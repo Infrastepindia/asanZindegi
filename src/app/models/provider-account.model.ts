@@ -7,6 +7,13 @@ export interface Personnel {
   phone: string;
 }
 
+export interface CompanyVerification {
+  status: 'Unverified' | 'Pending' | 'Verified';
+  submittedAt?: string;
+  verifiedAt?: string;
+  note?: string;
+}
+
 export interface ProviderAccountBase {
   id: number;
   type: AccountType;
@@ -25,6 +32,7 @@ export interface CompanyAccount extends ProviderAccountBase {
   companyName: string;
   contactName: string;
   personnel: Personnel[];
+  verification: CompanyVerification;
 }
 
 export type ProviderAccount = IndividualAccount | CompanyAccount;

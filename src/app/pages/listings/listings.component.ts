@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { Meta } from '@angular/platform-browser';
-import { REQUEST } from '@angular/ssr';
 
 interface ListingItem {
   id: number;

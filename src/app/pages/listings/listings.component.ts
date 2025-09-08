@@ -366,13 +366,14 @@ export class ListingsComponent implements OnInit {
     return null;
   }
 
-  private buildFilterQuery(map: import('@angular/router').ParamMap): string {
-    const params = new URLSearchParams();
-    const category = map.get('category') || this.filters.category || '';
-    const type = map.get('type') || this.filters.type || '';
-    if (category) params.set('category', category);
-    if (type) params.set('type', type);
-    return params.toString() ? `?${params.toString()}` : '';
+  private buildFilterQuery(map: import('@angular/router').ParamMap, hasCity: boolean): string {
+    const category = (map.get('category') || this.filters.category || '').trim();
+    const type = (map.get('type') || this.filters.type || '').trim();
+    const parts: string[] = [];
+    if (category) parts.push(this.slugify(category));
+    if (type) parts.push(this.slugify(type));
+    if (!parts.length) return '';
+    return hasCity ? `-${parts.join('-')}` : `/${parts.join('-')}`;
   }
 
   private updateSEO(): void {
@@ -387,7 +388,8 @@ export class ListingsComponent implements OnInit {
     const hasFilters = this.hasFilterParams(map);
 
     if (hasFilters && this.isSEOValuableFilters(map)) {
-      canonical = origin + basePath + this.buildFilterQuery(map);
+      const hasCity = /\/listings\/.+/.test(basePath);
+      canonical = origin + basePath + this.buildFilterQuery(map, hasCity);
     } else if (hasFilters && !this.isSEOValuableFilters(map)) {
       this.meta.updateTag({ name: 'robots', content: 'noindex,follow' });
       canonical = origin + basePath;

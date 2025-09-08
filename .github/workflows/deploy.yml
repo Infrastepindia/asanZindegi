@@ -21,8 +21,11 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build Angular app
+        run: npm run build -- --configuration production
+        
+      - name: Show dist folder (debug)
+        run: ls -R dist/asanZindegi
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -39,15 +42,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-browser
-          path: dist
+          path: dist-browser
 
-      - name: Deploy to server via SSH (rsync)
-        uses: easingthemes/ssh-deploy@v4
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          REMOTE_PORT: ${{ secrets.SSH_PORT }}
-          ARGS: '-avzr --delete'
-          SOURCE: 'dist/asanZindegi/browser/'
-          TARGET: ${{ secrets.REMOTE_PATH }}
+      - name: Show downloaded files (debug)
+        run: ls -R dist-browser
+
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+         server: ${{ secrets.ASANZINDEGI_HOST }}
+         username: ${{ secrets.ASANZINDEGI_USER }}
+         password: ${{ secrets.ASANZINDEGI_PASSWORD }}
+         local-dir: dist-browser/
+         dangerous-clean-slate: true

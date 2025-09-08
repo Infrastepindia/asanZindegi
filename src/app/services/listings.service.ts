@@ -1,10 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AdsService } from '../../services/ads.service';
+import { Injectable } from '@angular/core';
+import { Category } from '../models/category.model';
+import { ServiceType } from '../models/service-type.model';
+import { Provider } from '../models/provider.model';
 
-interface ListingItem {
+export interface ListingItem {
   id: number;
   title: string;
   category: string;
@@ -20,46 +19,10 @@ interface ListingItem {
   verifiedType?: 'Company' | 'KYC';
 }
 
-@Component({
-  selector: 'app-listings',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './listings.component.html',
-  styleUrl: './listings.component.css',
-})
-export class ListingsComponent implements OnInit {
-  private ads = inject(AdsService);
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    const cat = this.route.snapshot.queryParamMap.get('category') || '';
-    const typ = this.route.snapshot.queryParamMap.get('type') || '';
-    const loc = this.route.snapshot.queryParamMap.get('location') || '';
-    if (cat) this.filters.category = cat;
-    if (typ) this.filters.type = typ as any;
-    if (loc) this.filters.location = loc;
-    if (cat || typ || loc) this.setPage(1);
-    this.route.queryParamMap.subscribe((map) => {
-      const c = map.get('category') || '';
-      const t = map.get('type') || '';
-      const l = map.get('location') || '';
-      this.filters.category = c;
-      this.filters.type = (t as any) || '';
-      this.filters.location = l;
-      this.setPage(1);
-    });
-  }
-  filters = {
-    category: '',
-    type: '',
-    location: '',
-    minPrice: '',
-    maxPrice: '',
-    minRating: 0 as number,
-    verified: 'all' as 'all' | 'verified' | 'unverified',
-  };
-
-  categories = [
+@Injectable({ providedIn: 'root' })
+export class ListingsService {
+  // Relational data
+  private categoriesData: Category[] = [
     'Plumbing',
     'Electrical',
     'Cleaning',
@@ -68,9 +31,37 @@ export class ListingsComponent implements OnInit {
     'Painting',
     'Moving',
     'Appliance Repair',
+  ].map((name, idx) => ({ id: idx + 1, name }));
+
+  private serviceTypesData: ServiceType[] = [
+    { cat: 'Plumbing', types: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings'] },
+    { cat: 'Electrical', types: ['Wiring', 'Appliance Install', 'Lighting'] },
+    { cat: 'Cleaning', types: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning'] },
+    { cat: 'Tutoring', types: ['Math', 'English', 'Science'] },
+    { cat: 'Carpentry', types: ['Furniture Repair', 'Custom Shelves'] },
+    { cat: 'Painting', types: ['Interior', 'Exterior'] },
+    { cat: 'Moving', types: ['House Shifting', 'Office Relocation'] },
+    { cat: 'Appliance Repair', types: ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'] },
+  ].flatMap(({ cat, types }, baseIdx) => {
+    const category = this.categoriesData.find((c) => c.name === cat)!;
+    return types.map(
+      (name, i) => ({ id: baseIdx * 10 + i + 1, name, categoryId: category.id }) as ServiceType,
+    );
+  });
+
+  private providersData: Provider[] = [
+    { id: 1, name: 'Provider Demo', categoryId: 1, avatar: 'https://i.pravatar.cc/100?img=12' },
+    { id: 2, name: 'Leslie Davis', categoryId: 3, avatar: 'https://i.pravatar.cc/100?img=32' },
+    { id: 3, name: 'Marcus Hassan', categoryId: 5, avatar: 'https://i.pravatar.cc/100?img=56' },
   ];
 
-  types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
+  // Non-relational helper for existing UI
+  private categories = this.categoriesData.map((c) => c.name);
+
+  // listingId -> serviceTypeIds (many-to-many)
+  private listingServiceTypes: Record<number, number[]> = {};
+
+  private types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
   private prng(seed: number) {
     return function () {
@@ -178,9 +169,10 @@ export class ListingsComponent implements OnInit {
     return undefined;
   }
 
-  private generateListings(): ListingItem[] {
+  getAll(): ListingItem[] {
     const rnd = this.prng(42);
     const out: ListingItem[] = [];
+    this.listingServiceTypes = {};
     let id = 1;
     const now = Date.now();
     for (const cat of this.categories) {
@@ -198,8 +190,18 @@ export class ListingsComponent implements OnInit {
           const rating = 3 + Math.floor(rnd() * 3);
           const verified = rnd() < 0.6;
           const verifiedType = verified ? (rnd() < 0.5 ? 'Company' : 'KYC') : undefined;
+          const listingId = id++;
+          const categoryId = this.categoriesData.find((c) => c.name === cat)!.id;
+          const typesForCat = this.serviceTypesData.filter((t) => t.categoryId === categoryId);
+          const chosen: number[] = [];
+          for (let k = 0; k < Math.min(3, typesForCat.length); k++) {
+            const tIdx = (i + k) % typesForCat.length;
+            chosen.push(typesForCat[tIdx].id);
+          }
+          this.listingServiceTypes[listingId] = chosen;
+
           out.push({
-            id: id++,
+            id: listingId,
             title: this.createTitle(cat, typ, i),
             category: cat,
             type: typ,
@@ -219,97 +221,30 @@ export class ListingsComponent implements OnInit {
     return out;
   }
 
-  private posted(): ListingItem[] {
-    return this.ads.getAll().map((ad) => ({
-      id: ad.id,
-      title: ad.title,
-      category: ad.category,
-      type: ad.type,
-      location: ad.location,
-      price: ad.price,
-      unit: ad.unit,
-      cover: ad.cover,
-      date: ad.date,
-      views: ad.views,
-      rating: ad.rating,
-      verified: ad.verified,
-      verifiedType: ad.verifiedType,
-    }));
+  getById(id: number): ListingItem | undefined {
+    return this.getAll().find((i) => i.id === id);
   }
 
-  all: ListingItem[] = [...this.posted(), ...this.generateListings()];
-
-  page = 1;
-  perPage = 5;
-
-  get filtered(): ListingItem[] {
-    let out = this.all.slice();
-    if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
-    if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
-    if (this.filters.location)
-      out = out.filter((i) =>
-        i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
-      );
-    const min = this.filters.minPrice ? parseFloat(this.filters.minPrice) : null;
-    const max = this.filters.maxPrice ? parseFloat(this.filters.maxPrice) : null;
-    if (min !== null) out = out.filter((i) => i.price >= (min as number));
-    if (max !== null) out = out.filter((i) => i.price <= (max as number));
-
-    const minR = Number(this.filters.minRating) || 0;
-    if (minR > 0) out = out.filter((i) => i.rating >= minR);
-
-    if (this.filters.verified === 'verified') out = out.filter((i) => i.verified);
-    if (this.filters.verified === 'unverified') out = out.filter((i) => !i.verified);
-
-    return out;
+  // Relations API
+  getCategories(): Category[] {
+    return this.categoriesData.slice();
   }
-
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.filtered.length / this.perPage));
+  getServiceTypes(): ServiceType[] {
+    return this.serviceTypesData.slice();
   }
-
-  get pages(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  getServiceTypesByCategoryName(name: string): ServiceType[] {
+    const cat = this.categoriesData.find((c) => c.name === name);
+    if (!cat) return [];
+    return this.serviceTypesData.filter((t) => t.categoryId === cat.id);
   }
-
-  get visiblePages(): Array<number | '...'> {
-    const total = this.totalPages;
-    const current = this.page;
-    const windowSize = 2;
-    if (total <= 7) return this.pages as any;
-
-    const set = new Set<number>();
-    set.add(1);
-    set.add(total);
-    for (let i = current - windowSize; i <= current + windowSize; i++) {
-      if (i > 1 && i < total) set.add(i);
-    }
-    const arr = Array.from(set).sort((a, b) => a - b);
-    const out: Array<number | '...'> = [];
-    let prev: number | null = null;
-    for (const n of arr) {
-      if (prev !== null && n - prev > 1) out.push('...');
-      out.push(n);
-      prev = n;
-    }
-    return out;
+  getProvidersByCategoryName(name: string): Provider[] {
+    const cat = this.categoriesData.find((c) => c.name === name);
+    if (!cat) return [];
+    return this.providersData.filter((p) => p.categoryId === cat.id);
   }
-
-  get showingStart(): number {
-    return this.filtered.length ? (this.page - 1) * this.perPage + 1 : 0;
-  }
-
-  get showingEnd(): number {
-    return Math.min(this.page * this.perPage, this.filtered.length);
-  }
-
-  get paged(): ListingItem[] {
-    const start = (this.page - 1) * this.perPage;
-    return this.filtered.slice(start, start + this.perPage);
-  }
-
-  setPage(p: number) {
-    const pages = this.totalPages;
-    this.page = Math.max(1, Math.min(p, pages));
+  getServiceTypesForListing(listingId: number): ServiceType[] {
+    const ids = this.listingServiceTypes[listingId] || [];
+    const byId = new Map(this.serviceTypesData.map((t) => [t.id, t] as const));
+    return ids.map((id) => byId.get(id)!).filter(Boolean);
   }
 }

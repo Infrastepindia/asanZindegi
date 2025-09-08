@@ -3,25 +3,44 @@
   <div class="container d-flex justify-content-between">
     <div class="text-secondary">Connect with nearby top-rated professionals</div>
     <div>
-      <a href="#" class="me-3 text-secondary text-decoration-none"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
-      <a href="#" class="btn btn-join btn-lg">Join</a>
+      <a routerLink="/login" class="me-3 text-secondary text-decoration-none"
+        ><i class="bi bi-box-arrow-in-right me-1"></i>Login</a
+      >
+      <a routerLink="/signup" class="btn btn-join btn-lg">Join</a>
     </div>
   </div>
 </div>
 
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
-    <a class="navbar-brand topbar-brand heading-cta" href="#">AsanZindegi</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand topbar-brand heading-cta" [routerLink]="'/'">
+      <img
+        src="https://cdn.builder.io/api/v1/image/assets%2Fdd43504024f74b92af375c4b68e25284%2Fcbffa1ecfd3745769579db885da907f2?format=webp&width=800"
+        alt="AsanZindegi logo"
+        class="brand-logo"
+        loading="lazy"
+      />
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navMain"
+      aria-controls="navMain"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navMain">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="#categories">Category</a></li>
         <li class="nav-item"><a class="nav-link" href="#featured">Featured</a></li>
         <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
-        <li class="nav-item"><a class="btn btn-join btn-lg ms-lg-2" href="#post">Post an Ad</a></li>
+        <li class="nav-item">
+          <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/post-ad'">Post Ad</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -76,8 +95,14 @@
           <button class="btn btn-join btn-lg" type="submit">Subscribe</button>
         </form>
         <div class="app-badges d-flex align-items-center gap-2">
-          <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred.png" alt="App Store badge" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play badge" />
+          <img
+            src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred.png"
+            alt="App Store badge"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+            alt="Google Play badge"
+          />
         </div>
       </div>
     </div>

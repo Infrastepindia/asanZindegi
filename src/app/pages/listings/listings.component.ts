@@ -366,6 +366,56 @@ export class ListingsComponent implements OnInit {
     this.updateSEO();
   }
 
+  onLocationChange(value: string) {
+    this.filters.location = value;
+    if (this.locDebounce) clearTimeout(this.locDebounce);
+    if (!value || value.trim().length < 2) {
+      this.locationResults = [];
+      return;
+    }
+    this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
+  }
+
+  selectLocation(item: { display_name: string; lat: string; lon: string }) {
+    this.filters.location = item.display_name;
+    this.locationResults = [];
+    this.setPage(1);
+  }
+
+  private queryNominatim(q: string) {
+    this.locationLoading = true;
+    const left = 68.176645,
+      right = 97.395561,
+      bottom = 6.554607,
+      top = 35.674545; // India bbox
+    const params = new URLSearchParams({
+      format: 'jsonv2',
+      addressdetails: '1',
+      namedetails: '1',
+      extratags: '0',
+      limit: '8',
+      countrycodes: 'in',
+      viewbox: `${left},${top},${right},${bottom}`,
+      bounded: '1',
+      'accept-language': 'en-IN,hi-IN',
+      q,
+    });
+    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+    this.http.get<any[]>(url).subscribe({
+      next: (res) => {
+        const allowed = new Set(['city', 'town', 'village', 'suburb', 'state', 'district', 'county', 'locality']);
+        const onlyIn = (res || []).filter((r) => (r.address?.country_code || '').toLowerCase() === 'in');
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) => allowed.has((r.type || '').toLowerCase()));
+        this.locationResults = cleaned.slice(0, 8);
+        this.locationLoading = false;
+      },
+      error: () => {
+        this.locationResults = [];
+        this.locationLoading = false;
+      },
+    });
+  }
+
   private getOrigin(): string {
     return (globalThis as any).location?.origin || '';
   }

@@ -72,6 +72,10 @@ export class ListingsComponent implements OnInit {
       this.updateSEO();
     });
   }
+  locationResults: Array<{ display_name: string; lat: string; lon: string }> = [];
+  locationLoading = false;
+  private locDebounce?: any;
+
   filters = {
     category: '',
     type: '',

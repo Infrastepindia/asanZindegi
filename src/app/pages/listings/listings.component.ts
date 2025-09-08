@@ -33,9 +33,6 @@ export class ListingsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private meta: Meta) {}
 
   private doc = inject(DOCUMENT);
-  private req = inject(REQUEST, { optional: true }) as
-    | (import('http').IncomingMessage & { protocol?: string })
-    | null;
 
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';

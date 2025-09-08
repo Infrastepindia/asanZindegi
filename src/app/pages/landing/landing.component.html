@@ -124,11 +124,7 @@
     </div>
     <div class="row g-3">
       <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of categories">
-        <a
-          class="text-decoration-none text-dark"
-          [routerLink]="'/listings'"
-          [queryParams]="{ category: c.name }"
-        >
+        <a class="text-decoration-none text-dark" [routerLink]="['/listings', slugify(c.name)]">
           <div class="category-card p-3 text-center h-100">
             <span class="category-icon mb-2">
               <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'" />

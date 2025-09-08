@@ -94,7 +94,12 @@
 
       <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Location</h6>
-        <input class="form-control" placeholder="Enter location" [(ngModel)]="filters.location" />
+        <input class="form-control" placeholder="Enter location" [(ngModel)]="filters.location" (ngModelChange)="onLocationChange($event)" />
+        <div class="suggest-list" *ngIf="locationResults.length">
+          <button type="button" class="suggest-item" *ngFor="let r of locationResults" (click)="selectLocation(r)">
+            <i class="bi bi-geo-alt me-2"></i>{{ r.display_name }}
+          </button>
+        </div>
       </div>
 
       <div class="filter-card p-3 mb-3">

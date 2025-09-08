@@ -49,6 +49,7 @@ interface BlogItem {
 export class LandingComponent {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly doc = inject(DOCUMENT);
 
   readonly year = new Date().getFullYear();
 

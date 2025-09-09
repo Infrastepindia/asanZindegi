@@ -7,6 +7,7 @@ If you plan to introduce a real backend (REST/GraphQL) later, these service inte
 ---
 
 ## Conventions
+
 - Dates are ISO strings (YYYY-MM-DD or full ISO timestamp where noted)
 - IDs are integers
 - Currency is in generic units; UI is responsible for formatting
@@ -17,16 +18,26 @@ If you plan to introduce a real backend (REST/GraphQL) later, these service inte
 ## Data Models
 
 ### Category
+
 ```ts
-interface Category { id: number; name: string }
+interface Category {
+  id: number;
+  name: string;
+}
 ```
 
 ### ServiceType
+
 ```ts
-interface ServiceType { id: number; name: string; categoryId: number }
+interface ServiceType {
+  id: number;
+  name: string;
+  categoryId: number;
+}
 ```
 
 ### Provider Accounts
+
 ```ts
 type AccountType = 'Individual' | 'Company';
 
@@ -69,25 +80,26 @@ type ProviderAccount = IndividualAccount | CompanyAccount;
 ```
 
 ### PostedAd
+
 ```ts
 interface PostedAd {
-  id: number;                 // unique within posted ads
+  id: number; // unique within posted ads
   title: string;
   category: string;
   type: 'Sell' | 'Rent' | 'Exchange' | 'Service';
   location: string;
   price: number;
-  unit?: string;              // e.g. 'per day' for Rent, 'per visit' for Service
-  cover: string;              // image URL
-  date: string;               // ISO date (YYYY-MM-DD)
+  unit?: string; // e.g. 'per day' for Rent, 'per visit' for Service
+  cover: string; // image URL
+  date: string; // ISO date (YYYY-MM-DD)
   views: number;
-  rating: number;             // integer 1..5
+  rating: number; // integer 1..5
   verified: boolean;
   verifiedType?: 'Company' | 'KYC';
   // Provider association
   accountId: number;
   accountType: AccountType;
-  companyName?: string;       // For Individual, mirrors fullName
+  companyName?: string; // For Individual, mirrors fullName
   contactName: string;
   contactEmail: string;
   contactPhone: string;
@@ -99,15 +111,18 @@ interface PostedAd {
 ## Services
 
 All services are provided in root and operate on local data:
+
 - localStorage keys: `az_account`, `az_ads`
 - SSR-safe behavior: when `window.localStorage` is unavailable, an in-memory variable is used
 
 ### AccountService
+
 Purpose: manage provider account state (Individual or Company), company personnel, and verification state.
 
 Key Storage: `az_account`
 
 Methods:
+
 - `getAccount(): ProviderAccount | null`
   - Returns the currently stored account or `null` if none.
 - `setAccount(acc: ProviderAccount): void`
@@ -134,16 +149,19 @@ Methods:
   - Sets verification status to `Verified` with `verifiedAt` timestamp. Returns updated account or `null`.
 
 Notes:
+
 - Personnel IDs auto-increment starting at 1; preserved across reloads by scanning current personnel array.
 
 ---
 
 ### AdsService
+
 Purpose: CRUD for user-posted ads, linked to the current provider account.
 
 Key Storage: `az_ads`
 
 Methods:
+
 - `getAll(): PostedAd[]`
   - Returns all posted ads.
 - `getById(id: number): PostedAd | undefined`
@@ -162,14 +180,17 @@ Methods:
   - Convenience lookup for provider contact information of an ad.
 
 Notes:
+
 - Provider meta is derived from the current account at creation time. For Companies, you can optionally attach `personnelId` to set contact fields from a selected person.
 
 ---
 
 ### ListingsService
+
 Purpose: Generate a deterministic, in-memory marketplace catalog for demo/UX with relations across categories, service types, and providers.
 
 Methods:
+
 - `getAll(): ListingItem[]`
   - Returns a generated list of items across categories and types. Deterministic via a seeded PRNG; not persisted.
 - `getById(id: number): ListingItem | undefined`
@@ -186,6 +207,7 @@ Methods:
   - Returns service types related to a generated listing id.
 
 Types used by ListingsService:
+
 ```ts
 interface ListingItem {
   id: number;
@@ -196,17 +218,23 @@ interface ListingItem {
   price: number;
   unit?: string;
   cover: string;
-  date: string;  // ISO date
+  date: string; // ISO date
   views: number;
   rating: number;
   verified: boolean;
   verifiedType?: 'Company' | 'KYC';
 }
 
-interface Provider { id: number; name: string; categoryId: number; avatar: string }
+interface Provider {
+  id: number;
+  name: string;
+  categoryId: number;
+  avatar: string;
+}
 ```
 
 Notes:
+
 - Generated covers are sourced from Unsplash; replace or proxy as needed for production.
 - Price ranges and units are based on category and type.
 
@@ -215,6 +243,7 @@ Notes:
 ## Example Usages
 
 ### Create an Individual, Post an Ad
+
 ```ts
 const acc = accountService.registerIndividual({
   fullName: 'Alex Doe',
@@ -229,11 +258,12 @@ const ad = adsService.addAd({
   location: 'Mumbai, India',
   price: 799,
   unit: 'per visit',
-  cover: 'https://images.unsplash.com/photo-1581093588401-16c9e6d0147b'
+  cover: 'https://images.unsplash.com/photo-1581093588401-16c9e6d0147b',
 });
 ```
 
 ### Company With Personnel, Post Using a Specific Contact
+
 ```ts
 const comp = accountService.registerCompany({
   companyName: 'FixIt Co.',
@@ -259,7 +289,9 @@ const created = adsService.addAd({
 ---
 
 ## Migration to a Real Backend
+
 To convert these service APIs into HTTP endpoints, consider this mapping:
+
 - AccountService → `/api/account` routes for registration, profile updates, personnel CRUD, verification flow
 - AdsService → `/api/ads` routes for CRUD and lookup
 - ListingsService → `/api/catalog` (read-only generated/seeded data or DB-backed)

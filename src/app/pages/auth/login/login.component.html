@@ -26,31 +26,69 @@
               </div>
             </div>
             <div class="auth-sep text-center text-secondary small mb-3">or</div>
+            <div class="d-grid gap-2 mb-3">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary" [class.active]="loginMode==='password'" (click)="loginMode='password'">Email & Password</button>
+                <button type="button" class="btn btn-outline-secondary" [class.active]="loginMode==='otp'" (click)="loginMode='otp'">Mobile & OTP</button>
+              </div>
+            </div>
             <form (submit)="onSubmit($event)" class="auth-form">
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input
-                  class="form-control"
-                  type="email"
-                  [(ngModel)]="model.email"
-                  name="email"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input
-                  class="form-control"
-                  type="password"
-                  [(ngModel)]="model.password"
-                  name="password"
-                  required
-                />
-              </div>
-              <div class="d-flex justify-content-end mb-3">
-                <a routerLink="/forgot-password" class="text-decoration-none small">Forgot password?</a>
-              </div>
-              <button class="btn btn-join btn-lg w-100" type="submit">Login</button>
+              <ng-container *ngIf="loginMode==='password'; else otpTpl">
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input
+                    class="form-control"
+                    type="email"
+                    [(ngModel)]="model.email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Password</label>
+                  <input
+                    class="form-control"
+                    type="password"
+                    [(ngModel)]="model.password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <div class="d-flex justify-content-end mb-3">
+                  <a routerLink="/forgot-password" class="text-decoration-none small">Forgot password?</a>
+                </div>
+                <button class="btn btn-join btn-lg w-100" type="submit">Login</button>
+              </ng-container>
+              <ng-template #otpTpl>
+                <div class="mb-3">
+                  <label class="form-label">Mobile Number</label>
+                  <input
+                    class="form-control"
+                    type="tel"
+                    [(ngModel)]="model.phone"
+                    name="phone"
+                    placeholder="e.g. +1 555 123 4567"
+                    required
+                  />
+                </div>
+                <div class="mb-3" *ngIf="otpSent">
+                  <label class="form-label">OTP Code</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    maxlength="6"
+                    [(ngModel)]="model.otp"
+                    name="otp"
+                    required
+                  />
+                </div>
+                <div class="d-grid gap-2" *ngIf="!otpSent; else verifyBtnTpl">
+                  <button type="button" class="btn btn-join btn-lg" (click)="sendOtp()">Send OTP</button>
+                </div>
+                <ng-template #verifyBtnTpl>
+                  <button class="btn btn-join btn-lg w-100" type="submit">Verify & Login</button>
+                </ng-template>
+              </ng-template>
             </form>
             <div class="text-center small mt-3 text-secondary">
               Don't have an account?

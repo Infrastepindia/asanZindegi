@@ -44,3 +44,21 @@
 .auth-sep::after {
   right: 0;
 }
+
+/* Login toggle (local styles to avoid dependency on Bootstrap) */
+.login-toggle {
+  display: flex;
+  gap: 8px;
+}
+.toggle-btn {
+  flex: 1;
+  border: 1px solid #e7e9f3;
+  background: #ffffff;
+  color: #0b1220;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.toggle-btn.active {
+  background: #eef1f6;
+}

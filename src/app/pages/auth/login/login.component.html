@@ -27,11 +27,25 @@
             </div>
             <div class="auth-sep text-center text-secondary small mb-3">or</div>
             <div class="login-toggle mb-3">
-              <button type="button" class="toggle-btn" [class.active]="loginMode==='password'" (click)="loginMode='password'">Email & Password</button>
-              <button type="button" class="toggle-btn" [class.active]="loginMode==='otp'" (click)="loginMode='otp'">Mobile & OTP</button>
+              <button
+                type="button"
+                class="toggle-btn"
+                [class.active]="loginMode === 'password'"
+                (click)="loginMode = 'password'"
+              >
+                Email & Password
+              </button>
+              <button
+                type="button"
+                class="toggle-btn"
+                [class.active]="loginMode === 'otp'"
+                (click)="loginMode = 'otp'"
+              >
+                Mobile & OTP
+              </button>
             </div>
             <form (submit)="onSubmit($event)" class="auth-form">
-              <ng-container *ngIf="loginMode==='password'; else otpTpl">
+              <ng-container *ngIf="loginMode === 'password'; else otpTpl">
                 <div class="mb-3">
                   <label class="form-label">Email</label>
                   <input
@@ -53,7 +67,9 @@
                   />
                 </div>
                 <div class="d-flex justify-content-end mb-3">
-                  <a routerLink="/forgot-password" class="text-decoration-none small">Forgot password?</a>
+                  <a routerLink="/forgot-password" class="text-decoration-none small"
+                    >Forgot password?</a
+                  >
                 </div>
                 <button class="btn btn-join btn-lg w-100" type="submit">Login</button>
               </ng-container>
@@ -81,7 +97,9 @@
                   />
                 </div>
                 <div class="d-grid gap-2" *ngIf="!otpSent; else verifyBtnTpl">
-                  <button type="button" class="btn btn-join btn-lg" (click)="sendOtp()">Send OTP</button>
+                  <button type="button" class="btn btn-join btn-lg" (click)="sendOtp()">
+                    Send OTP
+                  </button>
                 </div>
                 <ng-template #verifyBtnTpl>
                   <button class="btn btn-join btn-lg w-100" type="submit">Verify & Login</button>

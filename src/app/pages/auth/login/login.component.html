@@ -26,11 +26,9 @@
               </div>
             </div>
             <div class="auth-sep text-center text-secondary small mb-3">or</div>
-            <div class="d-grid gap-2 mb-3">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-secondary" [class.active]="loginMode==='password'" (click)="loginMode='password'">Email & Password</button>
-                <button type="button" class="btn btn-outline-secondary" [class.active]="loginMode==='otp'" (click)="loginMode='otp'">Mobile & OTP</button>
-              </div>
+            <div class="login-toggle mb-3">
+              <button type="button" class="toggle-btn" [class.active]="loginMode==='password'" (click)="loginMode='password'">Email & Password</button>
+              <button type="button" class="toggle-btn" [class.active]="loginMode==='otp'" (click)="loginMode='otp'">Mobile & OTP</button>
             </div>
             <form (submit)="onSubmit($event)" class="auth-form">
               <ng-container *ngIf="loginMode==='password'; else otpTpl">

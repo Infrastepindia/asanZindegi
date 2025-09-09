@@ -7,7 +7,7 @@ import { AccountService } from '../../../services/account.service';
 @Component({
   selector: 'app-provider-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './provider-register.component.html',
   styleUrl: './provider-register.component.css',
 })

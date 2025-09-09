@@ -3,6 +3,7 @@ import { LandingComponent } from './pages/landing/landing.component';
 import { ListingsComponent } from './pages/listings/listings.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { SignupComponent } from './pages/auth/signup/signup.component';
+import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
 import { ListingDetailsComponent } from './pages/listing-details/listing-details.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ProviderRegisterComponent } from './pages/provider/register/provider-register.component';
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: 'forgot-password', component: ForgotPasswordComponent, title: 'Forgot Password' },
   { path: 'signup', component: SignupComponent, title: 'Sign Up' },
   { path: 'provider/register', component: ProviderRegisterComponent, title: 'Provider Register' },
   {

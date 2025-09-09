@@ -27,7 +27,6 @@ export class LoginComponent {
       }
       return;
     }
-    // Email/password flow (not wired to backend in this demo)
   }
 
   sendOtp() {

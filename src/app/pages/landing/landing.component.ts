@@ -55,6 +55,7 @@ export class LandingComponent {
   search = {
     keyword: '',
     location: '',
+    superCategory: '',
     category: '',
     serviceType: '',
     lat: null as number | null,
@@ -78,6 +79,23 @@ export class LandingComponent {
     Moving: ['House Shifting', 'Office Relocation'],
     'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
   };
+
+  get superCategoryOptions() {
+    return this.superCategories.map((s) => ({ key: s.key, title: s.title }));
+  }
+
+  get categoryOptions(): CategoryItem[] {
+    if (!this.search.superCategory) return this.categories;
+    const sc = this.superCategories.find((s) => s.key === (this.search.superCategory as any));
+    if (!sc) return this.categories;
+    return this.categories.filter((c) => sc.categoryNames.includes(c.name));
+  }
+
+  onSuperChange(value: string) {
+    this.search.superCategory = value;
+    this.search.category = '';
+    this.search.serviceType = '';
+  }
 
   get serviceTypesForSelected(): string[] {
     const cat = this.search.category;
@@ -669,6 +687,7 @@ export class LandingComponent {
   onSearch(e: Event) {
     e.preventDefault();
     const params: any = {};
+    if (this.search.superCategory) params.super = this.search.superCategory;
     if (this.search.category) params.category = this.search.category;
     if (this.search.location) params.location = this.search.location;
     this.router.navigate(['/listings'], { queryParams: params });

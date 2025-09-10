@@ -587,6 +587,7 @@ export class LandingComponent {
     key: string;
     title: string;
     colorClass: string;
+    icon: string;
     categoryNames: string[];
     items: CategoryItem[];
   }> = [];

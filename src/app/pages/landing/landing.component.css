@@ -345,46 +345,6 @@
 }
 
 /* Super-category sections */
-.supercat-carousel {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 8px;
-}
-.supercat-track {
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px;
-}
-.supercat-track::-webkit-scrollbar {
-  height: 6px;
-}
-.supercat-track::-webkit-scrollbar-thumb {
-  background: #e7e9f3;
-  border-radius: 6px;
-}
-.supercat-chip {
-  white-space: nowrap;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid #e7e9f3;
-  background: #ffffff;
-  color: #0b1220;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.supercat-chip .bi {
-  font-size: 14px;
-}
-.supercat-chip.active {
-  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
-  color: #ffffff;
-  border-color: transparent;
-}
 
 .supercat-stack {
   display: flex;

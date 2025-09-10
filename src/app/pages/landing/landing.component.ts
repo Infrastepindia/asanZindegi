@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -47,6 +47,8 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent {
+  @ViewChild('supercatScroller', { static: false }) supercatScroller?: ElementRef<HTMLDivElement>;
+
   constructor() {
     this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
     this.categoryOptions = this.categories;
@@ -56,6 +58,27 @@ export class LandingComponent {
         items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
       }))
       .filter((s) => s.items.length > 0);
+  }
+
+  private scrollSuper(delta: number) {
+    const el = this.supercatScroller?.nativeElement;
+    if (!el) return;
+    const step = Math.max(200, Math.floor(el.clientWidth * 0.6));
+    el.scrollBy({ left: delta * step, behavior: 'smooth' });
+  }
+  prevSuper() {
+    this.scrollSuper(-1);
+  }
+  nextSuper() {
+    this.scrollSuper(1);
+  }
+
+  selectSuper(key: string) {
+    this.onSuperChange(key);
+    try {
+      const target = document.getElementById('sc-' + key);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {}
   }
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
@@ -593,7 +616,7 @@ export class LandingComponent {
       title: 'Computer & Server AMC Service',
       type: 'B2B',
       location: 'Bengaluru, India',
-      price: '���1,999 / month',
+      price: '�����1,999 / month',
       cover:
         'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop',
     },

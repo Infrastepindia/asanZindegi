@@ -80,21 +80,20 @@ export class LandingComponent {
     'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
   };
 
-  get superCategoryOptions() {
-    return this.superCategories.map((s) => ({ key: s.key, title: s.title }));
-  }
+  superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
+  categoryOptions: CategoryItem[] = this.categories;
 
-  get categoryOptions(): CategoryItem[] {
-    if (!this.search.superCategory) return this.categories;
-    const sc = this.superCategories.find((s) => s.key === (this.search.superCategory as any));
+  private filteredBySuper(key: string): CategoryItem[] {
+    if (!key) return this.categories;
+    const sc = this.superCategories.find((s) => s.key === (key as any));
     if (!sc) return this.categories;
     return this.categories.filter((c) => sc.categoryNames.includes(c.name));
   }
 
   onSuperChange(value: string) {
-    this.search.superCategory = value;
     this.search.category = '';
     this.search.serviceType = '';
+    this.categoryOptions = this.filteredBySuper(value);
   }
 
   get serviceTypesForSelected(): string[] {

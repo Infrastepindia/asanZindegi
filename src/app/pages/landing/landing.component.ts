@@ -49,6 +49,10 @@ interface BlogItem {
 export class LandingComponent {
   @ViewChild('supercatScroller', { static: false }) supercatScroller?: ElementRef<HTMLDivElement>;
 
+  private autoplayTimer?: any;
+  private autoplayPaused = false;
+  private autoplayIndex = -1;
+
   constructor() {
     this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
     this.categoryOptions = this.categories;
@@ -58,6 +62,30 @@ export class LandingComponent {
         items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
       }))
       .filter((s) => s.items.length > 0);
+    this.startAutoplay();
+  }
+
+  private startAutoplay() {
+    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
+    this.autoplayTimer = setInterval(() => {
+      if (this.autoplayPaused) return;
+      const list = this.superCategories;
+      if (!list.length) return;
+      this.autoplayIndex = (this.autoplayIndex + 1) % list.length;
+      const next = list[this.autoplayIndex];
+      this.selectSuper(next.key);
+      this.scrollSuper(1);
+    }, 3500);
+  }
+  pauseAutoplay() {
+    this.autoplayPaused = true;
+  }
+  resumeAutoplay() {
+    this.autoplayPaused = false;
+  }
+
+  ngOnDestroy() {
+    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
   }
 
   private scrollSuper(delta: number) {
@@ -348,12 +376,14 @@ export class LandingComponent {
       | 'healthcare';
     title: string;
     colorClass: string;
+    icon: string;
     categoryNames: string[];
   }> = [
     {
       key: 'house-hold',
       title: 'Household Services',
       colorClass: 'supercat-household',
+      icon: 'bi-house',
       categoryNames: [
         'Plumbing',
         'Electrical Repair',
@@ -381,6 +411,7 @@ export class LandingComponent {
       key: 'office-needs',
       title: 'Office & Commercial Services',
       colorClass: 'supercat-office',
+      icon: 'bi-building',
       categoryNames: [
         'Electrical Maintenance',
         'HVAC',
@@ -408,6 +439,7 @@ export class LandingComponent {
       key: 'transport',
       title: 'Transport & Logistics',
       colorClass: 'supercat-transport',
+      icon: 'bi-truck',
       categoryNames: [
         'House Shifting',
         'Office Relocation',
@@ -435,6 +467,7 @@ export class LandingComponent {
       key: 'personal-care',
       title: 'Personal Care & Wellness',
       colorClass: 'supercat-personal',
+      icon: 'bi-heart-pulse',
       categoryNames: [
         'Salon at Home',
         'Spa & Massage',
@@ -462,6 +495,7 @@ export class LandingComponent {
       key: 'education-csr',
       title: 'Education & CSR',
       colorClass: 'supercat-education',
+      icon: 'bi-book',
       categoryNames: [
         'School Tutoring',
         'Competitive Exam Coaching',
@@ -489,6 +523,7 @@ export class LandingComponent {
       key: 'food-catering',
       title: 'Food & Catering',
       colorClass: 'supercat-food',
+      icon: 'bi-basket',
       categoryNames: [
         'Home Tiffin Service',
         'Event Catering',
@@ -516,6 +551,7 @@ export class LandingComponent {
       key: 'events-entertainment',
       title: 'Events & Entertainment',
       colorClass: 'supercat-events',
+      icon: 'bi-stars',
       categoryNames: [
         'Wedding Planner',
         'Birthday Party Planner',
@@ -543,6 +579,7 @@ export class LandingComponent {
       key: 'tech-digital',
       title: 'Tech & Digital Services',
       colorClass: 'supercat-tech',
+      icon: 'bi-cpu',
       categoryNames: [
         'Website Development',
         'Mobile App Development',
@@ -570,6 +607,7 @@ export class LandingComponent {
       key: 'healthcare',
       title: 'Healthcare & Medical Support',
       colorClass: 'supercat-healthcare',
+      icon: 'bi-hospital',
       categoryNames: [
         'Doctor Consultation',
         'Specialist Doctors',
@@ -616,7 +654,7 @@ export class LandingComponent {
       title: 'Computer & Server AMC Service',
       type: 'B2B',
       location: 'Bengaluru, India',
-      price: '�����1,999 / month',
+      price: '���1,999 / month',
       cover:
         'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop',
     },

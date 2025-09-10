@@ -173,7 +173,11 @@
                   >
                     <div class="category-card p-3 text-center h-100">
                       <span class="category-icon mb-2">
-                        <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'" />
+                        <img
+                          *ngIf="c.iconUrl; else biIcon"
+                          [src]="c.iconUrl"
+                          [alt]="c.name + ' icon'"
+                        />
                         <ng-template #biIcon><i class="bi" [ngClass]="c.icon"></i></ng-template>
                       </span>
                       <div class="fw-semibold">{{ c.name }}</div>

@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -47,11 +47,7 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent {
-  @ViewChild('supercatScroller', { static: false }) supercatScroller?: ElementRef<HTMLDivElement>;
 
-  private autoplayTimer?: any;
-  private autoplayPaused = false;
-  private autoplayIndex = -1;
 
   constructor() {
     this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
@@ -62,52 +58,8 @@ export class LandingComponent {
         items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
       }))
       .filter((s) => s.items.length > 0);
-    this.startAutoplay();
   }
 
-  private startAutoplay() {
-    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
-    this.autoplayTimer = setInterval(() => {
-      if (this.autoplayPaused) return;
-      const list = this.superCategories;
-      if (!list.length) return;
-      this.autoplayIndex = (this.autoplayIndex + 1) % list.length;
-      const next = list[this.autoplayIndex];
-      this.selectSuper(next.key);
-      this.scrollSuper(1);
-    }, 3500);
-  }
-  pauseAutoplay() {
-    this.autoplayPaused = true;
-  }
-  resumeAutoplay() {
-    this.autoplayPaused = false;
-  }
-
-  ngOnDestroy() {
-    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
-  }
-
-  private scrollSuper(delta: number) {
-    const el = this.supercatScroller?.nativeElement;
-    if (!el) return;
-    const step = Math.max(200, Math.floor(el.clientWidth * 0.6));
-    el.scrollBy({ left: delta * step, behavior: 'smooth' });
-  }
-  prevSuper() {
-    this.scrollSuper(-1);
-  }
-  nextSuper() {
-    this.scrollSuper(1);
-  }
-
-  selectSuper(key: string) {
-    this.onSuperChange(key);
-    try {
-      const target = document.getElementById('sc-' + key);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch {}
-  }
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 

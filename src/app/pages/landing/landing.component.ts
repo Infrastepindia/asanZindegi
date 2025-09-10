@@ -80,8 +80,8 @@ export class LandingComponent {
     'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
   };
 
-  superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
-  categoryOptions: CategoryItem[] = this.categories;
+  superCategoryOptions: Array<{ key: string; title: string }> = [];
+  categoryOptions: CategoryItem[] = [];
 
   private filteredBySuper(key: string): CategoryItem[] {
     if (!key) return this.categories;

@@ -566,14 +566,13 @@ export class LandingComponent {
     },
   ];
 
-  get visibleSuperCategories() {
-    return this.superCategories
-      .map((s) => ({
-        ...s,
-        items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
-      }))
-      .filter((s) => s.items.length > 0);
-  }
+  visibleSuperCategories: Array<{
+    key: string;
+    title: string;
+    colorClass: string;
+    categoryNames: string[];
+    items: CategoryItem[];
+  }> = [];
 
   featuredAds: FeaturedAd[] = [
     {

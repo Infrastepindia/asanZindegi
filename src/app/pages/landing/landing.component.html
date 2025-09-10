@@ -17,15 +17,29 @@
         <div class="search-panel">
           <form class="row g-2 align-items-stretch" (submit)="onSearch($event)">
             <div class="col-md-4 search-field">
+              <i class="bi bi-collection input-icon" aria-hidden="true"></i>
+              <select
+                class="form-select form-select-lg"
+                [(ngModel)]="search.superCategory"
+                (ngModelChange)="onSuperChange($event)"
+                name="superCategory"
+                aria-label="Select super category"
+              >
+                <option value="">All super categories</option>
+                <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">{{ sc.title }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 search-field">
               <i class="bi bi-grid input-icon" aria-hidden="true"></i>
               <select
                 class="form-select form-select-lg"
                 [(ngModel)]="search.category"
                 name="category"
                 aria-label="Select category"
+                [disabled]="search.superCategory && !categoryOptions.length"
               >
                 <option value="">All categories</option>
-                <option *ngFor="let c of categories" [value]="c.name">{{ c.name }}</option>
+                <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
               </select>
             </div>
             <div class="col-md-4 search-field">

@@ -17,15 +17,31 @@
         <div class="search-panel">
           <form class="row g-2 align-items-stretch" (submit)="onSearch($event)">
             <div class="col-md-4 search-field">
+              <i class="bi bi-collection input-icon" aria-hidden="true"></i>
+              <select
+                class="form-select form-select-lg"
+                [(ngModel)]="search.superCategory"
+                (ngModelChange)="onSuperChange($event)"
+                name="superCategory"
+                aria-label="Select super category"
+              >
+                <option value="">All super categories</option>
+                <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
+                  {{ sc.title }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4 search-field">
               <i class="bi bi-grid input-icon" aria-hidden="true"></i>
               <select
                 class="form-select form-select-lg"
                 [(ngModel)]="search.category"
                 name="category"
                 aria-label="Select category"
+                [disabled]="search.superCategory && !categoryOptions.length"
               >
                 <option value="">All categories</option>
-                <option *ngFor="let c of categories" [value]="c.name">{{ c.name }}</option>
+                <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
               </select>
             </div>
             <div class="col-md-4 search-field">
@@ -122,22 +138,34 @@
       </h2>
       <a class="text-decoration-none" [routerLink]="'/listings'">View all</a>
     </div>
-    <div class="row g-3">
-      <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of categories">
-        <a
-          class="text-decoration-none text-dark"
-          [routerLink]="'/listings'"
-          [queryParams]="{ category: c.name }"
-        >
-          <div class="category-card p-3 text-center h-100">
-            <span class="category-icon mb-2">
-              <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'" />
-              <ng-template #biIcon><i class="bi" [ngClass]="c.icon"></i></ng-template>
-            </span>
-            <div class="fw-semibold">{{ c.name }}</div>
-            <small class="text-secondary">{{ c.count }} listings</small>
+    <div class="supercat-stack">
+      <div
+        class="supercat-section mb-3"
+        *ngFor="let sc of visibleSuperCategories"
+        [ngClass]="sc.colorClass"
+      >
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h3 class="h5 mb-0">{{ sc.title }}</h3>
+          <a class="small text-decoration-none" [routerLink]="'/listings'">View all</a>
+        </div>
+        <div class="row g-3 supercat-grid">
+          <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of sc.items">
+            <a
+              class="text-decoration-none text-dark"
+              [routerLink]="'/listings'"
+              [queryParams]="{ category: c.name }"
+            >
+              <div class="category-card p-3 text-center h-100">
+                <span class="category-icon mb-2">
+                  <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'" />
+                  <ng-template #biIcon><i class="bi" [ngClass]="c.icon"></i></ng-template>
+                </span>
+                <div class="fw-semibold">{{ c.name }}</div>
+                <small class="text-secondary">{{ c.count }} listings</small>
+              </div>
+            </a>
           </div>
-        </a>
+        </div>
       </div>
     </div>
   </div>

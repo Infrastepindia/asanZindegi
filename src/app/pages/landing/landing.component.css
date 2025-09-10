@@ -373,6 +373,12 @@
   border: 1px solid #e7e9f3;
   background: #ffffff;
   color: #0b1220;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.supercat-chip .bi {
+  font-size: 14px;
 }
 .supercat-chip.active {
   background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);

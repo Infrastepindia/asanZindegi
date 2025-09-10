@@ -345,6 +345,7 @@
 }
 
 /* Super-category sections */
+
 .supercat-stack {
   display: flex;
   flex-direction: column;

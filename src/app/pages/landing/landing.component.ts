@@ -47,6 +47,17 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent {
+  constructor() {
+    this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
+    this.categoryOptions = this.categories;
+    this.visibleSuperCategories = this.superCategories
+      .map((s) => ({
+        ...s,
+        items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
+      }))
+      .filter((s) => s.items.length > 0);
+  }
+
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
@@ -80,21 +91,20 @@ export class LandingComponent {
     'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
   };
 
-  get superCategoryOptions() {
-    return this.superCategories.map((s) => ({ key: s.key, title: s.title }));
-  }
+  superCategoryOptions: Array<{ key: string; title: string }> = [];
+  categoryOptions: CategoryItem[] = [];
 
-  get categoryOptions(): CategoryItem[] {
-    if (!this.search.superCategory) return this.categories;
-    const sc = this.superCategories.find((s) => s.key === (this.search.superCategory as any));
+  private filteredBySuper(key: string): CategoryItem[] {
+    if (!key) return this.categories;
+    const sc = this.superCategories.find((s) => s.key === (key as any));
     if (!sc) return this.categories;
     return this.categories.filter((c) => sc.categoryNames.includes(c.name));
   }
 
   onSuperChange(value: string) {
-    this.search.superCategory = value;
     this.search.category = '';
     this.search.serviceType = '';
+    this.categoryOptions = this.filteredBySuper(value);
   }
 
   get serviceTypesForSelected(): string[] {
@@ -316,12 +326,14 @@ export class LandingComponent {
       | 'healthcare';
     title: string;
     colorClass: string;
+    icon: string;
     categoryNames: string[];
   }> = [
     {
       key: 'house-hold',
       title: 'Household Services',
       colorClass: 'supercat-household',
+      icon: 'bi-house',
       categoryNames: [
         'Plumbing',
         'Electrical Repair',
@@ -349,6 +361,7 @@ export class LandingComponent {
       key: 'office-needs',
       title: 'Office & Commercial Services',
       colorClass: 'supercat-office',
+      icon: 'bi-building',
       categoryNames: [
         'Electrical Maintenance',
         'HVAC',
@@ -376,6 +389,7 @@ export class LandingComponent {
       key: 'transport',
       title: 'Transport & Logistics',
       colorClass: 'supercat-transport',
+      icon: 'bi-truck',
       categoryNames: [
         'House Shifting',
         'Office Relocation',
@@ -403,6 +417,7 @@ export class LandingComponent {
       key: 'personal-care',
       title: 'Personal Care & Wellness',
       colorClass: 'supercat-personal',
+      icon: 'bi-heart-pulse',
       categoryNames: [
         'Salon at Home',
         'Spa & Massage',
@@ -430,6 +445,7 @@ export class LandingComponent {
       key: 'education-csr',
       title: 'Education & CSR',
       colorClass: 'supercat-education',
+      icon: 'bi-book',
       categoryNames: [
         'School Tutoring',
         'Competitive Exam Coaching',
@@ -457,6 +473,7 @@ export class LandingComponent {
       key: 'food-catering',
       title: 'Food & Catering',
       colorClass: 'supercat-food',
+      icon: 'bi-basket',
       categoryNames: [
         'Home Tiffin Service',
         'Event Catering',
@@ -484,6 +501,7 @@ export class LandingComponent {
       key: 'events-entertainment',
       title: 'Events & Entertainment',
       colorClass: 'supercat-events',
+      icon: 'bi-stars',
       categoryNames: [
         'Wedding Planner',
         'Birthday Party Planner',
@@ -511,6 +529,7 @@ export class LandingComponent {
       key: 'tech-digital',
       title: 'Tech & Digital Services',
       colorClass: 'supercat-tech',
+      icon: 'bi-cpu',
       categoryNames: [
         'Website Development',
         'Mobile App Development',
@@ -538,6 +557,7 @@ export class LandingComponent {
       key: 'healthcare',
       title: 'Healthcare & Medical Support',
       colorClass: 'supercat-healthcare',
+      icon: 'bi-hospital',
       categoryNames: [
         'Doctor Consultation',
         'Specialist Doctors',
@@ -563,14 +583,13 @@ export class LandingComponent {
     },
   ];
 
-  get visibleSuperCategories() {
-    return this.superCategories
-      .map((s) => ({
-        ...s,
-        items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
-      }))
-      .filter((s) => s.items.length > 0);
-  }
+  visibleSuperCategories: Array<{
+    key: string;
+    title: string;
+    colorClass: string;
+    categoryNames: string[];
+    items: CategoryItem[];
+  }> = [];
 
   featuredAds: FeaturedAd[] = [
     {

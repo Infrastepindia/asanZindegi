@@ -95,6 +95,60 @@ export class LandingComponent {
     { name: 'Appliance Repair', icon: 'bi-tools', count: 45 },
   ];
 
+  // Super-category model and AI-derived grouping
+  superCategories: Array<{
+    key: 'house-hold' | 'office-needs' | 'transport' | 'csr' | 'financial' | 'it-services';
+    title: string;
+    colorClass: string;
+    categoryNames: string[];
+  }> = [
+    {
+      key: 'house-hold',
+      title: 'House Hold',
+      colorClass: 'supercat-household',
+      categoryNames: ['Plumbing', 'Cleaning', 'Carpentry', 'Painting', 'Appliance Repair'],
+    },
+    {
+      key: 'office-needs',
+      title: 'Office Needs',
+      colorClass: 'supercat-office',
+      categoryNames: ['Electrical'],
+    },
+    {
+      key: 'transport',
+      title: 'Transport',
+      colorClass: 'supercat-transport',
+      categoryNames: ['Moving'],
+    },
+    {
+      key: 'csr',
+      title: 'CSR',
+      colorClass: 'supercat-csr',
+      categoryNames: ['Tutoring'],
+    },
+    {
+      key: 'financial',
+      title: 'Financial',
+      colorClass: 'supercat-financial',
+      categoryNames: [],
+    },
+    {
+      key: 'it-services',
+      title: 'IT Services',
+      colorClass: 'supercat-it',
+      categoryNames: [],
+    },
+  ];
+
+  get visibleSuperCategories() {
+    return this.superCategories
+      .map((s) => ({
+        ...s,
+        items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
+      }))
+      .filter((s) => s.items.length > 0);
+  }
+
   featuredAds: FeaturedAd[] = [
     {
       title: 'Electric Panel Repairing Service',

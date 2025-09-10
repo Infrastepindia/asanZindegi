@@ -26,7 +26,9 @@
                 aria-label="Select super category"
               >
                 <option value="">All super categories</option>
-                <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">{{ sc.title }}</option>
+                <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
+                  {{ sc.title }}
+                </option>
               </select>
             </div>
             <div class="col-md-4 search-field">
@@ -137,7 +139,11 @@
       <a class="text-decoration-none" [routerLink]="'/listings'">View all</a>
     </div>
     <div class="supercat-stack">
-      <div class="supercat-section mb-3" *ngFor="let sc of visibleSuperCategories" [ngClass]="sc.colorClass">
+      <div
+        class="supercat-section mb-3"
+        *ngFor="let sc of visibleSuperCategories"
+        [ngClass]="sc.colorClass"
+      >
         <div class="d-flex align-items-center justify-content-between mb-2">
           <h3 class="h5 mb-0">{{ sc.title }}</h3>
           <a class="small text-decoration-none" [routerLink]="'/listings'">View all</a>

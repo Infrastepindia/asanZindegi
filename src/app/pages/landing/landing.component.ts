@@ -369,7 +369,7 @@ export class LandingComponent {
         'Office Moving/Relocation',
         'Printing & Stationery Supply',
         'UPS/Inverter Services',
-        'Glass Cleaning (Facade)'
+        'Glass Cleaning (Facade)',
       ],
     },
     {

@@ -50,6 +50,12 @@ export class LandingComponent {
   constructor() {
     this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
     this.categoryOptions = this.categories;
+    this.visibleSuperCategories = this.superCategories
+      .map((s) => ({
+        ...s,
+        items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
+      }))
+      .filter((s) => s.items.length > 0);
   }
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);

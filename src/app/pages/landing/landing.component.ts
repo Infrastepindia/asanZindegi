@@ -47,6 +47,10 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent {
+  constructor() {
+    this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
+    this.categoryOptions = this.categories;
+  }
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 

@@ -40,21 +40,6 @@ interface BlogItem {
   date: string;
 }
 
-interface ApiCategory {
-  id: number;
-  name: string;
-  icon: string;
-  count: number;
-  superCategoryId: number;
-}
-
-interface ApiSuperCategory {
-  id: number;
-  title: string;
-  colorClass: string;
-  icon: string;
-  categories: ApiCategory[];
-}
 
 @Component({
   selector: 'app-landing',

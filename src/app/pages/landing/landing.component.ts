@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -65,11 +65,13 @@ export class LandingComponent implements OnInit {
           icon: s.icon,
           items: s.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count })),
         }));
+        this.cdr.detectChanges();
       },
       error: () => {
         this.apiSuperCategories = [];
         this.superCategoryOptions = [];
         this.visibleSuperCategories = [];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -77,6 +79,7 @@ export class LandingComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly api = inject(ApiService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly year = new Date().getFullYear();
 

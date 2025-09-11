@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { ApiService, ApiSuperCategory } from '../../services/api.service';
 
 interface CategoryItem {
   name: string;
@@ -67,11 +67,29 @@ export class LandingComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.loadCategories();
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        this.apiSuperCategories = (res && (res as any).data) || [];
+        this.superCategoryOptions = this.apiSuperCategories.map((s) => ({ key: s.id, title: s.title }));
+        this.visibleSuperCategories = this.apiSuperCategories.map((s) => ({
+          key: s.id,
+          title: s.title,
+          colorClass: s.colorClass,
+          icon: s.icon,
+          items: s.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count })),
+        }));
+      },
+      error: () => {
+        this.apiSuperCategories = [];
+        this.superCategoryOptions = [];
+        this.visibleSuperCategories = [];
+      },
+    });
   }
 
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly api = inject(ApiService);
 
   readonly year = new Date().getFullYear();
 
@@ -755,28 +773,6 @@ export class LandingComponent implements OnInit {
     this.search.lat = parseFloat(item.lat);
     this.search.lon = parseFloat(item.lon);
     this.locationResults = [];
-  }
-
-  private loadCategories() {
-    const url = `${environment.base_path}/api/Category`;
-    this.http.get<{ data: ApiSuperCategory[] }>(url).subscribe({
-      next: (res) => {
-        this.apiSuperCategories = (res && (res as any).data) || [];
-        this.superCategoryOptions = this.apiSuperCategories.map((s) => ({ key: s.id, title: s.title }));
-        this.visibleSuperCategories = this.apiSuperCategories.map((s) => ({
-          key: s.id,
-          title: s.title,
-          colorClass: s.colorClass,
-          icon: s.icon,
-          items: s.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count })),
-        }));
-      },
-      error: () => {
-        this.apiSuperCategories = [];
-        this.superCategoryOptions = [];
-        this.visibleSuperCategories = [];
-      },
-    });
   }
 
   iconClass(icon?: string): string[] {

@@ -113,13 +113,6 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-5 d-none d-lg-block text-center">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets%2F61ffc8c885ae427dbb531b91af5e726b%2F1f95729f6e814712bc03b6e3dfff4b1d?format=webp&width=800"
-          alt="AsanZindegi hero"
-          class="img-fluid rounded-4 shadow"
-        />
-      </div>
     </div>
   </div>
 </section>
@@ -149,7 +142,7 @@
             aria-expanded="false"
             [attr.aria-controls]="'collapse' + i"
           >
-            <i class="bi me-2" [ngClass]="sc.icon"></i>{{ sc.title }}
+            <i class="me-2" [ngClass]="iconClass(sc.icon)"></i>{{ sc.title }}
           </button>
         </h2>
         <div
@@ -178,7 +171,7 @@
                           [src]="c.iconUrl"
                           [alt]="c.name + ' icon'"
                         />
-                        <ng-template #biIcon><i class="bi" [ngClass]="c.icon"></i></ng-template>
+                        <ng-template #biIcon><i [ngClass]="iconClass(c.icon)"></i></ng-template>
                       </span>
                       <div class="fw-semibold">{{ c.name }}</div>
                       <small class="text-secondary">{{ c.count }} listings</small>

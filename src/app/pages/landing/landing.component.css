@@ -28,6 +28,10 @@
   position: relative;
   background: linear-gradient(180deg, #f3ecff 0%, #f7f1ff 45%, #ffffff 100%);
   color: #0b1220;
+  background-image: url('https://cdn.builder.io/api/v1/image/assets%2Fdd43504024f74b92af375c4b68e25284%2Fca7a00a2b2a4456497426a8d8224c8c5?format=webp&width=800');
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: clamp(240px, 32vw, 340px);
 }
 .hero-overlay {
   position: absolute;
@@ -336,6 +340,10 @@
   }
   .search-field {
     margin-bottom: 8px;
+  }
+  .hero-wrap {
+    background-position: bottom center;
+    background-size: clamp(220px, 50vw, 420px);
   }
 }
 @media screen and (max-width: 575px) {

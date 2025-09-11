@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface CategoryItem {
   name: string;
@@ -39,6 +40,22 @@ interface BlogItem {
   date: string;
 }
 
+interface ApiCategory {
+  id: number;
+  name: string;
+  icon: string;
+  count: number;
+  superCategoryId: number;
+}
+
+interface ApiSuperCategory {
+  id: number;
+  title: string;
+  colorClass: string;
+  icon: string;
+  categories: ApiCategory[];
+}
+
 @Component({
   selector: 'app-landing',
   standalone: true,
@@ -46,16 +63,11 @@ interface BlogItem {
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class LandingComponent {
-  constructor() {
-    this.superCategoryOptions = this.superCategories.map((s) => ({ key: s.key, title: s.title }));
-    this.categoryOptions = this.categories;
-    this.visibleSuperCategories = this.superCategories
-      .map((s) => ({
-        ...s,
-        items: this.categories.filter((c) => s.categoryNames.includes(c.name)),
-      }))
-      .filter((s) => s.items.length > 0);
+export class LandingComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit(): void {
+    this.loadCategories();
   }
 
   private readonly http = inject(HttpClient);
@@ -80,28 +92,20 @@ export class LandingComponent {
   locationLoading = false;
   private locDebounce?: any;
 
-  private serviceTypeMap: Record<string, string[]> = {
-    Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings'],
-    Electrical: ['Wiring', 'Appliance Install', 'Lighting'],
-    Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning'],
-    Tutoring: ['Math', 'English', 'Science'],
-    Carpentry: ['Furniture Repair', 'Custom Shelves'],
-    Painting: ['Interior', 'Exterior'],
-    Moving: ['House Shifting', 'Office Relocation'],
-    'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
-  };
+  private serviceTypeMap: Record<string, string[]> = {};
 
-  superCategoryOptions: Array<{ key: string; title: string }> = [];
+  superCategoryOptions: Array<{ key: number | string; title: string }> = [];
   categoryOptions: CategoryItem[] = [];
+  private apiSuperCategories: ApiSuperCategory[] = [];
 
-  private filteredBySuper(key: string): CategoryItem[] {
-    if (!key) return this.categories;
-    const sc = this.superCategories.find((s) => s.key === (key as any));
-    if (!sc) return this.categories;
-    return this.categories.filter((c) => sc.categoryNames.includes(c.name));
+  private filteredBySuper(key: number | string): CategoryItem[] {
+    if (!key) return [];
+    const sc = this.apiSuperCategories.find((s) => String(s.id) === String(key));
+    if (!sc) return [];
+    return sc.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count }));
   }
 
-  onSuperChange(value: string) {
+  onSuperChange(value: number | string) {
     this.search.category = '';
     this.search.serviceType = '';
     this.categoryOptions = this.filteredBySuper(value);
@@ -584,11 +588,10 @@ export class LandingComponent {
   ];
 
   visibleSuperCategories: Array<{
-    key: string;
+    key: string | number;
     title: string;
     colorClass: string;
     icon: string;
-    categoryNames: string[];
     items: CategoryItem[];
   }> = [];
 
@@ -752,5 +755,34 @@ export class LandingComponent {
     this.search.lat = parseFloat(item.lat);
     this.search.lon = parseFloat(item.lon);
     this.locationResults = [];
+  }
+
+  private loadCategories() {
+    const url = `${environment.base_path}/api/Category`;
+    this.http.get<{ data: ApiSuperCategory[] }>(url).subscribe({
+      next: (res) => {
+        this.apiSuperCategories = (res && (res as any).data) || [];
+        this.superCategoryOptions = this.apiSuperCategories.map((s) => ({ key: s.id, title: s.title }));
+        this.visibleSuperCategories = this.apiSuperCategories.map((s) => ({
+          key: s.id,
+          title: s.title,
+          colorClass: s.colorClass,
+          icon: s.icon,
+          items: s.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count })),
+        }));
+      },
+      error: () => {
+        this.apiSuperCategories = [];
+        this.superCategoryOptions = [];
+        this.visibleSuperCategories = [];
+      },
+    });
+  }
+
+  iconClass(icon?: string): string[] {
+    if (!icon) return [];
+    if (icon.startsWith('fa-')) return ['fa-solid', icon];
+    if (icon.startsWith('bi-')) return ['bi', icon];
+    return [icon];
   }
 }

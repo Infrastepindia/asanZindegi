@@ -25,7 +25,11 @@ export class ApiService {
 
   getCategories(): Observable<{ data: ApiSuperCategory[] }> {
     let base = environment.base_path || '';
-    if (typeof window !== 'undefined' && window.location?.protocol === 'https:' && base.startsWith('http://')) {
+    if (
+      typeof window !== 'undefined' &&
+      window.location?.protocol === 'https:' &&
+      base.startsWith('http://')
+    ) {
       base = 'https://' + base.substring('http://'.length);
     }
     const url = `${base}/api/Category`;

@@ -40,7 +40,6 @@ interface BlogItem {
   date: string;
 }
 
-
 @Component({
   selector: 'app-landing',
   standalone: true,
@@ -55,7 +54,10 @@ export class LandingComponent implements OnInit {
     this.api.getCategories().subscribe({
       next: (res) => {
         this.apiSuperCategories = (res && (res as any).data) || [];
-        this.superCategoryOptions = this.apiSuperCategories.map((s) => ({ key: s.id, title: s.title }));
+        this.superCategoryOptions = this.apiSuperCategories.map((s) => ({
+          key: s.id,
+          title: s.title,
+        }));
         this.visibleSuperCategories = this.apiSuperCategories.map((s) => ({
           key: s.id,
           title: s.title,

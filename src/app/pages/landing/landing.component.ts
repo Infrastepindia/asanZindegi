@@ -126,7 +126,6 @@ export class LandingComponent implements OnInit {
 
   categories: CategoryItem[] = [];
 
-
   visibleSuperCategories: Array<{
     key: string | number;
     title: string;

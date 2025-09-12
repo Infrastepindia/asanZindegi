@@ -44,21 +44,6 @@
                 <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
               </select>
             </div>
-            <div class="col-md-4 search-field">
-              <i class="bi bi-ui-checks-grid input-icon" aria-hidden="true"></i>
-              <select
-                class="form-select form-select-lg"
-                [(ngModel)]="search.serviceType"
-                name="serviceType"
-                aria-label="Select Service Type"
-                [disabled]="!search.category"
-              >
-                <option value="">
-                  {{ search.category ? 'Service Type' : 'Choose category first' }}
-                </option>
-                <option *ngFor="let t of serviceTypesForSelected" [value]="t">{{ t }}</option>
-              </select>
-            </div>
             <div class="col-md-3 search-field">
               <i class="bi bi-geo-alt input-icon" aria-hidden="true"></i>
               <input

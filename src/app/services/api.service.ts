@@ -23,7 +23,7 @@ export interface ApiSuperCategory {
 export class ApiService {
   private readonly http = inject(HttpClient);
 
-  getCategories(): Observable<{ data: ApiSuperCategory[] }> {
+  private resolveBase(): string {
     let base = environment.base_path || '';
     if (
       typeof window !== 'undefined' &&
@@ -32,7 +32,26 @@ export class ApiService {
     ) {
       base = 'https://' + base.substring('http://'.length);
     }
-    const url = `${base}/api/Category`;
+    return base;
+  }
+
+  getCategories(): Observable<{ data: ApiSuperCategory[] }> {
+    const url = `${this.resolveBase()}/api/Category`;
     return this.http.get<{ data: ApiSuperCategory[] }>(url);
+  }
+
+  login(payload: { email: string; password: string }): Observable<any> {
+    const url = `${this.resolveBase()}/api/User/login`;
+    return this.http.post(url, payload);
+  }
+
+  forgotPassword(payload: { email: string }): Observable<any> {
+    const url = `${this.resolveBase()}/api/User/forgot-password`;
+    return this.http.post(url, payload);
+  }
+
+  resetPassword(payload: { email: string; token: string; newPassword: string }): Observable<any> {
+    const url = `${this.resolveBase()}/api/User/reset-password`;
+    return this.http.post(url, payload);
   }
 }

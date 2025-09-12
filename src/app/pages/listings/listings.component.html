@@ -3,22 +3,6 @@
     <!-- Sidebar -->
     <aside class="col-lg-3">
       <div class="filter-card p-3 mb-3">
-        <h6 class="mb-3">Type</h6>
-        <div class="form-check" *ngFor="let t of types">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="type"
-            [id]="'t-' + t"
-            [value]="t"
-            [(ngModel)]="filters.type"
-            (change)="setPage(1)"
-          />
-          <label class="form-check-label" [for]="'t-' + t">{{ t }}</label>
-        </div>
-      </div>
-
-      <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Rating</h6>
         <div class="form-check">
           <input
@@ -92,25 +76,48 @@
       </div>
 
       <div class="filter-card p-3 mb-3">
-        <h6 class="mb-3">Category</h6>
-        <select class="form-select" [(ngModel)]="filters.category">
-          <option value="">All Categories</option>
-          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
-        </select>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="mb-0">Categories</h6>
+          <button type="button" class="btn btn-sm btn-link p-0" (click)="clearSelectedCategories()">
+            Clear
+          </button>
+        </div>
+        <div class="category-tree">
+          <div class="super-group" *ngFor="let sc of superCategories">
+            <button
+              type="button"
+              class="btn btn-sm w-100 d-flex align-items-center justify-content-between text-start mb-1"
+              (click)="toggleSuper(sc.id)"
+            >
+              <span
+                ><i
+                  class="bi me-2"
+                  [ngClass]="expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'"
+                ></i
+                >{{ sc.title }}</span
+              >
+              <span class="badge bg-light text-dark">{{ sc.categories?.length || 0 }}</span>
+            </button>
+            <div class="sub-list ms-3" *ngIf="expandedSuperIds.has(sc.id)">
+              <div class="form-check" *ngFor="let c of sc.categories">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="'cat-' + c.id"
+                  [value]="c.name"
+                  [checked]="isSubSelected(c.name)"
+                  (change)="toggleSubCategory(c.name)"
+                />
+                <label class="form-check-label" [for]="'cat-' + c.id">{{ c.name }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Location</h6>
         <input class="form-control" placeholder="Enter location" [(ngModel)]="filters.location" />
-      </div>
-
-      <div class="filter-card p-3 mb-3">
-        <h6 class="mb-3">Price Range</h6>
-        <div class="d-flex gap-2">
-          <input class="form-control" placeholder="min" [(ngModel)]="filters.minPrice" />
-          <input class="form-control" placeholder="max" [(ngModel)]="filters.maxPrice" />
-        </div>
-        <button class="btn btn-join btn-lg w-100 mt-3" (click)="setPage(1)">Apply Filters</button>
       </div>
     </aside>
 

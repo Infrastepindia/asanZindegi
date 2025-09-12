@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
+import { ApiService, ApiSuperCategory } from '../../services/api.service';
 
 interface ListingItem {
   id: number;
@@ -29,35 +30,65 @@ interface ListingItem {
 })
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
+  private api = inject(ApiService);
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
-    const typ = this.route.snapshot.queryParamMap.get('type') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
-    if (cat) this.filters.category = cat;
-    if (typ) this.filters.type = typ as any;
+    if (cat) this.filters.selectedCategories = [cat];
     if (loc) this.filters.location = loc;
-    if (cat || typ || loc) this.setPage(1);
+    if (cat || loc) this.setPage(1);
+
+    // Load super categories for treeview
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        this.superCategories = res?.data || [];
+      },
+      error: () => {
+        this.superCategories = [];
+      },
+    });
+
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
-      const t = map.get('type') || '';
       const l = map.get('location') || '';
-      this.filters.category = c;
-      this.filters.type = (t as any) || '';
+      this.filters.selectedCategories = c ? [c] : [];
       this.filters.location = l;
       this.setPage(1);
     });
   }
   filters = {
-    category: '',
-    type: '',
+    selectedCategories: [] as string[],
     location: '',
-    minPrice: '',
-    maxPrice: '',
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
   };
+
+  // Super category → subcategory treeview data
+  superCategories: ApiSuperCategory[] = [];
+  expandedSuperIds = new Set<number>();
+
+  toggleSuper(id: number) {
+    if (this.expandedSuperIds.has(id)) this.expandedSuperIds.delete(id);
+    else this.expandedSuperIds.add(id);
+  }
+
+  isSubSelected(name: string): boolean {
+    return this.filters.selectedCategories.includes(name);
+  }
+
+  toggleSubCategory(name: string) {
+    const idx = this.filters.selectedCategories.indexOf(name);
+    if (idx >= 0) this.filters.selectedCategories.splice(idx, 1);
+    else this.filters.selectedCategories.push(name);
+    this.setPage(1);
+  }
+
+  clearSelectedCategories() {
+    this.filters.selectedCategories = [];
+    this.setPage(1);
+  }
 
   categories = [
     // Household
@@ -425,16 +456,12 @@ export class ListingsComponent implements OnInit {
 
   get filtered(): ListingItem[] {
     let out = this.all.slice();
-    if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
-    if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
+    if (this.filters.selectedCategories.length)
+      out = out.filter((i) => this.filters.selectedCategories.includes(i.category));
     if (this.filters.location)
       out = out.filter((i) =>
         i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
       );
-    const min = this.filters.minPrice ? parseFloat(this.filters.minPrice) : null;
-    const max = this.filters.maxPrice ? parseFloat(this.filters.maxPrice) : null;
-    if (min !== null) out = out.filter((i) => i.price >= (min as number));
-    if (max !== null) out = out.filter((i) => i.price <= (max as number));
 
     const minR = Number(this.filters.minRating) || 0;
     if (minR > 0) out = out.filter((i) => i.rating >= minR);

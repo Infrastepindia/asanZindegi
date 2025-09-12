@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
+import { ApiService, ApiSuperCategory } from '../../services/api.service';
 
 interface ListingItem {
   id: number;

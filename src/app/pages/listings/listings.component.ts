@@ -35,12 +35,10 @@ export class ListingsComponent implements OnInit {
 
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
-    const typ = this.route.snapshot.queryParamMap.get('type') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
-    if (cat) this.filters.category = cat;
-    if (typ) this.filters.type = typ as any;
+    if (cat) this.filters.selectedCategories = [cat];
     if (loc) this.filters.location = loc;
-    if (cat || typ || loc) this.setPage(1);
+    if (cat || loc) this.setPage(1);
 
     // Load super categories for treeview
     this.api.getCategories().subscribe({
@@ -54,20 +52,15 @@ export class ListingsComponent implements OnInit {
 
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
-      const t = map.get('type') || '';
       const l = map.get('location') || '';
-      this.filters.category = c;
-      this.filters.type = (t as any) || '';
+      this.filters.selectedCategories = c ? [c] : [];
       this.filters.location = l;
       this.setPage(1);
     });
   }
   filters = {
-    category: '',
-    type: '',
+    selectedCategories: [] as string[],
     location: '',
-    minPrice: '',
-    maxPrice: '',
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
   };
@@ -81,13 +74,19 @@ export class ListingsComponent implements OnInit {
     else this.expandedSuperIds.add(id);
   }
 
-  selectSubCategory(name: string) {
-    this.filters.category = name;
+  isSubSelected(name: string): boolean {
+    return this.filters.selectedCategories.includes(name);
+  }
+
+  toggleSubCategory(name: string) {
+    const idx = this.filters.selectedCategories.indexOf(name);
+    if (idx >= 0) this.filters.selectedCategories.splice(idx, 1);
+    else this.filters.selectedCategories.push(name);
     this.setPage(1);
   }
 
-  clearCategory() {
-    this.filters.category = '';
+  clearSelectedCategories() {
+    this.filters.selectedCategories = [];
     this.setPage(1);
   }
 
@@ -457,16 +456,12 @@ export class ListingsComponent implements OnInit {
 
   get filtered(): ListingItem[] {
     let out = this.all.slice();
-    if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
-    if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
+    if (this.filters.selectedCategories.length)
+      out = out.filter((i) => this.filters.selectedCategories.includes(i.category));
     if (this.filters.location)
       out = out.filter((i) =>
         i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
       );
-    const min = this.filters.minPrice ? parseFloat(this.filters.minPrice) : null;
-    const max = this.filters.maxPrice ? parseFloat(this.filters.maxPrice) : null;
-    if (min !== null) out = out.filter((i) => i.price >= (min as number));
-    if (max !== null) out = out.filter((i) => i.price <= (max as number));
 
     const minR = Number(this.filters.minRating) || 0;
     if (minR > 0) out = out.filter((i) => i.rating >= minR);

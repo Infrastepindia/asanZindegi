@@ -30,6 +30,7 @@ interface ListingItem {
 })
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
+  private api = inject(ApiService);
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
@@ -40,6 +41,17 @@ export class ListingsComponent implements OnInit {
     if (typ) this.filters.type = typ as any;
     if (loc) this.filters.location = loc;
     if (cat || typ || loc) this.setPage(1);
+
+    // Load super categories for treeview
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        this.superCategories = res?.data || [];
+      },
+      error: () => {
+        this.superCategories = [];
+      },
+    });
+
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
       const t = map.get('type') || '';
@@ -59,6 +71,25 @@ export class ListingsComponent implements OnInit {
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
   };
+
+  // Super category → subcategory treeview data
+  superCategories: ApiSuperCategory[] = [];
+  expandedSuperIds = new Set<number>();
+
+  toggleSuper(id: number) {
+    if (this.expandedSuperIds.has(id)) this.expandedSuperIds.delete(id);
+    else this.expandedSuperIds.add(id);
+  }
+
+  selectSubCategory(name: string) {
+    this.filters.category = name;
+    this.setPage(1);
+  }
+
+  clearCategory() {
+    this.filters.category = '';
+    this.setPage(1);
+  }
 
   categories = [
     // Household

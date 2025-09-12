@@ -54,4 +54,31 @@ export class ApiService {
     const url = `${this.resolveBase()}/api/User/reset-password`;
     return this.http.post(url, payload);
   }
+
+  extractError(err: any): { message: string; status_code?: number; status_message?: string } {
+    const body = err?.error ?? err;
+    if (body && typeof body === 'object') {
+      const message =
+        (typeof body.message === 'string' && body.message) ||
+        (typeof body.error === 'string' && body.error) ||
+        (typeof err?.message === 'string' && err.message) ||
+        'Something went wrong';
+      const status_code =
+        typeof body.status_code === 'number'
+          ? body.status_code
+          : typeof err?.status === 'number'
+          ? err.status
+          : undefined;
+      const status_message =
+        typeof body.status_message === 'string' ? body.status_message : undefined;
+      return { message, status_code, status_message };
+    }
+    if (typeof body === 'string') {
+      return { message: body };
+    }
+    if (typeof err?.message === 'string') {
+      return { message: err.message };
+    }
+    return { message: 'Something went wrong' };
+  }
 }

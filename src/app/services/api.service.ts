@@ -67,8 +67,8 @@ export class ApiService {
         typeof body.status_code === 'number'
           ? body.status_code
           : typeof err?.status === 'number'
-          ? err.status
-          : undefined;
+            ? err.status
+            : undefined;
       const status_message =
         typeof body.status_message === 'string' ? body.status_message : undefined;
       return { message, status_code, status_message };

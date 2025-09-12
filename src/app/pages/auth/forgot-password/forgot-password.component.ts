@@ -30,8 +30,8 @@ export class ForgotPasswordComponent {
       },
       error: (err) => {
         this.loading = false;
-        this.error =
-          (err?.error && (err.error.message || err.error)) || 'Failed to send reset link';
+        const e = this.api.extractError(err);
+        this.error = e.message || 'Failed to send reset link';
       },
     });
   }

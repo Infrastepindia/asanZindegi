@@ -4,6 +4,7 @@ import { ListingsComponent } from './pages/listings/listings.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { SignupComponent } from './pages/auth/signup/signup.component';
 import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
 import { ListingDetailsComponent } from './pages/listing-details/listing-details.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ProviderRegisterComponent } from './pages/provider/register/provider-register.component';

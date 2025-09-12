@@ -41,7 +41,8 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading = false;
-        this.error = (err?.error && (err.error.message || err.error)) || 'Login failed';
+        const e = this.api.extractError(err);
+        this.error = e.message || 'Login failed';
       },
     });
   }

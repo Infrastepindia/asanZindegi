@@ -99,3 +99,12 @@
 .smart-pagination .ellipsis .page-link {
   cursor: default;
 }
+
+.category-tree .super-group .btn {
+  background: transparent;
+  border: 1px solid #e7e9f3;
+  border-radius: 10px;
+}
+.category-tree .sub-list {
+  padding: 6px 0 0 6px;
+}

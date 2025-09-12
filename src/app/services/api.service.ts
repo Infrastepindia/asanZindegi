@@ -44,4 +44,14 @@ export class ApiService {
     const url = `${this.resolveBase()}/api/User/login`;
     return this.http.post(url, payload);
   }
+
+  forgotPassword(payload: { email: string }): Observable<any> {
+    const url = `${this.resolveBase()}/api/User/forgot-password`;
+    return this.http.post(url, payload);
+  }
+
+  resetPassword(payload: { email: string; token: string; newPassword: string }): Observable<any> {
+    const url = `${this.resolveBase()}/api/User/reset-password`;
+    return this.http.post(url, payload);
+  }
 }

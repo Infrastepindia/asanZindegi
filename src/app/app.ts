@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { CityGateComponent } from './shared/city-gate.component';
 
 @Component({
   selector: 'app-root',

@@ -36,7 +36,7 @@ interface NominatimResult {
           *ngFor="let s of suggestions; let i = index"
           (mousedown)="select(s)"
         >
-          <div class="fw-medium">{{ labelFor(s) }}</div>
+          <div class="fw-medium">{{ getLabel(s) }}</div>
           <div class="small text-secondary">{{ s.display_name }}</div>
         </button>
       </div>

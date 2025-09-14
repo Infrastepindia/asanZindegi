@@ -4,11 +4,17 @@
       <div class="col-lg-10">
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
-            <h1 class="h4 mb-3 heading-cta">Become a <span class="text-gradient-1">Service Provider</span></h1>
+            <h1 class="h4 mb-3 heading-cta">
+              Become a <span class="text-gradient-1">Service Provider</span>
+            </h1>
 
             <!-- Progress -->
             <ul class="wizard-steps list-unstyled d-flex flex-wrap gap-2 mb-4">
-              <li *ngFor="let s of steps; let i = index" class="wizard-step" [class.active]="i + 1 <= step">
+              <li
+                *ngFor="let s of steps; let i = index"
+                class="wizard-step"
+                [class.active]="i + 1 <= step"
+              >
                 <span class="idx">{{ i + 1 }}</span>
                 <span class="label">{{ s }}</span>
               </li>
@@ -19,7 +25,12 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label">First Name</label>
-                  <input class="form-control" [(ngModel)]="account.firstName" name="firstName" required />
+                  <input
+                    class="form-control"
+                    [(ngModel)]="account.firstName"
+                    name="firstName"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Last Name</label>
@@ -27,7 +38,13 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" [(ngModel)]="account.email" name="email" required />
+                  <input
+                    type="email"
+                    class="form-control"
+                    [(ngModel)]="account.email"
+                    name="email"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Phone</label>
@@ -35,15 +52,32 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Password</label>
-                  <input type="password" class="form-control" [(ngModel)]="account.password" name="password" required />
+                  <input
+                    type="password"
+                    class="form-control"
+                    [(ngModel)]="account.password"
+                    name="password"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Confirm Password</label>
-                  <input type="password" class="form-control" [(ngModel)]="account.confirmPassword" name="confirmPassword" required />
+                  <input
+                    type="password"
+                    class="form-control"
+                    [(ngModel)]="account.confirmPassword"
+                    name="confirmPassword"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Profile Image (optional)</label>
-                  <input type="file" accept="image/*" class="form-control" (change)="onProfileImage($event)" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="form-control"
+                    (change)="onProfileImage($event)"
+                  />
                 </div>
                 <div class="col-md-6" *ngIf="account.profileImage">
                   <label class="form-label">Preview</label>
@@ -68,7 +102,11 @@
               <div class="row g-3">
                 <div class="col-md-5">
                   <label class="form-label">City</label>
-                  <az-osm-autocomplete [(ngModel)]="address.city" name="city" [placeholder]="'Enter location'"></az-osm-autocomplete>
+                  <az-osm-autocomplete
+                    [(ngModel)]="address.city"
+                    name="city"
+                    [placeholder]="'Enter location'"
+                  ></az-osm-autocomplete>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">State</label>
@@ -80,7 +118,9 @@
                 </div>
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="back()">Back</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
                 <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
@@ -89,7 +129,12 @@
             <form *ngIf="step === 3" (ngSubmit)="next()" class="wizard-form">
               <div class="mb-3">
                 <label class="form-label">Provider / Business Name</label>
-                <input class="form-control" [(ngModel)]="provider.name" name="providerName" required />
+                <input
+                  class="form-control"
+                  [(ngModel)]="provider.name"
+                  name="providerName"
+                  required
+                />
               </div>
               <div class="mb-3">
                 <label class="form-label">Profile Title (short tagline)</label>
@@ -98,7 +143,12 @@
               <div class="row g-3 align-items-end">
                 <div class="col-md-6">
                   <label class="form-label">Business Logo</label>
-                  <input type="file" accept="image/*" class="form-control" (change)="onLogo($event)" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="form-control"
+                    (change)="onLogo($event)"
+                  />
                 </div>
                 <div class="col-md-6" *ngIf="provider.logo">
                   <label class="form-label">Preview</label>
@@ -106,11 +156,19 @@
                 </div>
               </div>
               <div class="form-check mt-3">
-                <input class="form-check-input" type="checkbox" id="isCompany" [(ngModel)]="provider.isCompany" name="isCompany" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isCompany"
+                  [(ngModel)]="provider.isCompany"
+                  name="isCompany"
+                />
                 <label class="form-check-label" for="isCompany">I am a company</label>
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="back()">Back</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
                 <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
@@ -120,13 +178,35 @@
               <div class="row g-3">
                 <div class="col-md-6" *ngFor="let sc of superCategories">
                   <div class="filter-card p-3 h-100">
-                    <button type="button" class="btn btn-sm w-100 d-flex align-items-center justify-content-between text-start mb-2" (click)="expandedSuperIds.has(sc.id) ? expandedSuperIds.delete(sc.id) : expandedSuperIds.add(sc.id)">
-                      <span><i class="bi me-2" [ngClass]="expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>{{ sc.title }}</span>
+                    <button
+                      type="button"
+                      class="btn btn-sm w-100 d-flex align-items-center justify-content-between text-start mb-2"
+                      (click)="
+                        expandedSuperIds.has(sc.id)
+                          ? expandedSuperIds.delete(sc.id)
+                          : expandedSuperIds.add(sc.id)
+                      "
+                    >
+                      <span
+                        ><i
+                          class="bi me-2"
+                          [ngClass]="
+                            expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'
+                          "
+                        ></i
+                        >{{ sc.title }}</span
+                      >
                       <span class="badge bg-light text-dark">{{ sc.categories?.length || 0 }}</span>
                     </button>
                     <div class="sub-list ms-3" *ngIf="expandedSuperIds.has(sc.id)">
                       <div class="form-check" *ngFor="let c of sc.categories">
-                        <input class="form-check-input" type="checkbox" [id]="'pc-' + c.id" [checked]="isCategorySelected(c.id)" (change)="toggleCategory({ id: c.id, name: c.name })" />
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          [id]="'pc-' + c.id"
+                          [checked]="isCategorySelected(c.id)"
+                          (change)="toggleCategory({ id: c.id, name: c.name })"
+                        />
                         <label class="form-check-label" [for]="'pc-' + c.id">{{ c.name }}</label>
                       </div>
                     </div>
@@ -134,28 +214,45 @@
                 </div>
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="back()">Back</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
                 <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
 
             <!-- Step 5: Service Types -->
             <form *ngIf="step === 5" (ngSubmit)="next()" class="wizard-form">
-              <div *ngIf="!selection.categories.length" class="alert alert-warning">Select at least one category first.</div>
+              <div *ngIf="!selection.categories.length" class="alert alert-warning">
+                Select at least one category first.
+              </div>
               <div class="mb-3" *ngFor="let c of selection.categories">
                 <label class="form-label">{{ c.name }} – Service Types</label>
                 <div class="chip-list d-flex flex-wrap gap-2 mb-2">
-                  <span class="badge pill-badge bg-light text-dark" *ngFor="let s of serviceTypesFor(c.id)">
+                  <span
+                    class="badge pill-badge bg-light text-dark"
+                    *ngFor="let s of serviceTypesFor(c.id)"
+                  >
                     {{ s }}
-                    <button type="button" class="btn btn-sm btn-link p-0 ms-1" (click)="removeServiceType(c.id, s)">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link p-0 ms-1"
+                      (click)="removeServiceType(c.id, s)"
+                    >
                       <i class="bi bi-x"></i>
                     </button>
                   </span>
                 </div>
-                <input class="form-control" (keydown.enter)="$event.preventDefault(); addServiceType(c.id, $event.target as HTMLInputElement)" placeholder="Type and press Enter to add (e.g., Installation, Repair)" />
+                <input
+                  class="form-control"
+                  (keydown.enter)="$event.preventDefault(); addServiceType(c.id, $event.target as HTMLInputElement)"
+                  placeholder="Type and press Enter to add (e.g., Installation, Repair)"
+                />
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="back()">Back</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
                 <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
@@ -165,20 +262,40 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label">Business Registration Certificate</label>
-                  <input type="file" class="form-control" multiple (change)="onFiles('reg', $event)" />
+                  <input
+                    type="file"
+                    class="form-control"
+                    multiple
+                    (change)="onFiles('reg', $event)"
+                  />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">License / Permit (if applicable)</label>
-                  <input type="file" class="form-control" multiple (change)="onFiles('lic', $event)" />
+                  <input
+                    type="file"
+                    class="form-control"
+                    multiple
+                    (change)="onFiles('lic', $event)"
+                  />
                 </div>
                 <div class="col-12">
                   <label class="form-label">Portfolio Images</label>
-                  <input type="file" class="form-control" accept="image/*" multiple (change)="onFiles('port', $event)" />
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/*"
+                    multiple
+                    (change)="onFiles('port', $event)"
+                  />
                 </div>
               </div>
-              <div class="small text-secondary mt-2">Note: Files are not uploaded yet. You'll need to reattach after refresh.</div>
+              <div class="small text-secondary mt-2">
+                Note: Files are not uploaded yet. You'll need to reattach after refresh.
+              </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="back()">Back</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
                 <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
@@ -190,16 +307,26 @@
                   <div class="filter-card p-3">
                     <h6 class="mb-2">Account Info</h6>
                     <div class="small text-secondary">{{ fullName }}</div>
-                    <div class="small text-secondary">{{ account.email }} • {{ account.phone }}</div>
-                    <img *ngIf="account.profileImage" [src]="account.profileImage" class="img-preview mt-2" />
+                    <div class="small text-secondary">
+                      {{ account.email }} • {{ account.phone }}
+                    </div>
+                    <img
+                      *ngIf="account.profileImage"
+                      [src]="account.profileImage"
+                      class="img-preview mt-2"
+                    />
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="filter-card p-3">
                     <h6 class="mb-2">Address</h6>
                     <div class="small text-secondary">{{ address.line1 }}</div>
-                    <div class="small text-secondary" *ngIf="address.line2">{{ address.line2 }}</div>
-                    <div class="small text-secondary">{{ address.city }}, {{ address.state }} – {{ address.pin }}</div>
+                    <div class="small text-secondary" *ngIf="address.line2">
+                      {{ address.line2 }}
+                    </div>
+                    <div class="small text-secondary">
+                      {{ address.city }}, {{ address.state }} – {{ address.pin }}
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -207,7 +334,9 @@
                     <h6 class="mb-2">Provider Profile</h6>
                     <div class="small text-secondary">{{ provider.name }}</div>
                     <div class="small text-secondary">{{ provider.title }}</div>
-                    <div class="small text-secondary">{{ provider.isCompany ? 'Company' : 'Individual' }}</div>
+                    <div class="small text-secondary">
+                      {{ provider.isCompany ? 'Company' : 'Individual' }}
+                    </div>
                     <img *ngIf="provider.logo" [src]="provider.logo" class="img-preview mt-2" />
                   </div>
                 </div>
@@ -216,24 +345,40 @@
                     <h6 class="mb-2">Services</h6>
                     <div *ngFor="let c of selection.categories" class="mb-2">
                       <div class="fw-semibold">{{ c.name }}</div>
-                      <div class="small text-secondary">{{ serviceTypesFor(c.id).join(', ') || '—' }}</div>
+                      <div class="small text-secondary">
+                        {{ serviceTypesFor(c.id).join(', ') || '—' }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
-                <button type="button" class="btn btn-outline-secondary" (click)="back()">Back</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
                 <div class="d-flex gap-2">
-                  <button type="button" class="btn btn-outline-secondary" (click)="writeDraft()">Save Draft</button>
-                  <button type="button" class="btn btn-join btn-lg" (click)="submit()">Submit for Approval</button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="writeDraft()">
+                    Save Draft
+                  </button>
+                  <button type="button" class="btn btn-join btn-lg" (click)="submit()">
+                    Submit for Approval
+                  </button>
                 </div>
               </div>
             </div>
 
             <!-- Draft controls -->
             <div class="d-flex justify-content-between align-items-center mt-3">
-              <button type="button" class="btn btn-sm btn-link p-0" (click)="writeDraft()">Save as draft</button>
-              <button type="button" class="btn btn-sm btn-link text-danger p-0" (click)="clearDraft()">Discard draft</button>
+              <button type="button" class="btn btn-sm btn-link p-0" (click)="writeDraft()">
+                Save as draft
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-link text-danger p-0"
+                (click)="clearDraft()"
+              >
+                Discard draft
+              </button>
             </div>
           </div>
         </div>

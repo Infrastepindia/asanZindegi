@@ -260,8 +260,9 @@
                   </span>
                 </div>
                 <input
+                  #serviceTypeInput
                   class="form-control"
-                  (keydown.enter)="$event.preventDefault(); addServiceType(c.id, $event.target as HTMLInputElement)"
+                  (keydown.enter)="$event.preventDefault(); addServiceType(c.id, serviceTypeInput)"
                   placeholder="Type and press Enter to add (e.g., Installation, Repair)"
                 />
               </div>

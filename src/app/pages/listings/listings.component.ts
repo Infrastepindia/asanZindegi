@@ -568,6 +568,10 @@ export class ListingsComponent implements OnInit {
     return `${Math.round(km)} km`;
   }
 
+  distanceBadge(itemLocation: string): string {
+    return this.distanceFromSearch(itemLocation) || 'Set location';
+  }
+
   setPage(p: number) {
     const pages = this.totalPages;
     this.page = Math.max(1, Math.min(p, pages));

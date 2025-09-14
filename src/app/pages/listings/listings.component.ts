@@ -71,9 +71,12 @@ export class ListingsComponent implements OnInit {
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
+    const saved = typeof window !== 'undefined' ? window.localStorage.getItem(this.cityPrefKey) : null;
     if (cat) this.filters.selectedCategories = [cat];
     if (loc) this.filters.location = loc;
-    if (cat || loc) this.setPage(1);
+    else if (saved) this.filters.location = saved;
+    else this.showCityPicker = true;
+    if (cat || loc || saved) this.setPage(1);
 
     // Load super categories for treeview
     this.api.getCategories().subscribe({
@@ -89,7 +92,7 @@ export class ListingsComponent implements OnInit {
       const c = map.get('category') || '';
       const l = map.get('location') || '';
       this.filters.selectedCategories = c ? [c] : [];
-      this.filters.location = l;
+      if (l) this.filters.location = l;
       this.setPage(1);
     });
   }
@@ -568,6 +571,7 @@ export class ListingsComponent implements OnInit {
     'Ahmedabad, India': { lat: 23.0225, lon: 72.5714 },
     'Jaipur, India': { lat: 26.9124, lon: 75.7873 },
     'Surat, India': { lat: 21.1702, lon: 72.8311 },
+    'Durgapur, India': { lat: 23.5204, lon: 87.3119 },
   };
 
   private findSearchCity(): { name: string; lat: number; lon: number } | null {
@@ -609,6 +613,14 @@ export class ListingsComponent implements OnInit {
 
   onPlaceSelected(val: string) {
     this.filters.location = val || '';
+    if (typeof window !== 'undefined') window.localStorage.setItem(this.cityPrefKey, this.filters.location);
+    this.setPage(1);
+  }
+
+  chooseCity(name: string) {
+    this.filters.location = name;
+    if (typeof window !== 'undefined') window.localStorage.setItem(this.cityPrefKey, name);
+    this.showCityPicker = false;
     this.setPage(1);
   }
 

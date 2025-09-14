@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
+import { OtpInputComponent } from '../../../shared/otp-input.component';
 
 interface AddressForm {
   line1: string;
@@ -54,7 +55,7 @@ interface RegistrationDraft {
 @Component({
   selector: 'app-provider-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, OsmAutocompleteComponent],
+  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, OtpInputComponent],
   templateUrl: './provider-register.component.html',
   styleUrl: './provider-register.component.css',
 })
@@ -84,6 +85,8 @@ export class ProviderRegisterComponent {
     password: '',
     confirmPassword: '',
   };
+  phoneVerified = false;
+  otpError: string | null = null;
   address: AddressForm = { line1: '', line2: '', city: '', state: '', pin: '' };
   provider: ProviderForm = { name: '', title: '', isCompany: false };
 
@@ -147,8 +150,9 @@ export class ProviderRegisterComponent {
 
   // Navigation
   next() {
-    if (this.step === 1 && this.account.password !== this.account.confirmPassword) {
-      return;
+    if (this.step === 1) {
+      if (this.account.password !== this.account.confirmPassword) return;
+      if (!this.account.firstName || !this.account.email || !this.account.phone) return;
     }
     if (this.step < this.steps.length) {
       this.step++;
@@ -220,6 +224,15 @@ export class ProviderRegisterComponent {
       reader.onerror = rej;
       reader.readAsDataURL(f);
     });
+  }
+
+  onOtpRequest() {
+    this.otpError = null;
+  }
+  onOtpVerify(code: string) {
+    // Frontend-only acceptance; integrate API later
+    this.phoneVerified = code.length === 6;
+    this.otpError = this.phoneVerified ? null : 'Invalid code';
   }
 
   // Submit

@@ -6,6 +6,9 @@
       <a routerLink="/login" class="me-3 text-secondary text-decoration-none"
         ><i class="bi bi-box-arrow-in-right me-1"></i>Login</a
       >
+      <a routerLink="/provider/register" class="btn btn-join btn-lg me-2"
+        >Become a Service Provider</a
+      >
       <a routerLink="/signup" class="btn btn-join btn-lg">Join</a>
     </div>
   </div>
@@ -40,6 +43,11 @@
         <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
         <li class="nav-item">
           <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/post-ad'">Post Ad</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/register'"
+            >Become a Service Provider</a
+          >
         </li>
       </ul>
     </div>

@@ -1,3 +1,51 @@
 .provider-form .form-label {
   font-weight: 600;
 }
+
+.wizard-steps .wizard-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #e7e9f3;
+  border-radius: 999px;
+  background: #fff;
+  color: inherit;
+}
+.wizard-steps .wizard-step .idx {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f8f9fb;
+  font-size: 12px;
+}
+.wizard-steps .wizard-step.active {
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 10px 24px rgba(123, 97, 255, 0.35);
+}
+.wizard-steps .wizard-step.active .idx {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.img-preview {
+  width: 100%;
+  max-width: 160px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e7e9f3;
+}
+
+.wizard-form .form-label {
+  font-weight: 600;
+}
+
+.chip-list .badge {
+  border-radius: 999px;
+  padding: 6px 10px;
+}

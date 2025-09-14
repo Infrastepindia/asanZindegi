@@ -5,6 +5,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
+import { CityService } from './city.service';
 
 interface NominatimResult {
   display_name: string;
@@ -76,6 +77,7 @@ interface NominatimResult {
 })
 export class OsmAutocompleteComponent implements ControlValueAccessor {
   private http = inject(HttpClient);
+  private cityService = inject(CityService);
 
   @Input() placeholder = 'Enter location';
   @Output() placeSelected = new EventEmitter<{ value: string; full: NominatimResult }>();
@@ -104,7 +106,8 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         catchError(() => of([] as NominatimResult[])),
       )
       .subscribe((res) => {
-        this.suggestions = this.filterCityResults(res);
+        const filtered = this.filterCityResults(res);
+        this.suggestions = filtered.length ? filtered : this.localFallback(this.value);
       });
   }
 
@@ -164,8 +167,26 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
       .set('limit', '8');
     return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
       params,
-      headers: { 'Accept-Language': 'en', 'User-Agent': 'asan-zindegi/1.0' } as any,
+      headers: { 'Accept-Language': 'en' } as any,
     });
+  }
+
+  private localFallback(q: string): NominatimResult[] {
+    const query = (q || '').toLowerCase().trim();
+    if (!query) return [];
+    return this.cityService
+      .knownCities()
+      .map((c) => c.name)
+      .filter((name) => name.toLowerCase().includes(query))
+      .slice(0, 8)
+      .map((name) => ({
+        display_name: name,
+        lat: '',
+        lon: '',
+        class: 'place',
+        type: 'city',
+        address: { city: name.replace(', India', ''), state: '', country: 'India' },
+      }));
   }
 
   private filterCityResults(list: NominatimResult[]): NominatimResult[] {

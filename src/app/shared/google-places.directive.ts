@@ -19,7 +19,10 @@ export class GooglePlacesDirective implements AfterViewInit {
   private maxAttempts = 40; // ~20s if 500ms interval
   private intervalId: any;
 
-  constructor(private el: ElementRef<HTMLInputElement>, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private el: ElementRef<HTMLInputElement>,
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
 
   private get isBrowser() {
     return isPlatformBrowser(this.platformId);

@@ -44,9 +44,26 @@ interface NominatimResult {
   `,
   styles: [
     `
-    .osm-ac-dropdown { position: absolute; left: 0; right: 0; top: 100%; background: #fff; border: 1px solid #e7e9f3; border-top: none; z-index: 1040; border-radius: 0 0 10px 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-    .osm-ac-item { padding: 8px 12px; background: #fff; border: 0; }
-    .osm-ac-item:hover { background: #f8f9fb; }
+      .osm-ac-dropdown {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        background: #fff;
+        border: 1px solid #e7e9f3;
+        border-top: none;
+        z-index: 1040;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+      .osm-ac-item {
+        padding: 8px 12px;
+        background: #fff;
+        border: 0;
+      }
+      .osm-ac-item:hover {
+        background: #f8f9fb;
+      }
     `,
   ],
   providers: [
@@ -73,21 +90,22 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   constructor() {
+    this.q$.pipe(
+      debounceTime(300),
+      (mapStr) => mapStr, // dummy to satisfy TS build inlined
+    );
+    // Build stream manually to avoid build optimizer issue
     this.q$
       .pipe(
         debounceTime(300),
-        mapStr => mapStr, // dummy to satisfy TS build inlined
-      );
-    // Build stream manually to avoid build optimizer issue
-    this.q$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      filter((q) => q.trim().length > 0),
-      switchMap((q) => this.search(q)),
-      catchError(() => of([] as NominatimResult[])),
-    ).subscribe((res) => {
-      this.suggestions = this.filterCityResults(res);
-    });
+        distinctUntilChanged(),
+        filter((q) => q.trim().length > 0),
+        switchMap((q) => this.search(q)),
+        catchError(() => of([] as NominatimResult[])),
+      )
+      .subscribe((res) => {
+        this.suggestions = this.filterCityResults(res);
+      });
   }
 
   // ControlValueAccessor
@@ -124,7 +142,14 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
 
   getLabel(s: NominatimResult): string {
     const a = s.address || {};
-    const city = a['city'] || a['town'] || a['village'] || a['county'] || a['state_district'] || a['state'] || '';
+    const city =
+      a['city'] ||
+      a['town'] ||
+      a['village'] ||
+      a['county'] ||
+      a['state_district'] ||
+      a['state'] ||
+      '';
     const suffix = 'India';
     const name = (city as string) || s.display_name;
     return (name as string).includes('India') ? (name as string) : `${name}, ${suffix}`;
@@ -137,10 +162,10 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
       .set('addressdetails', '1')
       .set('countrycodes', 'in')
       .set('limit', '8');
-    return this.http.get<NominatimResult[]>(
-      'https://nominatim.openstreetmap.org/search',
-      { params, headers: { 'Accept-Language': 'en', 'User-Agent': 'asan-zindegi/1.0' } as any },
-    );
+    return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
+      params,
+      headers: { 'Accept-Language': 'en', 'User-Agent': 'asan-zindegi/1.0' } as any,
+    });
   }
 
   private filterCityResults(list: NominatimResult[]): NominatimResult[] {

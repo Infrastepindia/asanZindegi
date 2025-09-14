@@ -71,7 +71,8 @@ export class ListingsComponent implements OnInit {
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
-    const saved = typeof window !== 'undefined' ? window.localStorage.getItem(this.cityPrefKey) : null;
+    const saved =
+      typeof window !== 'undefined' ? window.localStorage.getItem(this.cityPrefKey) : null;
     if (cat) this.filters.selectedCategories = [cat];
     if (loc) this.filters.location = loc;
     else if (saved) this.filters.location = saved;
@@ -613,7 +614,8 @@ export class ListingsComponent implements OnInit {
 
   onPlaceSelected(val: string) {
     this.filters.location = val || '';
-    if (typeof window !== 'undefined') window.localStorage.setItem(this.cityPrefKey, this.filters.location);
+    if (typeof window !== 'undefined')
+      window.localStorage.setItem(this.cityPrefKey, this.filters.location);
     this.setPage(1);
   }
 

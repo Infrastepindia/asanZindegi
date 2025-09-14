@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
-import { GooglePlacesDirective } from '../../shared/google-places.directive';
+import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
 
 interface ListingItem {
   id: number;
@@ -25,7 +25,7 @@ interface ListingItem {
 @Component({
   selector: 'app-listings',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, GooglePlacesDirective],
+  imports: [CommonModule, FormsModule, RouterLink, OsmAutocompleteComponent],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css',
 })

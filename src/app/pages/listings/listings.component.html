@@ -134,13 +134,11 @@
 
       <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Location</h6>
-        <input
-          class="form-control"
-          placeholder="Enter location"
+        <az-osm-autocomplete
           [(ngModel)]="filters.location"
-          azGooglePlaces
-          (placeChanged)="onPlaceSelected($event)"
-        />
+          (placeSelected)="onPlaceSelected($event.value)"
+          [placeholder]="'Enter location'"
+        ></az-osm-autocomplete>
       </div>
     </aside>
 

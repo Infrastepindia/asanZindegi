@@ -516,6 +516,58 @@ export class ListingsComponent implements OnInit {
     return this.filtered.slice(start, start + this.perPage);
   }
 
+  // Availability tag (mocked deterministically)
+  availabilityLabel(it: ListingItem): 'Currently Available' | 'Available for Call' {
+    return it.id % 2 === 0 ? 'Currently Available' : 'Available for Call';
+  }
+
+  // Geo utilities for distance
+  private cityCoords: Record<string, { lat: number; lon: number }> = {
+    'Delhi, India': { lat: 28.6139, lon: 77.209 },
+    'Mumbai, India': { lat: 19.076, lon: 72.8777 },
+    'Bengaluru, India': { lat: 12.9716, lon: 77.5946 },
+    'Hyderabad, India': { lat: 17.385, lon: 78.4867 },
+    'Chennai, India': { lat: 13.0827, lon: 80.2707 },
+    'Kolkata, India': { lat: 22.5726, lon: 88.3639 },
+    'Pune, India': { lat: 18.5204, lon: 73.8567 },
+    'Ahmedabad, India': { lat: 23.0225, lon: 72.5714 },
+    'Jaipur, India': { lat: 26.9124, lon: 75.7873 },
+    'Surat, India': { lat: 21.1702, lon: 72.8311 },
+  };
+
+  private findSearchCity(): { name: string; lat: number; lon: number } | null {
+    const q = (this.filters.location || '').toLowerCase().trim();
+    if (!q) return null;
+    for (const name of Object.keys(this.cityCoords)) {
+      if (name.toLowerCase().includes(q)) {
+        const c = this.cityCoords[name];
+        return { name, lat: c.lat, lon: c.lon };
+      }
+    }
+    return null;
+  }
+
+  private haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
+    const R = 6371;
+    const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+    const dLon = ((b.lon - a.lon) * Math.PI) / 180;
+    const la1 = (a.lat * Math.PI) / 180;
+    const la2 = (b.lat * Math.PI) / 180;
+    const sinDLat = Math.sin(dLat / 2);
+    const sinDLon = Math.sin(dLon / 2);
+    const h = sinDLat * sinDLat + Math.cos(la1) * Math.cos(la2) * sinDLon * sinDLon;
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  distanceFromSearch(itemLocation: string): string | null {
+    const search = this.findSearchCity();
+    if (!search) return null;
+    const cityName = Object.keys(this.cityCoords).find((k) => k === itemLocation);
+    if (!cityName) return null;
+    const km = this.haversineKm(search, this.cityCoords[cityName]);
+    return `${Math.round(km)} km`;
+  }
+
   setPage(p: number) {
     const pages = this.totalPages;
     this.page = Math.max(1, Math.min(p, pages));

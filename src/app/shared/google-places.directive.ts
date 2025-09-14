@@ -1,4 +1,5 @@
-import { AfterViewInit, Directive, ElementRef, EventEmitter, Output } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, Output, Inject } from '@angular/core';
+import { PLATFORM_ID, isPlatformBrowser } from '@angular/core';
 
 declare global {
   interface Window {
@@ -17,13 +18,19 @@ export class GooglePlacesDirective implements AfterViewInit {
   private maxAttempts = 40; // ~20s if 500ms interval
   private intervalId: any;
 
-  constructor(private el: ElementRef<HTMLInputElement>) {}
+  constructor(private el: ElementRef<HTMLInputElement>, @Inject(PLATFORM_ID) private platformId: Object) {}
+
+  private get isBrowser() {
+    return isPlatformBrowser(this.platformId);
+  }
 
   ngAfterViewInit(): void {
+    if (!this.isBrowser) return;
     this.tryInit();
   }
 
   private tryInit() {
+    if (typeof window === 'undefined') return;
     if (window.google?.maps?.places?.Autocomplete) {
       const input = this.el.nativeElement;
       const ac = new window.google.maps.places.Autocomplete(input as any, {

@@ -129,7 +129,7 @@ export class OtpInputComponent implements OnDestroy {
     }, 1000);
   }
 
-  onInput(ev: KeyboardEvent | InputEvent, idx: number) {
+  onInput(ev: Event, idx: number) {
     const el = ev.target as HTMLInputElement;
     const v = (el.value || '').replace(/\D+/g, '').slice(-1);
     this.digits[idx] = v;

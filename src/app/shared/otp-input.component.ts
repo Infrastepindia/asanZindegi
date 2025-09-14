@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -9,8 +17,13 @@ import { FormsModule } from '@angular/forms';
   template: `
     <div class="otp-wrap">
       <div class="d-flex align-items-center gap-2 mb-2">
-        <button type="button" class="btn btn-join btn-lg" (click)="sendOtp()" [disabled]="countdown>0">
-          {{ countdown>0 ? 'Resend in ' + countdown + 's' : (sent ? 'Resend OTP' : 'Send OTP') }}
+        <button
+          type="button"
+          class="btn btn-join btn-lg"
+          (click)="sendOtp()"
+          [disabled]="countdown > 0"
+        >
+          {{ countdown > 0 ? 'Resend in ' + countdown + 's' : sent ? 'Resend OTP' : 'Send OTP' }}
         </button>
         <div class="small text-secondary" *ngIf="phone">to {{ phone }}</div>
       </div>
@@ -28,7 +41,14 @@ import { FormsModule } from '@angular/forms';
           (keydown)="onKey($event as any, i)"
           (paste)="onPaste($event as any)"
         />
-        <button type="button" class="btn btn-join btn-lg ms-2" (click)="verifyOtp()" [disabled]="!isComplete">Verify</button>
+        <button
+          type="button"
+          class="btn btn-join btn-lg ms-2"
+          (click)="verifyOtp()"
+          [disabled]="!isComplete"
+        >
+          Verify
+        </button>
       </div>
       <div class="small mt-2" *ngIf="verified">
         <span class="badge bg-light text-dark">Phone verified</span>
@@ -38,12 +58,24 @@ import { FormsModule } from '@angular/forms';
   `,
   styles: [
     `
-      .otp-grid { display: flex; align-items: center; }
-      .otp-input {
-        width: 42px; height: 48px; text-align: center;
-        border: 1px solid #e7e9f3; border-radius: 10px; font-size: 18px; margin-right: 8px;
+      .otp-grid {
+        display: flex;
+        align-items: center;
       }
-      .otp-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,0.2); border-color: #b9bdfc; }
+      .otp-input {
+        width: 42px;
+        height: 48px;
+        text-align: center;
+        border: 1px solid #e7e9f3;
+        border-radius: 10px;
+        font-size: 18px;
+        margin-right: 8px;
+      }
+      .otp-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        border-color: #b9bdfc;
+      }
     `,
   ],
 })
@@ -103,7 +135,7 @@ export class OtpInputComponent implements OnDestroy {
     this.digits[idx] = v;
     el.value = v;
     if (v && idx < this.length - 1) {
-      const next = (el.nextElementSibling as HTMLElement | null) as HTMLInputElement | null;
+      const next = el.nextElementSibling as HTMLElement | null as HTMLInputElement | null;
       next?.focus();
     }
   }
@@ -111,7 +143,7 @@ export class OtpInputComponent implements OnDestroy {
   onKey(ev: KeyboardEvent, idx: number) {
     const el = ev.target as HTMLInputElement;
     if (ev.key === 'Backspace' && !el.value && idx > 0) {
-      const prev = (el.previousElementSibling as HTMLElement | null) as HTMLInputElement | null;
+      const prev = el.previousElementSibling as HTMLElement | null as HTMLInputElement | null;
       prev?.focus();
     }
   }

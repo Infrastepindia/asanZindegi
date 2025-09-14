@@ -115,19 +115,19 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
   }
 
   select(s: NominatimResult) {
-    const label = this.labelFor(s);
+    const label = this.getLabel(s);
     this.value = label;
     this.onChange(this.value);
     this.placeSelected.emit({ value: this.value, full: s });
     this.open = false;
   }
 
-  private labelFor(s: NominatimResult): string {
+  getLabel(s: NominatimResult): string {
     const a = s.address || {};
-    const city = a.city || a.town || a.village || a.county || a.state_district || a.state || '';
+    const city = a['city'] || a['town'] || a['village'] || a['county'] || a['state_district'] || a['state'] || '';
     const suffix = 'India';
-    const name = city || s.display_name;
-    return name.includes('India') ? name : `${name}, ${suffix}`;
+    const name = (city as string) || s.display_name;
+    return (name as string).includes('India') ? (name as string) : `${name}, ${suffix}`;
   }
 
   private search(q: string) {

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { GooglePlacesDirective } from '../../shared/google-places.directive';
 
 interface ListingItem {
   id: number;
@@ -24,7 +25,7 @@ interface ListingItem {
 @Component({
   selector: 'app-listings',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, GooglePlacesDirective],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css',
 })
@@ -570,6 +571,11 @@ export class ListingsComponent implements OnInit {
 
   distanceBadge(itemLocation: string): string {
     return this.distanceFromSearch(itemLocation) || 'Set location';
+  }
+
+  onPlaceSelected(val: string) {
+    this.filters.location = val || '';
+    this.setPage(1);
   }
 
   setPage(p: number) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -43,10 +43,10 @@ export class ListingsComponent implements OnInit {
     // Load super categories for treeview
     this.api.getCategories().subscribe({
       next: (res) => {
-        this.superCategories = res?.data || [];
+        this.superCategories.set(res?.data || []);
       },
       error: () => {
-        this.superCategories = [];
+        this.superCategories.set([]);
       },
     });
 
@@ -66,7 +66,7 @@ export class ListingsComponent implements OnInit {
   };
 
   // Super category → subcategory treeview data
-  superCategories: ApiSuperCategory[] = [];
+  superCategories = signal<ApiSuperCategory[]>([]);
   expandedSuperIds = new Set<number>();
 
   toggleSuper(id: number) {

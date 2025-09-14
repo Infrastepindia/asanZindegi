@@ -28,7 +28,8 @@ export class GooglePlacesDirective implements AfterViewInit {
       const input = this.el.nativeElement;
       const ac = new window.google.maps.places.Autocomplete(input as any, {
         fields: ['formatted_address', 'name', 'geometry'],
-        types: ['geocode'],
+        types: ['(cities)'],
+        componentRestrictions: { country: ['in'] },
       });
       ac.addListener('place_changed', () => {
         const place = ac.getPlace();

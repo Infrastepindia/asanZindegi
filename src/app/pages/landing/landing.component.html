@@ -340,6 +340,7 @@
       <div class="text-white-50">Reach thousands of customers today</div>
     </div>
     <a class="btn btn-join btn-lg" [routerLink]="'/post-ad'">Post Now</a>
+    <a class="btn btn-join btn-lg ms-2" [routerLink]="'/provider/register'">Become a Service Provider</a>
   </div>
 </section>
 
@@ -382,8 +383,8 @@
           from home services like plumbing and electrical work to personal services like photography
           and tutoring.
         </p>
-        <a href="#post" class="btn btn-join btn-lg"
-          ><i class="bi bi-person-plus me-1"></i> Join Us</a
+        <a class="btn btn-join btn-lg" [routerLink]="'/provider/register'"
+          ><i class="bi bi-person-plus me-1"></i> Become a Service Provider</a
         >
       </div>
       <div class="col-lg-6 text-center">

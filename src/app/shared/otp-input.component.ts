@@ -37,9 +37,9 @@ import { FormsModule } from '@angular/forms';
           maxlength="1"
           autocomplete="one-time-code"
           [value]="digits[i]"
-          (input)="onInput($event as any, i)"
-          (keydown)="onKey($event as any, i)"
-          (paste)="onPaste($event as any)"
+          (input)="onInput($event, i)"
+          (keydown)="onKey($event, i)"
+          (paste)="onPaste($event)"
         />
         <button
           type="button"
@@ -129,7 +129,7 @@ export class OtpInputComponent implements OnDestroy {
     }, 1000);
   }
 
-  onInput(ev: KeyboardEvent | InputEvent, idx: number) {
+  onInput(ev: Event, idx: number) {
     const el = ev.target as HTMLInputElement;
     const v = (el.value || '').replace(/\D+/g, '').slice(-1);
     this.digits[idx] = v;

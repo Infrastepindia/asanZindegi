@@ -111,7 +111,7 @@ export class ProviderRegisterComponent {
   }
 
   // Draft persistence (text fields only)
-  private writeDraft() {
+  writeDraft() {
     const draft: RegistrationDraft = {
       step: this.step,
       account: this.account,

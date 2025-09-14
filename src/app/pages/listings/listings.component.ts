@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
 
 interface ListingItem {
   id: number;
@@ -24,7 +25,7 @@ interface ListingItem {
 @Component({
   selector: 'app-listings',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, OsmAutocompleteComponent],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css',
 })
@@ -33,12 +34,50 @@ export class ListingsComponent implements OnInit {
   private api = inject(ApiService);
   constructor(private route: ActivatedRoute) {}
 
+  // First-time city chooser
+  showCityPicker = false;
+  private cityPrefKey = 'az_city_pref';
+  cityOptions: Array<{ name: string; img: string }> = [
+    {
+      name: 'Kolkata, India',
+      img: 'https://images.unsplash.com/photo-1569416167996-433986d98891?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Mumbai, India',
+      img: 'https://images.unsplash.com/photo-1562307532-46792c3a5b22?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Hyderabad, India',
+      img: 'https://images.unsplash.com/photo-1609840178322-771ae9c3a3b3?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Delhi, India',
+      img: 'https://images.unsplash.com/photo-1606062159139-9a5b5f9d5442?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Chennai, India',
+      img: 'https://images.unsplash.com/photo-1608628047959-3212cbb3f2df?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Bengaluru, India',
+      img: 'https://images.unsplash.com/photo-1604328698692-f76ea9498f8e?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Durgapur, India',
+      img: 'https://images.unsplash.com/photo-1590051034278-5e7c3d5a7933?q=80&w=600&auto=format&fit=crop',
+    },
+  ];
+
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
+    const saved =
+      typeof window !== 'undefined' ? window.localStorage.getItem(this.cityPrefKey) : null;
     if (cat) this.filters.selectedCategories = [cat];
     if (loc) this.filters.location = loc;
-    if (cat || loc) this.setPage(1);
+    else if (saved) this.filters.location = saved;
+    else this.showCityPicker = true;
+    if (cat || loc || saved) this.setPage(1);
 
     // Load super categories for treeview
     this.api.getCategories().subscribe({
@@ -54,7 +93,7 @@ export class ListingsComponent implements OnInit {
       const c = map.get('category') || '';
       const l = map.get('location') || '';
       this.filters.selectedCategories = c ? [c] : [];
-      this.filters.location = l;
+      if (l) this.filters.location = l;
       this.setPage(1);
     });
   }
@@ -514,6 +553,77 @@ export class ListingsComponent implements OnInit {
   get paged(): ListingItem[] {
     const start = (this.page - 1) * this.perPage;
     return this.filtered.slice(start, start + this.perPage);
+  }
+
+  // Availability tag (mocked deterministically)
+  availabilityLabel(it: ListingItem): 'Currently Available' | 'Available for Call' {
+    return it.id % 2 === 0 ? 'Currently Available' : 'Available for Call';
+  }
+
+  // Geo utilities for distance
+  private cityCoords: Record<string, { lat: number; lon: number }> = {
+    'Delhi, India': { lat: 28.6139, lon: 77.209 },
+    'Mumbai, India': { lat: 19.076, lon: 72.8777 },
+    'Bengaluru, India': { lat: 12.9716, lon: 77.5946 },
+    'Hyderabad, India': { lat: 17.385, lon: 78.4867 },
+    'Chennai, India': { lat: 13.0827, lon: 80.2707 },
+    'Kolkata, India': { lat: 22.5726, lon: 88.3639 },
+    'Pune, India': { lat: 18.5204, lon: 73.8567 },
+    'Ahmedabad, India': { lat: 23.0225, lon: 72.5714 },
+    'Jaipur, India': { lat: 26.9124, lon: 75.7873 },
+    'Surat, India': { lat: 21.1702, lon: 72.8311 },
+    'Durgapur, India': { lat: 23.5204, lon: 87.3119 },
+  };
+
+  private findSearchCity(): { name: string; lat: number; lon: number } | null {
+    const q = (this.filters.location || '').toLowerCase().trim();
+    if (!q) return null;
+    for (const name of Object.keys(this.cityCoords)) {
+      if (name.toLowerCase().includes(q)) {
+        const c = this.cityCoords[name];
+        return { name, lat: c.lat, lon: c.lon };
+      }
+    }
+    return null;
+  }
+
+  private haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
+    const R = 6371;
+    const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+    const dLon = ((b.lon - a.lon) * Math.PI) / 180;
+    const la1 = (a.lat * Math.PI) / 180;
+    const la2 = (b.lat * Math.PI) / 180;
+    const sinDLat = Math.sin(dLat / 2);
+    const sinDLon = Math.sin(dLon / 2);
+    const h = sinDLat * sinDLat + Math.cos(la1) * Math.cos(la2) * sinDLon * sinDLon;
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  distanceFromSearch(itemLocation: string): string | null {
+    const search = this.findSearchCity();
+    if (!search) return null;
+    const cityName = Object.keys(this.cityCoords).find((k) => k === itemLocation);
+    if (!cityName) return null;
+    const km = this.haversineKm(search, this.cityCoords[cityName]);
+    return `${Math.round(km)} km`;
+  }
+
+  distanceBadge(itemLocation: string): string {
+    return this.distanceFromSearch(itemLocation) || 'Set location';
+  }
+
+  onPlaceSelected(val: string) {
+    this.filters.location = val || '';
+    if (typeof window !== 'undefined')
+      window.localStorage.setItem(this.cityPrefKey, this.filters.location);
+    this.setPage(1);
+  }
+
+  chooseCity(name: string) {
+    this.filters.location = name;
+    if (typeof window !== 'undefined') window.localStorage.setItem(this.cityPrefKey, name);
+    this.showCityPicker = false;
+    this.setPage(1);
   }
 
   setPage(p: number) {

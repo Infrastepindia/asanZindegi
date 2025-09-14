@@ -117,7 +117,11 @@
 
       <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Location</h6>
-        <input class="form-control" placeholder="Enter location" [(ngModel)]="filters.location" />
+        <az-osm-autocomplete
+          [(ngModel)]="filters.location"
+          (placeSelected)="onPlaceSelected($event.value)"
+          [placeholder]="'Enter location'"
+        ></az-osm-autocomplete>
       </div>
     </aside>
 
@@ -205,6 +209,14 @@
                     }"
                     >{{ it.type }}</span
                   >
+                  <div class="mt-2 d-flex flex-wrap gap-2 justify-content-end">
+                    <span class="badge pill-badge bg-light text-dark">{{
+                      availabilityLabel(it)
+                    }}</span>
+                    <span class="badge pill-badge bg-light text-dark">{{
+                      distanceBadge(it.location)
+                    }}</span>
+                  </div>
                   <div class="mt-2">
                     <a class="btn btn-join btn-lg" [routerLink]="['/ad', it.id]">Details</a>
                   </div>

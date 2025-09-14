@@ -147,6 +147,9 @@ export class ProviderRegisterComponent {
 
   // Navigation
   next() {
+    if (this.step === 1 && this.account.password !== this.account.confirmPassword) {
+      return;
+    }
     if (this.step < this.steps.length) {
       this.step++;
       this.writeDraft();

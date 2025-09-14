@@ -49,6 +49,20 @@
                 <div class="col-md-6">
                   <label class="form-label">Phone</label>
                   <input class="form-control" [(ngModel)]="account.phone" name="phone" required />
+                  <div class="small mt-1" *ngIf="phoneVerified">
+                    <span class="badge bg-light text-dark">Verified</span>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <az-otp-input
+                    [phone]="account.phone"
+                    [length]="6"
+                    [cooldownSec]="30"
+                    [verified]="phoneVerified"
+                    [errorMessage]="otpError"
+                    (requestOtp)="onOtpRequest()"
+                    (verify)="onOtpVerify($event)"
+                  ></az-otp-input>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Password</label>
@@ -85,7 +99,7 @@
                 </div>
               </div>
               <div class="d-flex justify-content-end gap-2 mt-3">
-                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+                <button type="submit" class="btn btn-join btn-lg" [disabled]="!phoneVerified">Continue</button>
               </div>
             </form>
 

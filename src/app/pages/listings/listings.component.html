@@ -1,4 +1,21 @@
 <div class="container py-4">
+  <!-- City picker modal -->
+  <div *ngIf="showCityPicker" class="city-modal-overlay">
+    <div class="city-modal">
+      <h5 class="mb-3">Choose your city</h5>
+      <div class="row g-3">
+        <div class="col-6" *ngFor="let c of cityOptions">
+          <button type="button" class="city-card w-100 text-start" (click)="chooseCity(c.name)">
+            <img [src]="c.img" [alt]="c.name" class="city-thumb" />
+            <div class="mt-2 fw-medium">{{ c.name }}</div>
+          </button>
+        </div>
+      </div>
+      <div class="text-end mt-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="showCityPicker = false">Close</button>
+      </div>
+    </div>
+  </div>
   <div class="row g-4">
     <!-- Sidebar -->
     <aside class="col-lg-3">

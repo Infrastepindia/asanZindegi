@@ -34,6 +34,40 @@ export class ListingsComponent implements OnInit {
   private api = inject(ApiService);
   constructor(private route: ActivatedRoute) {}
 
+  // First-time city chooser
+  showCityPicker = false;
+  private cityPrefKey = 'az_city_pref';
+  cityOptions: Array<{ name: string; img: string }> = [
+    {
+      name: 'Kolkata, India',
+      img: 'https://images.unsplash.com/photo-1569416167996-433986d98891?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Mumbai, India',
+      img: 'https://images.unsplash.com/photo-1562307532-46792c3a5b22?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Hyderabad, India',
+      img: 'https://images.unsplash.com/photo-1609840178322-771ae9c3a3b3?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Delhi, India',
+      img: 'https://images.unsplash.com/photo-1606062159139-9a5b5f9d5442?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Chennai, India',
+      img: 'https://images.unsplash.com/photo-1608628047959-3212cbb3f2df?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Bengaluru, India',
+      img: 'https://images.unsplash.com/photo-1604328698692-f76ea9498f8e?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Durgapur, India',
+      img: 'https://images.unsplash.com/photo-1590051034278-5e7c3d5a7933?q=80&w=600&auto=format&fit=crop',
+    },
+  ];
+
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';

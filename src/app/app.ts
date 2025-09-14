@@ -5,7 +5,7 @@ import { CityGateComponent } from './shared/city-gate.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, CityGateComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

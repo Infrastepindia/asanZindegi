@@ -7,6 +7,7 @@ import {
   Output,
   QueryList,
   ViewChildren,
+  ElementRef,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -30,13 +31,15 @@ import { FormsModule } from '@angular/forms';
 
       <div *ngIf="sent" class="otp-grid" role="group" aria-label="Enter OTP">
         <input
-          *ngFor="let d of digits; let i = index"
+          *ngFor="let d of digits; let i = index; trackBy: trackByIndex"
+          #otpBox
           class="otp-input"
           type="tel"
           inputmode="numeric"
           maxlength="1"
           autocomplete="one-time-code"
-          [value]="digits[i]"
+          [(ngModel)]="digits[i]"
+          [ngModelOptions]="{ standalone: true }"
           (input)="onInput($event, i)"
           (keydown)="onKey($event, i)"
           (paste)="onPaste($event)"
@@ -94,6 +97,8 @@ export class OtpInputComponent implements OnDestroy {
   private timer: any;
   sent = false;
 
+  @ViewChildren('otpBox') private otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
   constructor() {
     this.resetDigits();
   }
@@ -108,6 +113,10 @@ export class OtpInputComponent implements OnDestroy {
 
   private resetDigits() {
     this.digits = Array.from({ length: this.length }, () => '');
+  }
+
+  trackByIndex(i: number) {
+    return i;
   }
 
   sendOtp() {
@@ -135,16 +144,19 @@ export class OtpInputComponent implements OnDestroy {
     this.digits[idx] = v;
     el.value = v;
     if (v && idx < this.length - 1) {
-      const next = el.nextElementSibling as HTMLElement | null as HTMLInputElement | null;
+      const next = this.otpInputs.get(idx + 1)?.nativeElement;
       next?.focus();
+      next?.select?.();
     }
   }
 
   onKey(ev: KeyboardEvent, idx: number) {
     const el = ev.target as HTMLInputElement;
     if (ev.key === 'Backspace' && !el.value && idx > 0) {
-      const prev = el.previousElementSibling as HTMLElement | null as HTMLInputElement | null;
+      const prev = this.otpInputs.get(idx - 1)?.nativeElement;
+      this.digits[idx - 1] = '';
       prev?.focus();
+      prev?.select?.();
     }
   }
 
@@ -154,6 +166,10 @@ export class OtpInputComponent implements OnDestroy {
     if (!nums.length) return;
     ev.preventDefault();
     this.digits = Array.from({ length: this.length }, (_, i) => nums[i] || '');
+    const lastIdx = Math.min(nums.length, this.length) - 1;
+    const next = this.otpInputs.get(Math.max(lastIdx, 0))?.nativeElement;
+    next?.focus();
+    next?.select?.();
   }
 
   verifyOtp() {

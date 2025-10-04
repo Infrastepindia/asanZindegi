@@ -70,7 +70,19 @@ export class AccountService {
     };
 
     const url = 'api/User/register';
-    return this.http.post(url, body);
+    return this.http.post(url, body).pipe(
+      tap(() => {
+        const acc: IndividualAccount = {
+          id: 1,
+          type: 'Individual',
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          createdAt: new Date().toISOString(),
+        };
+        this.setAccount(acc);
+      })
+    );
   }
 
   registerCompany(data: {

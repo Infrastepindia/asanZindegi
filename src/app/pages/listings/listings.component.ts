@@ -20,6 +20,7 @@ interface ListingItem {
   rating: number;
   verified: boolean;
   verifiedType?: 'Company' | 'KYC';
+  serviceType?: string;
 }
 
 @Component({
@@ -97,11 +98,16 @@ export class ListingsComponent implements OnInit {
       this.setPage(1);
     });
   }
+  locationResults: Array<{ display_name: string; lat: string; lon: string }> = [];
+  locationLoading = false;
+  private locDebounce?: any;
+
   filters = {
     selectedCategories: [] as string[],
     location: '',
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
+    provider: 'all' as 'all' | 'company' | 'individual',
   };
 
   // Super category → subcategory treeview data
@@ -323,6 +329,22 @@ export class ListingsComponent implements OnInit {
 
   types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
+  private serviceTypeMap: Record<string, string[]> = {
+    Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings', 'Kitchen Plumbing'],
+    Electrical: ['Wiring Service', 'Appliance Install', 'Lighting Setup', 'Panel Repair'],
+    Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning', 'Sofa Shampoo'],
+    Tutoring: ['Math Tuition', 'English Coaching', 'Science Tutor', 'Exam Prep'],
+    Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Fix', 'Wardrobe Build'],
+    Painting: ['Interior Paint', 'Exterior Paint', 'Texture Work', 'Ceiling Paint'],
+    Moving: ['House Shifting', 'Office Relocation', 'Packing Service', 'Local Transport'],
+    'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washer Repair', 'Microwave Fix'],
+  };
+
+  get serviceTypesForSelected(): string[] {
+    const cat = this.filters.category;
+    return cat && (this.serviceTypeMap as any)[cat] ? this.serviceTypeMap[cat] : [];
+  }
+
   private prng(seed: number) {
     return function () {
       seed |= 0;
@@ -449,9 +471,11 @@ export class ListingsComponent implements OnInit {
           const rating = 3 + Math.floor(rnd() * 3);
           const verified = rnd() < 0.6;
           const verifiedType = verified ? (rnd() < 0.5 ? 'Company' : 'KYC') : undefined;
+          const title = this.createTitle(cat, typ, i);
+          const serviceType = title.split(' - ')[0];
           out.push({
             id: id++,
-            title: this.createTitle(cat, typ, i),
+            title,
             category: cat,
             type: typ,
             location,
@@ -463,6 +487,7 @@ export class ListingsComponent implements OnInit {
             rating,
             verified,
             verifiedType,
+            serviceType,
           });
         }
       }
@@ -471,21 +496,25 @@ export class ListingsComponent implements OnInit {
   }
 
   private posted(): ListingItem[] {
-    return this.ads.getAll().map((ad) => ({
-      id: ad.id,
-      title: ad.title,
-      category: ad.category,
-      type: ad.type,
-      location: ad.location,
-      price: ad.price,
-      unit: ad.unit,
-      cover: ad.cover,
-      date: ad.date,
-      views: ad.views,
-      rating: ad.rating,
-      verified: ad.verified,
-      verifiedType: ad.verifiedType,
-    }));
+    return this.ads.getAll().map((ad) => {
+      const st = (ad.title || '').split(' - ')[0].trim() || ad.title;
+      return {
+        id: ad.id,
+        title: ad.title,
+        category: ad.category,
+        type: ad.type,
+        location: ad.location,
+        price: ad.price,
+        unit: ad.unit,
+        cover: ad.cover,
+        date: ad.date,
+        views: ad.views,
+        rating: ad.rating,
+        verified: ad.verified,
+        verifiedType: ad.verifiedType,
+        serviceType: st,
+      } as ListingItem;
+    });
   }
 
   all: ListingItem[] = [...this.posted(), ...this.generateListings()];
@@ -507,6 +536,10 @@ export class ListingsComponent implements OnInit {
 
     if (this.filters.verified === 'verified') out = out.filter((i) => i.verified);
     if (this.filters.verified === 'unverified') out = out.filter((i) => !i.verified);
+
+    if (this.filters.provider === 'company') out = out.filter((i) => i.verifiedType === 'Company');
+    if (this.filters.provider === 'individual')
+      out = out.filter((i) => i.verifiedType !== 'Company');
 
     return out;
   }
@@ -629,5 +662,218 @@ export class ListingsComponent implements OnInit {
   setPage(p: number) {
     const pages = this.totalPages;
     this.page = Math.max(1, Math.min(p, pages));
+    this.updateSEO();
+  }
+
+  onLocationChange(value: string) {
+    this.filters.location = value;
+    if (this.locDebounce) clearTimeout(this.locDebounce);
+    if (!value || value.trim().length < 2) {
+      this.locationResults = [];
+      return;
+    }
+    this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
+  }
+
+  selectLocation(item: { display_name: string; lat: string; lon: string }) {
+    this.filters.location = item.display_name;
+    this.locationResults = [];
+    this.setPage(1);
+  }
+
+  private queryNominatim(q: string) {
+    this.locationLoading = true;
+    const left = 68.176645,
+      right = 97.395561,
+      bottom = 6.554607,
+      top = 35.674545; // India bbox
+    const params = new URLSearchParams({
+      format: 'jsonv2',
+      addressdetails: '1',
+      namedetails: '1',
+      extratags: '0',
+      limit: '8',
+      countrycodes: 'in',
+      viewbox: `${left},${top},${right},${bottom}`,
+      bounded: '1',
+      'accept-language': 'en-IN,hi-IN',
+      q,
+    });
+    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+    this.http.get<any[]>(url).subscribe({
+      next: (res) => {
+        const allowed = new Set([
+          'city',
+          'town',
+          'village',
+          'suburb',
+          'state',
+          'district',
+          'county',
+          'locality',
+        ]);
+        const onlyIn = (res || []).filter(
+          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+        );
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+          allowed.has((r.type || '').toLowerCase()),
+        );
+        this.locationResults = cleaned.slice(0, 8);
+        this.locationLoading = false;
+      },
+      error: () => {
+        this.locationResults = [];
+        this.locationLoading = false;
+      },
+    });
+  }
+
+  private getOrigin(): string {
+    return (globalThis as any).location?.origin || '';
+  }
+
+  private applySlug(slug: string | null) {
+    if (!slug) return;
+    const s = slug.toLowerCase();
+
+    const typeMap: Record<string, ListingItem['type']> = {
+      sell: 'Sell',
+      rent: 'Rent',
+      exchange: 'Exchange',
+      service: 'Service',
+    };
+
+    const catBySlug: Record<string, string> = this.categories.reduce(
+      (acc, c) => {
+        acc[this.slugify(c)] = c;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    const tokens = s.split('-').filter(Boolean);
+    for (const tk of tokens) {
+      if (typeMap[tk]) this.filters.type = typeMap[tk];
+    }
+
+    let assignedCat = '';
+    for (const [slugCat, original] of Object.entries(catBySlug)) {
+      if (
+        s === slugCat ||
+        s.endsWith('-' + slugCat) ||
+        s.startsWith(slugCat + '-') ||
+        s.includes('-' + slugCat + '-')
+      ) {
+        assignedCat = original;
+        break;
+      }
+    }
+    if (assignedCat) this.filters.category = assignedCat;
+  }
+
+  private slugify(input: string): string {
+    return input
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  private hasTrackingParams(map: import('@angular/router').ParamMap): boolean {
+    const keys = (map as any).keys as string[];
+    const hasUtm = keys.some((k) => /^utm_/i.test(k));
+    const trackingKeys = [
+      'gclid',
+      'fbclid',
+      'msclkid',
+      'dclid',
+      'icid',
+      'ref',
+      'referrer',
+      'session',
+      'sid',
+    ];
+    const hasOther = keys.some((k) => trackingKeys.includes(k.toLowerCase()));
+    return hasUtm || hasOther;
+  }
+
+  private hasFilterParams(map: import('@angular/router').ParamMap): boolean {
+    const f = [
+      'category',
+      'type',
+      'location',
+      'minPrice',
+      'maxPrice',
+      'minRating',
+      'verified',
+      'city',
+    ];
+    const keys = (map as any).keys as string[];
+    return keys.some((k) => f.includes(k));
+  }
+
+  private isSEOValuableFilters(map: import('@angular/router').ParamMap): boolean {
+    const keys = (map as any).keys as string[];
+    const disallowed = ['minPrice', 'maxPrice', 'minRating', 'verified'];
+    if (keys.some((k) => disallowed.includes(k))) return false;
+    const allowed = ['category', 'type', 'city'];
+    return keys.some((k) => allowed.includes(k));
+  }
+
+  private extractCityName(map: import('@angular/router').ParamMap): string | null {
+    const city = map.get('city');
+    if (city) return city;
+    if (this.filters.location) return this.filters.location.split(',')[0].trim();
+    return null;
+  }
+
+  private buildFilterQuery(map: import('@angular/router').ParamMap, hasCity: boolean): string {
+    const category = (map.get('category') || this.filters.category || '').trim();
+    const type = (map.get('type') || this.filters.type || '').trim();
+    const parts: string[] = [];
+    if (category) parts.push(this.slugify(category));
+    if (type) parts.push(this.slugify(type));
+    if (!parts.length) return '';
+    return hasCity ? `-${parts.join('-')}` : `/${parts.join('-')}`;
+  }
+
+  private updateSEO(): void {
+    const map = this.route.snapshot.queryParamMap;
+    const origin = this.getOrigin();
+    const cityName = this.extractCityName(map);
+    const basePath = cityName ? `/listings/${this.slugify(cityName)}` : '/listings';
+
+    let canonical = origin + basePath;
+
+    const hasTracking = this.hasTrackingParams(map);
+    const hasFilters = this.hasFilterParams(map);
+
+    if (hasFilters && this.isSEOValuableFilters(map)) {
+      const hasCity = /\/listings\/.+/.test(basePath);
+      canonical = origin + basePath + this.buildFilterQuery(map, hasCity);
+    } else if (hasFilters && !this.isSEOValuableFilters(map)) {
+      this.meta.updateTag({ name: 'robots', content: 'noindex,follow' });
+      canonical = origin + basePath;
+    } else {
+      this.meta.removeTag("name='robots'");
+    }
+
+    if (this.page > 1) {
+      const sep = canonical.includes('?') ? '&' : '?';
+      canonical = `${canonical}${sep}page=${this.page}`;
+    }
+
+    if (hasTracking) {
+      canonical = origin + basePath + (this.page > 1 ? `?page=${this.page}` : '');
+    }
+
+    let link: HTMLLinkElement | null = this.doc.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', canonical);
   }
 }

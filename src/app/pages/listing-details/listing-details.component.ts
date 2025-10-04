@@ -1,8 +1,9 @@
 import { Component, inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
+import { Meta } from '@angular/platform-browser';
 
 declare const L: any;
 
@@ -18,6 +19,8 @@ export class ListingDetailsComponent {
   private svc = inject(ListingsService);
   private ads = inject(AdsService);
   private platformId = inject(PLATFORM_ID);
+  private doc = inject(DOCUMENT);
+  private meta = inject(Meta);
 
   item?: ListingItem;
   thumbnails: string[] = [];
@@ -114,6 +117,7 @@ export class ListingDetailsComponent {
       }
     }
     if (this.item) {
+      this.updateCanonical();
       const all = this.svc.getAll();
       this.related = all
         .filter((i) => i.category === this.item!.category && i.id !== this.item!.id)
@@ -168,6 +172,68 @@ export class ListingDetailsComponent {
       Surat: [21.1702, 72.8311],
     };
     return table[city] || this.center;
+  }
+
+  private getOrigin(): string {
+    return (globalThis as any).location?.origin || '';
+  }
+
+  private slugify(input: string): string {
+    return (input || '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  private cityFromLocation(loc?: string): string {
+    return (loc || '').split(',')[0].trim();
+  }
+
+  private hasTrackingParams(): boolean {
+    const qs = (globalThis as any).location?.search || '';
+    const sp = new URLSearchParams(qs);
+    const keys = Array.from(sp.keys());
+    const hasUtm = keys.some((k) => /^utm_/i.test(k));
+    const tracking = [
+      'gclid',
+      'fbclid',
+      'msclkid',
+      'dclid',
+      'icid',
+      'ref',
+      'referrer',
+      'session',
+      'sid',
+    ];
+    return hasUtm || keys.some((k) => tracking.includes(k.toLowerCase()));
+  }
+
+  private updateCanonical() {
+    if (!this.item) return;
+    const origin = this.getOrigin();
+    const citySlug = this.slugify(this.cityFromLocation(this.item.location));
+    const nameSlug = this.slugify(this.item.title);
+    const base = `${origin}/listing/${citySlug}/${nameSlug}-${this.item.id}`;
+
+    let canonical = base;
+    if (this.hasTrackingParams()) {
+      canonical = base;
+    }
+
+    let link: HTMLLinkElement | null = this.doc.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', canonical);
+
+    const current = (globalThis as any).location?.pathname || '';
+    if (current && current !== `/listing/${citySlug}/${nameSlug}-${this.item.id}`) {
+      this.meta.updateTag({ rel: 'canonical', href: canonical } as any);
+    }
   }
 
   ngAfterViewInit() {

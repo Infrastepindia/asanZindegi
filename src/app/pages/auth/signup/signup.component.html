@@ -26,7 +26,7 @@
               </div>
             </div>
             <div class="auth-sep text-center text-secondary small mb-3">or</div>
-            <form (submit)="onSubmit($event)" class="auth-form">
+            <form (ngSubmit)="onSubmit($event)" class="auth-form" novalidate>
               <div class="mb-3">
                 <label class="form-label">Full name</label>
                 <input class="form-control" [(ngModel)]="model.name" name="name" required />
@@ -51,7 +51,9 @@
                   required
                 />
               </div>
-              <button class="btn btn-join btn-lg w-100" type="submit">Sign up</button>
+              <button class="btn btn-join btn-lg w-100" type="submit" (click)="onSubmit($event)">
+                Sign up
+              </button>
             </form>
             <div class="text-center small mt-3 text-secondary">
               Already have an account?

@@ -16,6 +16,7 @@ import { AdEditComponent } from './pages/ad-edit/ad-edit.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },
+  { path: 'listings/:slug', component: ListingsComponent, title: 'Listings' },
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },
   { path: 'forgot-password', component: ForgotPasswordComponent, title: 'Forgot Password' },

@@ -1,0 +1,16 @@
+# Force HTTPS (optional)
+# RewriteEngine On
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Single Page Application rewrites
+RewriteEngine On
+RewriteBase /
+
+# Serve existing files/directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Fallback to index.html for all other routes
+RewriteRule ^ index.html [L]

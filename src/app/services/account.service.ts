@@ -67,7 +67,7 @@ export class AccountService {
       lastName: lastName || '',
       password: data.phone,
       role: 'Individual',
-      company: ''
+      company: '',
     };
 
     const url = 'api/User/register';
@@ -82,7 +82,7 @@ export class AccountService {
           createdAt: new Date().toISOString(),
         };
         this.setAccount(acc);
-      })
+      }),
     );
   }
 

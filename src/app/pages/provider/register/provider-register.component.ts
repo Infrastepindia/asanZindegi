@@ -23,10 +23,13 @@ export class ProviderRegisterComponent {
   submit(e: Event) {
     e.preventDefault();
     if (this.type === 'Individual') {
-      this.accounts.registerIndividual(this.individual);
+      this.accounts.registerIndividual(this.individual).subscribe({
+        next: () => this.router.navigate(['/provider/dashboard']),
+        error: () => this.router.navigate(['/provider/dashboard']),
+      });
     } else {
       this.accounts.registerCompany(this.company);
+      this.router.navigate(['/provider/dashboard']);
     }
-    this.router.navigate(['/provider/dashboard']);
   }
 }

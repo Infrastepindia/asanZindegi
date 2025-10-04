@@ -20,6 +20,7 @@ export class SignupComponent {
 
   onSubmit(e: Event) {
     e.preventDefault();
+    console.log(e);
     const payload = { fullName: this.model.name, email: this.model.email, phone: this.model.password };
     this.accounts.registerIndividual(payload).subscribe({
       next: () => this.router.navigate(['/login']),

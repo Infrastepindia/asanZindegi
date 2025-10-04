@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ApiService, ApiSuperCategory } from '../../services/api.service';
 
 interface CategoryItem {
   name: string;
@@ -46,10 +47,39 @@ interface BlogItem {
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit(): void {
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        this.apiSuperCategories = (res && (res as any).data) || [];
+        this.superCategoryOptions = this.apiSuperCategories.map((s) => ({
+          key: s.id,
+          title: s.title,
+        }));
+        this.visibleSuperCategories = this.apiSuperCategories.map((s) => ({
+          key: s.id,
+          title: s.title,
+          colorClass: s.colorClass,
+          icon: s.icon,
+          items: s.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count })),
+        }));
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.apiSuperCategories = [];
+        this.superCategoryOptions = [];
+        this.visibleSuperCategories = [];
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly doc = inject(DOCUMENT);
+  private readonly api = inject(ApiService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly year = new Date().getFullYear();
 
@@ -85,6 +115,7 @@ export class LandingComponent {
   search = {
     keyword: '',
     location: '',
+    superCategory: '',
     category: '',
     serviceType: '',
     lat: null as number | null,
@@ -98,32 +129,39 @@ export class LandingComponent {
   locationLoading = false;
   private locDebounce?: any;
 
-  private serviceTypeMap: Record<string, string[]> = {
-    Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings'],
-    Electrical: ['Wiring', 'Appliance Install', 'Lighting'],
-    Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning'],
-    Tutoring: ['Math', 'English', 'Science'],
-    Carpentry: ['Furniture Repair', 'Custom Shelves'],
-    Painting: ['Interior', 'Exterior'],
-    Moving: ['House Shifting', 'Office Relocation'],
-    'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washing Machine Repair'],
-  };
+  private serviceTypeMap: Record<string, string[]> = {};
+
+  superCategoryOptions: Array<{ key: number | string; title: string }> = [];
+  categoryOptions: CategoryItem[] = [];
+  private apiSuperCategories: ApiSuperCategory[] = [];
+
+  private filteredBySuper(key: number | string): CategoryItem[] {
+    if (!key) return [];
+    const sc = this.apiSuperCategories.find((s) => String(s.id) === String(key));
+    if (!sc) return [];
+    return sc.categories.map((c) => ({ name: c.name, icon: c.icon, count: c.count }));
+  }
+
+  onSuperChange(value: number | string) {
+    this.search.category = '';
+    this.search.serviceType = '';
+    this.categoryOptions = this.filteredBySuper(value);
+  }
 
   get serviceTypesForSelected(): string[] {
     const cat = this.search.category;
     return cat && this.serviceTypeMap[cat] ? this.serviceTypeMap[cat] : [];
   }
 
-  categories: CategoryItem[] = [
-    { name: 'Plumbing', icon: 'bi-tools', count: 128 },
-    { name: 'Electrical', icon: 'bi-lightning-charge', count: 94 },
-    { name: 'Cleaning', icon: 'bi-bucket', count: 210 },
-    { name: 'Tutoring', icon: 'bi-book', count: 76 },
-    { name: 'Carpentry', icon: 'bi-hammer', count: 63 },
-    { name: 'Painting', icon: 'bi-brush', count: 58 },
-    { name: 'Moving', icon: 'bi-truck', count: 34 },
-    { name: 'Appliance Repair', icon: 'bi-tools', count: 45 },
-  ];
+  categories: CategoryItem[] = [];
+
+  visibleSuperCategories: Array<{
+    key: string | number;
+    title: string;
+    colorClass: string;
+    icon: string;
+    items: CategoryItem[];
+  }> = [];
 
   featuredAds: FeaturedAd[] = [
     {
@@ -248,6 +286,8 @@ export class LandingComponent {
     const slug = parts.join('-');
 
     const params: any = {};
+    if (this.search.superCategory) params.super = this.search.superCategory;
+    if (this.search.category) params.category = this.search.category;
     if (this.search.location) params.location = this.search.location;
 
     if (slug) this.router.navigate(['/listings', slug], { queryParams: params });
@@ -318,5 +358,12 @@ export class LandingComponent {
     this.search.lat = parseFloat(item.lat);
     this.search.lon = parseFloat(item.lon);
     this.locationResults = [];
+  }
+
+  iconClass(icon?: string): string[] {
+    if (!icon) return [];
+    if (icon.startsWith('fa-')) return ['fa-solid', icon];
+    if (icon.startsWith('bi-')) return ['bi', icon];
+    return [icon];
   }
 }

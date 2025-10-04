@@ -17,30 +17,31 @@
         <div class="search-panel">
           <form class="row g-2 align-items-stretch" (submit)="onSearch($event)">
             <div class="col-md-4 search-field">
+              <i class="bi bi-collection input-icon" aria-hidden="true"></i>
+              <select
+                class="form-select form-select-lg"
+                [(ngModel)]="search.superCategory"
+                (ngModelChange)="onSuperChange($event)"
+                name="superCategory"
+                aria-label="Select super category"
+              >
+                <option value="">All super categories</option>
+                <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
+                  {{ sc.title }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4 search-field">
               <i class="bi bi-grid input-icon" aria-hidden="true"></i>
               <select
                 class="form-select form-select-lg"
                 [(ngModel)]="search.category"
                 name="category"
                 aria-label="Select category"
+                [disabled]="search.superCategory && !categoryOptions.length"
               >
                 <option value="">All categories</option>
-                <option *ngFor="let c of categories" [value]="c.name">{{ c.name }}</option>
-              </select>
-            </div>
-            <div class="col-md-4 search-field">
-              <i class="bi bi-ui-checks-grid input-icon" aria-hidden="true"></i>
-              <select
-                class="form-select form-select-lg"
-                [(ngModel)]="search.serviceType"
-                name="serviceType"
-                aria-label="Select Service Type"
-                [disabled]="!search.category"
-              >
-                <option value="">
-                  {{ search.category ? 'Service Type' : 'Choose category first' }}
-                </option>
-                <option *ngFor="let t of serviceTypesForSelected" [value]="t">{{ t }}</option>
+                <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
               </select>
             </div>
             <div class="col-md-3 search-field">
@@ -97,13 +98,6 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-5 d-none d-lg-block text-center">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets%2F61ffc8c885ae427dbb531b91af5e726b%2F1f95729f6e814712bc03b6e3dfff4b1d?format=webp&width=800"
-          alt="AsanZindegi hero"
-          class="img-fluid rounded-4 shadow"
-        />
-      </div>
     </div>
   </div>
 </section>
@@ -122,18 +116,57 @@
       </h2>
       <a class="text-decoration-none" [routerLink]="'/listings'">View all</a>
     </div>
-    <div class="row g-3">
-      <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of categories">
-        <a class="text-decoration-none text-dark" [routerLink]="['/listings', slugify(c.name)]">
-          <div class="category-card p-3 text-center h-100">
-            <span class="category-icon mb-2">
-              <img *ngIf="c.iconUrl; else biIcon" [src]="c.iconUrl" [alt]="c.name + ' icon'" />
-              <ng-template #biIcon><i class="bi" [ngClass]="c.icon"></i></ng-template>
-            </span>
-            <div class="fw-semibold">{{ c.name }}</div>
-            <small class="text-secondary">{{ c.count }} listings</small>
+    <div class="accordion" id="supercatAccordion">
+      <div class="accordion-item" *ngFor="let sc of visibleSuperCategories; let i = index">
+        <h2 class="accordion-header" [id]="'heading' + i">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#collapse' + i"
+            aria-expanded="false"
+            [attr.aria-controls]="'collapse' + i"
+          >
+            <i class="me-2" [ngClass]="iconClass(sc.icon)"></i>{{ sc.title }}
+          </button>
+        </h2>
+        <div
+          class="accordion-collapse collapse"
+          [id]="'collapse' + i"
+          [attr.aria-labelledby]="'heading' + i"
+          data-bs-parent="#supercatAccordion"
+        >
+          <div class="accordion-body p-0">
+            <div class="supercat-section mb-3" [ngClass]="sc.colorClass">
+              <div class="d-flex align-items-center justify-content-between mb-2 px-2 pt-2">
+                <h3 class="h6 mb-0">{{ sc.title }}</h3>
+                <a class="small text-decoration-none" [routerLink]="'/listings'">View all</a>
+              </div>
+              <div class="row g-3 supercat-grid px-2 pb-2">
+                <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of sc.items">
+                  <a
+                    class="text-decoration-none text-dark"
+                    [routerLink]="'/listings'"
+                    [queryParams]="{ category: c.name }"
+                  >
+                    <div class="category-card p-3 text-center h-100">
+                      <span class="category-icon mb-2">
+                        <img
+                          *ngIf="c.iconUrl; else biIcon"
+                          [src]="c.iconUrl"
+                          [alt]="c.name + ' icon'"
+                        />
+                        <ng-template #biIcon><i [ngClass]="iconClass(c.icon)"></i></ng-template>
+                      </span>
+                      <div class="fw-semibold">{{ c.name }}</div>
+                      <small class="text-secondary">{{ c.count }} listings</small>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
-        </a>
+        </div>
       </div>
     </div>
   </div>
@@ -307,6 +340,9 @@
       <div class="text-white-50">Reach thousands of customers today</div>
     </div>
     <a class="btn btn-join btn-lg" [routerLink]="'/post-ad'">Post Now</a>
+    <a class="btn btn-join btn-lg ms-2" [routerLink]="'/provider/register'"
+      >Become a Service Provider</a
+    >
   </div>
 </section>
 
@@ -349,8 +385,8 @@
           from home services like plumbing and electrical work to personal services like photography
           and tutoring.
         </p>
-        <a href="#post" class="btn btn-join btn-lg"
-          ><i class="bi bi-person-plus me-1"></i> Join Us</a
+        <a class="btn btn-join btn-lg" [routerLink]="'/provider/register'"
+          ><i class="bi bi-person-plus me-1"></i> Become a Service Provider</a
         >
       </div>
       <div class="col-lg-6 text-center">

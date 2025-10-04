@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -48,9 +48,17 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent implements OnInit {
-  constructor() {}
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly api = inject(ApiService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly doc = inject(DOCUMENT);
+
+  readonly year = new Date().getFullYear();
 
   ngOnInit(): void {
+    this.updateCanonical();
+
     this.api.getCategories().subscribe({
       next: (res) => {
         this.apiSuperCategories = (res && (res as any).data) || [];
@@ -76,17 +84,6 @@ export class LandingComponent implements OnInit {
     });
   }
 
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-  private readonly api = inject(ApiService);
-  private readonly cdr = inject(ChangeDetectorRef);
-
-  readonly year = new Date().getFullYear();
-
-  constructor() {
-    this.updateCanonical();
-  }
-
   private getOrigin(): string {
     return (globalThis as any).location?.origin || '';
   }
@@ -100,7 +97,7 @@ export class LandingComponent implements OnInit {
       link.setAttribute('rel', 'canonical');
       this.doc.head.appendChild(link);
     }
-    link.setAttribute('href', href);
+    if (link) link.setAttribute('href', href);
   }
 
   slugify(input: string): string {
@@ -176,7 +173,7 @@ export class LandingComponent implements OnInit {
       title: 'Computer & Server AMC Service',
       type: 'B2B',
       location: 'Bengaluru, India',
-      price: '���1,999 / month',
+      price: '₹1,999 / month',
       cover:
         'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop',
     },
@@ -326,7 +323,7 @@ export class LandingComponent implements OnInit {
     });
     const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
     this.http.get<any[]>(url).subscribe({
-      next: (res) => {
+      next: (res: any[]) => {
         const allowed = new Set([
           'city',
           'town',
@@ -338,9 +335,9 @@ export class LandingComponent implements OnInit {
           'locality',
         ]);
         const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+          (r: any) => (r.address?.country_code || '').toLowerCase() === 'in',
         );
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r: any) =>
           allowed.has((r.type || '').toLowerCase()),
         );
         this.locationResults = cleaned.slice(0, 8);

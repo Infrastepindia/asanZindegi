@@ -1,10 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
-import { Meta } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
+import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
 
 interface ListingItem {
   id: number;
@@ -26,54 +26,76 @@ interface ListingItem {
 @Component({
   selector: 'app-listings',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, OsmAutocompleteComponent],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css',
 })
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
-  constructor(
-    private route: ActivatedRoute,
-    private meta: Meta,
-  ) {}
+  private api = inject(ApiService);
+  constructor(private route: ActivatedRoute) {}
 
-  private doc = inject(DOCUMENT);
-  private http = inject(HttpClient);
+  // First-time city chooser
+  showCityPicker = false;
+  private cityPrefKey = 'az_city_pref';
+  cityOptions: Array<{ name: string; img: string }> = [
+    {
+      name: 'Kolkata, India',
+      img: 'https://images.unsplash.com/photo-1569416167996-433986d98891?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Mumbai, India',
+      img: 'https://images.unsplash.com/photo-1562307532-46792c3a5b22?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Hyderabad, India',
+      img: 'https://images.unsplash.com/photo-1609840178322-771ae9c3a3b3?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Delhi, India',
+      img: 'https://images.unsplash.com/photo-1606062159139-9a5b5f9d5442?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Chennai, India',
+      img: 'https://images.unsplash.com/photo-1608628047959-3212cbb3f2df?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Bengaluru, India',
+      img: 'https://images.unsplash.com/photo-1604328698692-f76ea9498f8e?q=80&w=600&auto=format&fit=crop',
+    },
+    {
+      name: 'Durgapur, India',
+      img: 'https://images.unsplash.com/photo-1590051034278-5e7c3d5a7933?q=80&w=600&auto=format&fit=crop',
+    },
+  ];
 
   ngOnInit(): void {
     const cat = this.route.snapshot.queryParamMap.get('category') || '';
-    const typ = this.route.snapshot.queryParamMap.get('type') || '';
     const loc = this.route.snapshot.queryParamMap.get('location') || '';
-    const pageParam = this.route.snapshot.queryParamMap.get('page');
-    if (cat) this.filters.category = cat;
-    if (typ) this.filters.type = typ as any;
+    const saved =
+      typeof window !== 'undefined' ? window.localStorage.getItem(this.cityPrefKey) : null;
+    if (cat) this.filters.selectedCategories = [cat];
     if (loc) this.filters.location = loc;
-    if (pageParam) this.page = Math.max(1, parseInt(pageParam, 10) || 1);
+    else if (saved) this.filters.location = saved;
+    else this.showCityPicker = true;
+    if (cat || loc || saved) this.setPage(1);
 
-    const slugInit = this.route.snapshot.paramMap.get('slug');
-    this.applySlug(slugInit);
-
-    if (cat || typ || loc || pageParam || slugInit) this.setPage(this.page);
-    this.updateSEO();
-
-    this.route.paramMap.subscribe((pmap) => {
-      const slug = pmap.get('slug');
-      this.applySlug(slug);
-      this.setPage(1);
-      this.updateSEO();
+    // Load super categories for treeview
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        this.superCategories.set(res?.data || []);
+      },
+      error: () => {
+        this.superCategories.set([]);
+      },
     });
 
     this.route.queryParamMap.subscribe((map) => {
       const c = map.get('category') || '';
-      const t = map.get('type') || '';
       const l = map.get('location') || '';
-      const p = map.get('page');
-      this.filters.category = c;
-      this.filters.type = (t as any) || '';
-      this.filters.location = l;
-      this.page = p ? Math.max(1, parseInt(p, 10) || 1) : 1;
-      this.setPage(this.page);
-      this.updateSEO();
+      this.filters.selectedCategories = c ? [c] : [];
+      if (l) this.filters.location = l;
+      this.setPage(1);
     });
   }
   locationResults: Array<{ display_name: string; lat: string; lon: string }> = [];
@@ -81,26 +103,228 @@ export class ListingsComponent implements OnInit {
   private locDebounce?: any;
 
   filters = {
-    category: '',
-    type: '',
-    serviceType: '',
+    selectedCategories: [] as string[],
     location: '',
-    minPrice: '',
-    maxPrice: '',
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
     provider: 'all' as 'all' | 'company' | 'individual',
   };
 
+  // Super category → subcategory treeview data
+  superCategories = signal<ApiSuperCategory[]>([]);
+  expandedSuperIds = new Set<number>();
+
+  toggleSuper(id: number) {
+    if (this.expandedSuperIds.has(id)) this.expandedSuperIds.delete(id);
+    else this.expandedSuperIds.add(id);
+  }
+
+  isSubSelected(name: string): boolean {
+    return this.filters.selectedCategories.includes(name);
+  }
+
+  toggleSubCategory(name: string) {
+    const idx = this.filters.selectedCategories.indexOf(name);
+    if (idx >= 0) this.filters.selectedCategories.splice(idx, 1);
+    else this.filters.selectedCategories.push(name);
+    this.setPage(1);
+  }
+
+  clearSelectedCategories() {
+    this.filters.selectedCategories = [];
+    this.setPage(1);
+  }
+
   categories = [
+    // Household
     'Plumbing',
-    'Electrical',
-    'Cleaning',
-    'Tutoring',
+    'Electrical Repair',
     'Carpentry',
-    'Painting',
-    'Moving',
+    'Painting & Whitewashing',
+    'Home Cleaning',
     'Appliance Repair',
+    'Pest Control',
+    'RO/Water Purifier Service',
+    'CCTV Installation & Repair',
+    'Interior Design',
+    'Modular Kitchen Setup',
+    'Home Automation',
+    'Curtain & Blind Installation',
+    'Glass & Aluminum Work',
+    'Masonry/Construction',
+    'Gardening & Landscaping',
+    'Flooring',
+    'POP & False Ceiling',
+    'Door & Window Repair',
+    'Locksmith Services',
+    // Office
+    'Electrical Maintenance',
+    'HVAC',
+    'Office Cleaning & Sanitization',
+    'Furniture Installation/Repair',
+    'Security Systems',
+    'Computer & Printer Repair',
+    'Networking & Cabling',
+    'Pest Control for Offices',
+    'Office Boy/Helper Services',
+    'Pantry & Catering Support',
+    'Lift/Elevator Maintenance',
+    'Fire Safety Installation',
+    'IT Support',
+    'Co-working Space Setup',
+    'Office Interior & Design',
+    'Partition & False Ceiling',
+    'Office Moving/Relocation',
+    'Printing & Stationery Supply',
+    'UPS/Inverter Services',
+    'Glass Cleaning (Facade)',
+    // Transport
+    'House Shifting',
+    'Office Relocation',
+    'Local Tempo/Truck Rental',
+    'Intercity Transport',
+    'Bike/Car Transport',
+    'Packers & Movers',
+    'Courier & Parcel Delivery',
+    'Furniture Shifting',
+    'Heavy Equipment Transport',
+    'Mini Truck Services',
+    'Storage & Warehousing',
+    'Loading/Unloading Labor',
+    'Pet Relocation',
+    'Event Equipment Transport',
+    'Cold Storage Transport',
+    'School Van Services',
+    'Ambulance Services',
+    'Water Tanker Supply',
+    'E-commerce Delivery Partner',
+    'Vehicle Rental',
+    // Personal Care
+    'Salon at Home',
+    'Spa & Massage',
+    'Bridal Makeup',
+    'Mehendi Artists',
+    'Fitness Trainer',
+    'Yoga Instructor',
+    'Diet & Nutrition',
+    'Physiotherapy at Home',
+    'Nursing/Attendant Services',
+    'Elder Care',
+    'Baby Care/Nanny Services',
+    'Counseling & Therapy',
+    'Tattoo Artists',
+    'Skin Care & Dermatology',
+    'Weight Loss Programs',
+    'Zumba/Dance Instructor',
+    'Speech Therapy',
+    'Grooming Workshops',
+    'Medical Tests at Home',
+    'Homeopathy/Ayurveda',
+    // Education & CSR
+    'School Tutoring',
+    'Competitive Exam Coaching',
+    'Spoken English & Communication',
+    'Computer Classes',
+    'Coding for Kids',
+    'Arts & Crafts Classes',
+    'Dance & Music Classes',
+    'Personality Development',
+    'Public Speaking Training',
+    'Career Counseling',
+    'Corporate Training',
+    'Soft Skills Training',
+    'CSR – Free Community Tutoring',
+    'CSR – Vocational Training',
+    'CSR – Literacy Campaigns',
+    'CSR – Health Awareness Workshops',
+    'CSR – Environment Education',
+    'CSR – Women Empowerment Programs',
+    'CSR – Digital Literacy',
+    'CSR – Skill Training for Differently Abled',
+    // Food & Catering
+    'Home Tiffin Service',
+    'Event Catering',
+    'Birthday Party Catering',
+    'Corporate Catering',
+    'Wedding Catering',
+    'Sweet & Snacks Delivery',
+    'Bakeries & Cake Order',
+    'Regional Food Specialists',
+    'Packed Lunch Supply',
+    'Diet Meals',
+    'Baby Food Delivery',
+    'Personal Chef at Home',
+    'Outdoor Catering',
+    'Festival Special Food Service',
+    'Organic Food Supply',
+    'Catering Staff Rental',
+    'Beverages & Juice Corner',
+    'Food Truck Rental',
+    'Health Food & Smoothies',
+    'Bulk Meal Supply',
+    // Events & Entertainment
+    'Wedding Planner',
+    'Birthday Party Planner',
+    'DJ & Music Bands',
+    'Photographers & Videographers',
+    'Venue Booking',
+    'Decoration & Balloon Art',
+    'Sound & Lighting',
+    'Stage Setup',
+    'Makeup & Styling for Events',
+    'Anchors & Hosts',
+    'Corporate Event Planner',
+    'Festival Event Organizer',
+    'Magicians & Artists',
+    'Catering Services',
+    'Invitation Card Printing',
+    'Event Security',
+    'Dance Performers',
+    'Flower Decoration',
+    'Exhibition/Event Stalls',
+    'Party Supplies',
+    // Tech & Digital Services
+    'Website Development',
+    'Mobile App Development',
+    'SEO & Digital Marketing',
+    'Graphic Design',
+    'Video Editing',
+    'Social Media Management',
+    'Logo & Branding',
+    'Software Development',
+    'Data Entry',
+    'Online Ads',
+    'Content Writing',
+    'Cloud Services',
+    'Domain & Hosting',
+    'E-commerce Setup',
+    'UI/UX Design',
+    'Cybersecurity Solutions',
+    'ERP/CRM Setup',
+    'Freelance Developers',
+    'Virtual Assistant Services',
+    'IT Consulting',
+    // Healthcare
+    'Doctor Consultation',
+    'Specialist Doctors',
+    'Diagnostic Tests',
+    'Nursing Services',
+    'Physiotherapy',
+    'Ambulance Service',
+    'Emergency Medicine Delivery',
+    'Telemedicine',
+    'Health Check-up Packages',
+    'Dietician & Nutritionist',
+    'Mental Health Counselor',
+    'Elderly Care',
+    'Baby & Child Specialist',
+    'Dental Care',
+    'Eye Specialist',
+    'Home Sample Collection',
+    'Medical Equipment Rental',
+    'Homeopathy / Ayurveda',
+    'Vaccination Services',
+    'Blood Donation / CSR Health Camps',
   ];
 
   types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
@@ -234,7 +458,7 @@ export class ListingsComponent implements OnInit {
     const now = Date.now();
     for (const cat of this.categories) {
       for (const typ of this.types) {
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
           const covers = this.coverByCategory[cat] || [];
           const cover = covers.length
             ? covers[i % covers.length]
@@ -300,20 +524,12 @@ export class ListingsComponent implements OnInit {
 
   get filtered(): ListingItem[] {
     let out = this.all.slice();
-    if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
-    if (this.filters.type) out = out.filter((i) => i.type === (this.filters.type as any));
-    if (this.filters.serviceType)
-      out = out.filter((i) =>
-        (i.serviceType || i.title).toLowerCase().includes(this.filters.serviceType.toLowerCase()),
-      );
+    if (this.filters.selectedCategories.length)
+      out = out.filter((i) => this.filters.selectedCategories.includes(i.category));
     if (this.filters.location)
       out = out.filter((i) =>
         i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
       );
-    const min = this.filters.minPrice ? parseFloat(this.filters.minPrice) : null;
-    const max = this.filters.maxPrice ? parseFloat(this.filters.maxPrice) : null;
-    if (min !== null) out = out.filter((i) => i.price >= (min as number));
-    if (max !== null) out = out.filter((i) => i.price <= (max as number));
 
     const minR = Number(this.filters.minRating) || 0;
     if (minR > 0) out = out.filter((i) => i.rating >= minR);
@@ -370,6 +586,77 @@ export class ListingsComponent implements OnInit {
   get paged(): ListingItem[] {
     const start = (this.page - 1) * this.perPage;
     return this.filtered.slice(start, start + this.perPage);
+  }
+
+  // Availability tag (mocked deterministically)
+  availabilityLabel(it: ListingItem): 'Currently Available' | 'Available for Call' {
+    return it.id % 2 === 0 ? 'Currently Available' : 'Available for Call';
+  }
+
+  // Geo utilities for distance
+  private cityCoords: Record<string, { lat: number; lon: number }> = {
+    'Delhi, India': { lat: 28.6139, lon: 77.209 },
+    'Mumbai, India': { lat: 19.076, lon: 72.8777 },
+    'Bengaluru, India': { lat: 12.9716, lon: 77.5946 },
+    'Hyderabad, India': { lat: 17.385, lon: 78.4867 },
+    'Chennai, India': { lat: 13.0827, lon: 80.2707 },
+    'Kolkata, India': { lat: 22.5726, lon: 88.3639 },
+    'Pune, India': { lat: 18.5204, lon: 73.8567 },
+    'Ahmedabad, India': { lat: 23.0225, lon: 72.5714 },
+    'Jaipur, India': { lat: 26.9124, lon: 75.7873 },
+    'Surat, India': { lat: 21.1702, lon: 72.8311 },
+    'Durgapur, India': { lat: 23.5204, lon: 87.3119 },
+  };
+
+  private findSearchCity(): { name: string; lat: number; lon: number } | null {
+    const q = (this.filters.location || '').toLowerCase().trim();
+    if (!q) return null;
+    for (const name of Object.keys(this.cityCoords)) {
+      if (name.toLowerCase().includes(q)) {
+        const c = this.cityCoords[name];
+        return { name, lat: c.lat, lon: c.lon };
+      }
+    }
+    return null;
+  }
+
+  private haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
+    const R = 6371;
+    const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+    const dLon = ((b.lon - a.lon) * Math.PI) / 180;
+    const la1 = (a.lat * Math.PI) / 180;
+    const la2 = (b.lat * Math.PI) / 180;
+    const sinDLat = Math.sin(dLat / 2);
+    const sinDLon = Math.sin(dLon / 2);
+    const h = sinDLat * sinDLat + Math.cos(la1) * Math.cos(la2) * sinDLon * sinDLon;
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  distanceFromSearch(itemLocation: string): string | null {
+    const search = this.findSearchCity();
+    if (!search) return null;
+    const cityName = Object.keys(this.cityCoords).find((k) => k === itemLocation);
+    if (!cityName) return null;
+    const km = this.haversineKm(search, this.cityCoords[cityName]);
+    return `${Math.round(km)} km`;
+  }
+
+  distanceBadge(itemLocation: string): string {
+    return this.distanceFromSearch(itemLocation) || 'Set location';
+  }
+
+  onPlaceSelected(val: string) {
+    this.filters.location = val || '';
+    if (typeof window !== 'undefined')
+      window.localStorage.setItem(this.cityPrefKey, this.filters.location);
+    this.setPage(1);
+  }
+
+  chooseCity(name: string) {
+    this.filters.location = name;
+    if (typeof window !== 'undefined') window.localStorage.setItem(this.cityPrefKey, name);
+    this.showCityPicker = false;
+    this.setPage(1);
   }
 
   setPage(p: number) {

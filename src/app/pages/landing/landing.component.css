@@ -28,6 +28,10 @@
   position: relative;
   background: linear-gradient(180deg, #f3ecff 0%, #f7f1ff 45%, #ffffff 100%);
   color: #0b1220;
+  background-image: url('https://cdn.builder.io/api/v1/image/assets%2Fdd43504024f74b92af375c4b68e25284%2Fca7a00a2b2a4456497426a8d8224c8c5?format=webp&width=800');
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: clamp(240px, 32vw, 340px);
 }
 .hero-overlay {
   position: absolute;
@@ -337,9 +341,65 @@
   .search-field {
     margin-bottom: 8px;
   }
+  .hero-wrap {
+    background-position: bottom center;
+    background-size: clamp(220px, 50vw, 420px);
+  }
 }
 @media screen and (max-width: 575px) {
   .listing-cover {
     height: 140px;
   }
+}
+
+/* Super-category sections */
+
+.supercat-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.supercat-section {
+  border: 1px solid #e7e9f3;
+  border-radius: 14px;
+  padding: 16px;
+}
+.supercat-grid {
+  margin-top: 6px;
+}
+.supercat-household {
+  background: #fff8ec;
+}
+.supercat-office {
+  background: #eef6ff;
+}
+.supercat-transport {
+  background: #f0fff4;
+}
+.supercat-csr {
+  background: #fff0f6;
+}
+.supercat-financial {
+  background: #f7f7ff;
+}
+.supercat-it {
+  background: #f3f7ff;
+}
+.supercat-personal {
+  background: #fff7f0;
+}
+.supercat-education {
+  background: #f3fff6;
+}
+.supercat-food {
+  background: #fff4e6;
+}
+.supercat-events {
+  background: #f5f0ff;
+}
+.supercat-tech {
+  background: #eef4ff;
+}
+.supercat-healthcare {
+  background: #eefdfc;
 }

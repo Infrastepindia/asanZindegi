@@ -39,12 +39,17 @@
         <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
         <li class="nav-item">
-          <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/post-ad'">Post Ad</a>
+          <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/register'"
+            >Become a Service Provider</a
+          >
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+<!-- Global City Gate -->
+<az-city-gate></az-city-gate>
 
 <!-- Page Content -->
 <router-outlet />

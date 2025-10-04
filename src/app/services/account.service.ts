@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {
   ProviderAccount,
   CompanyAccount,
@@ -12,6 +14,8 @@ const KEY = 'az_account';
 export class AccountService {
   private nextPersonnelId = 1;
   private mem: string | null = null; // SSR-safe fallback
+
+  private http = inject(HttpClient);
 
   private get storageAvailable() {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -52,17 +56,21 @@ export class AccountService {
     this.storageClear();
   }
 
-  registerIndividual(data: { fullName: string; email: string; phone: string }): IndividualAccount {
-    const acc: IndividualAccount = {
-      id: 1,
-      type: 'Individual',
-      fullName: data.fullName,
+  registerIndividual(data: { fullName: string; email: string; phone: string }) {
+    const [firstName, ...rest] = (data.fullName || '').trim().split(/\s+/);
+    const lastName = rest.join(' ');
+
+    const body = {
       email: data.email,
-      phone: data.phone,
-      createdAt: new Date().toISOString(),
+      firstName: firstName || '',
+      lastName: lastName || '',
+      password: data.phone,
+      role: 'Individual',
+      company: ''
     };
-    this.setAccount(acc);
-    return acc;
+
+    const url = 'api/User/register';
+    return this.http.post(url, body);
   }
 
   registerCompany(data: {

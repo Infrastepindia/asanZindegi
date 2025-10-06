@@ -85,18 +85,24 @@ export class AccountService {
     };
 
     const url = `${this.resolveBase()}/api/User/register`;
-    return this.http.post(url, body).pipe(
-      tap(() => {
-        const acc: IndividualAccount = {
-          id: 1,
-          type: 'Individual',
-          fullName: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          createdAt: new Date().toISOString(),
-        };
-        this.setAccount(acc);
+    return this.http.post(url, body, { observe: 'response' as const }).pipe(
+      tap((resp) => {
+        const statusOk = resp.status === 200;
+        const b: any = resp.body;
+        const codeOk = typeof b?.status_code === 'number' ? b.status_code === 200 : true;
+        if (statusOk && codeOk) {
+          const acc: IndividualAccount = {
+            id: 1,
+            type: 'Individual',
+            fullName: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            createdAt: new Date().toISOString(),
+          };
+          this.setAccount(acc);
+        }
       }),
+      map((resp) => resp.body as any),
     );
   }
 

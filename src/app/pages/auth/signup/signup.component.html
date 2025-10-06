@@ -7,6 +7,14 @@
             <h1 class="h4 mb-3 heading-cta">
               Create your <span class="text-gradient-1">account</span>
             </h1>
+
+            <div *ngIf="successMessage" class="alert alert-success" role="alert">
+              {{ successMessage }}
+            </div>
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </div>
+
             <div class="social-auth mb-3">
               <div class="social-buttons d-grid gap-2">
                 <button
@@ -26,11 +34,24 @@
               </div>
             </div>
             <div class="auth-sep text-center text-secondary small mb-3">or</div>
-            <form (ngSubmit)="onSubmit($event)" class="auth-form" novalidate>
+
+            <form #f="ngForm" (ngSubmit)="onSubmit($event, f)" class="auth-form" novalidate>
               <div class="mb-3">
                 <label class="form-label">Full name</label>
-                <input class="form-control" [(ngModel)]="model.name" name="name" required />
+                <input
+                  class="form-control"
+                  [(ngModel)]="model.name"
+                  name="name"
+                  required
+                  minlength="2"
+                  #nameCtrl="ngModel"
+                />
+                <div class="small text-danger mt-1" *ngIf="nameCtrl.invalid && nameCtrl.touched">
+                  <span *ngIf="nameCtrl.errors?.['required']">Full name is required.</span>
+                  <span *ngIf="nameCtrl.errors?.['minlength']">Enter at least 2 characters.</span>
+                </div>
               </div>
+
               <div class="mb-3">
                 <label class="form-label">Email</label>
                 <input
@@ -39,8 +60,15 @@
                   [(ngModel)]="model.email"
                   name="email"
                   required
+                  email
+                  #emailCtrl="ngModel"
                 />
+                <div class="small text-danger mt-1" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+                  <span *ngIf="emailCtrl.errors?.['required']">Email is required.</span>
+                  <span *ngIf="emailCtrl.errors?.['email']">Enter a valid email address.</span>
+                </div>
               </div>
+
               <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input
@@ -49,12 +77,20 @@
                   [(ngModel)]="model.password"
                   name="password"
                   required
+                  minlength="6"
+                  #passCtrl="ngModel"
                 />
+                <div class="small text-danger mt-1" *ngIf="passCtrl.invalid && passCtrl.touched">
+                  <span *ngIf="passCtrl.errors?.['required']">Password is required.</span>
+                  <span *ngIf="passCtrl.errors?.['minlength']">Minimum 6 characters.</span>
+                </div>
               </div>
-              <button class="btn btn-join btn-lg w-100" type="submit" (click)="onSubmit($event)">
-                Sign up
+
+              <button class="btn btn-join btn-lg w-100" type="submit" [disabled]="f.invalid || submitting">
+                {{ submitting ? 'Signing up...' : 'Sign up' }}
               </button>
             </form>
+
             <div class="text-center small mt-3 text-secondary">
               Already have an account?
               <a routerLink="/login" class="text-decoration-none">Login</a>

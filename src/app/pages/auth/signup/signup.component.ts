@@ -46,15 +46,18 @@ export class SignupComponent {
     };
 
     this.accounts.registerIndividual(payload).subscribe({
-      next: (res: any) => {
-        const code = typeof res?.status_code === 'number' ? res.status_code : 200;
-        if (code === 200) {
+      next: (res: { body: any; status: number }) => {
+        const httpOk = res?.status === 200;
+        const code = typeof res?.body?.status_code === 'number' ? res.body.status_code : 200;
+        if (httpOk && code === 200) {
           this.successMessage =
-            (res && (res.message || res.status_message)) || 'Registration successful. Please login.';
+            (res.body && (res.body.message || res.body.status_message)) ||
+            'Registration successful. Please login.';
           this.submitting = false;
           setTimeout(() => this.router.navigate(['/login']), 1000);
         } else {
-          this.errorMessage = res?.message || res?.status_message || 'Registration failed';
+          this.errorMessage =
+            res?.body?.message || res?.body?.status_message || 'Registration failed';
           this.submitting = false;
         }
       },

@@ -24,7 +24,7 @@ export class SignupComponent {
   errorMessage = '';
 
   private markAllAsTouched(form: NgForm) {
-    Object.values(form.controls).forEach((c) => c.control.markAsTouched());
+    Object.values(form.controls).forEach((c: any) => c.markAsTouched());
   }
 
   onSubmit(e: Event, form?: NgForm) {

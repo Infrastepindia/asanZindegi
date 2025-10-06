@@ -102,7 +102,7 @@ export class AccountService {
           this.setAccount(acc);
         }
       }),
-      map((resp) => resp.body as any),
+      map((resp) => ({ body: resp.body as any, status: resp.status })),
     );
   }
 

@@ -47,10 +47,16 @@ export class SignupComponent {
 
     this.accounts.registerIndividual(payload).subscribe({
       next: (res: any) => {
-        this.successMessage =
-          (res && (res.message || res.status_message)) || 'Registration successful. Please login.';
-        this.submitting = false;
-        setTimeout(() => this.router.navigate(['/login']), 1000);
+        const code = typeof res?.status_code === 'number' ? res.status_code : 200;
+        if (code === 200) {
+          this.successMessage =
+            (res && (res.message || res.status_message)) || 'Registration successful. Please login.';
+          this.submitting = false;
+          setTimeout(() => this.router.navigate(['/login']), 1000);
+        } else {
+          this.errorMessage = res?.message || res?.status_message || 'Registration failed';
+          this.submitting = false;
+        }
       },
       error: (err) => {
         const parsed = this.api.extractError(err);

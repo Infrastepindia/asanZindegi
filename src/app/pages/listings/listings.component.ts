@@ -1,10 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
+import { HttpClient } from '@angular/common/http';
+import { Meta } from '@angular/platform-browser';
 
 interface ListingItem {
   id: number;
@@ -23,6 +25,17 @@ interface ListingItem {
   serviceType?: string;
 }
 
+interface Filters {
+  selectedCategories: string[];
+  location: string;
+  minRating: number;
+  verified: 'all' | 'verified' | 'unverified';
+  provider: 'all' | 'company' | 'individual';
+  serviceType: string;
+  category: string;
+  type: ListingItem['type'] | '';
+}
+
 @Component({
   selector: 'app-listings',
   standalone: true,
@@ -33,6 +46,10 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
+  private readonly http = inject(HttpClient);
+  private readonly meta = inject(Meta);
+  private readonly doc = inject(DOCUMENT);
+
   constructor(private route: ActivatedRoute) {}
 
   // First-time city chooser
@@ -102,12 +119,15 @@ export class ListingsComponent implements OnInit {
   locationLoading = false;
   private locDebounce?: any;
 
-  filters = {
+  filters: Filters = {
     selectedCategories: [] as string[],
     location: '',
     minRating: 0 as number,
-    verified: 'all' as 'all' | 'verified' | 'unverified',
-    provider: 'all' as 'all' | 'company' | 'individual',
+    verified: 'all',
+    provider: 'all',
+    serviceType: '',
+    category: '',
+    type: '',
   };
 
   // Super category → subcategory treeview data
@@ -541,6 +561,11 @@ export class ListingsComponent implements OnInit {
     if (this.filters.provider === 'individual')
       out = out.filter((i) => i.verifiedType !== 'Company');
 
+    if (this.filters.category) out = out.filter((i) => i.category === this.filters.category);
+    if (this.filters.type) out = out.filter((i) => i.type === this.filters.type);
+    if (this.filters.serviceType)
+      out = out.filter((i) => (i.serviceType || '').toLowerCase() === this.filters.serviceType.toLowerCase());
+
     return out;
   }
 
@@ -701,7 +726,7 @@ export class ListingsComponent implements OnInit {
     });
     const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
     this.http.get<any[]>(url).subscribe({
-      next: (res) => {
+      next: (res: any[]) => {
         const allowed = new Set([
           'city',
           'town',
@@ -713,9 +738,9 @@ export class ListingsComponent implements OnInit {
           'locality',
         ]);
         const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+          (r: any) => (r.address?.country_code || '').toLowerCase() === 'in',
         );
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r: any) =>
           allowed.has((r.type || '').toLowerCase()),
         );
         this.locationResults = cleaned.slice(0, 8);
@@ -874,6 +899,6 @@ export class ListingsComponent implements OnInit {
       link.setAttribute('rel', 'canonical');
       this.doc.head.appendChild(link);
     }
-    link.setAttribute('href', canonical);
+    if (link) link.setAttribute('href', canonical);
   }
 }

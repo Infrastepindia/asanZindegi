@@ -212,7 +212,7 @@
                         ></i
                         >{{ sc.title }}</span
                       >
-                      <span class="badge bg-light text-dark">{{ sc.categories?.length || 0 }}</span>
+                      <span class="badge bg-light text-dark">{{ sc.categories.length || 0 }}</span>
                     </button>
                     <div class="sub-list ms-3" *ngIf="expandedSuperIds.has(sc.id)">
                       <div class="form-check" *ngFor="let c of sc.categories">

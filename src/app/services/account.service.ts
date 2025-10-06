@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
 import {
   ProviderAccount,
   CompanyAccount,
@@ -17,6 +19,18 @@ export class AccountService {
   private mem: string | null = null; // SSR-safe fallback
 
   private http = inject(HttpClient);
+
+  private resolveBase(): string {
+    let base = environment.base_path || '';
+    if (
+      typeof window !== 'undefined' &&
+      window.location?.protocol === 'https:' &&
+      base.startsWith('http://')
+    ) {
+      base = 'https://' + base.substring('http://'.length);
+    }
+    return base;
+  }
 
   private get storageAvailable() {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -70,19 +84,25 @@ export class AccountService {
       company: '',
     };
 
-    const url = 'api/User/register';
-    return this.http.post(url, body).pipe(
-      tap(() => {
-        const acc: IndividualAccount = {
-          id: 1,
-          type: 'Individual',
-          fullName: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          createdAt: new Date().toISOString(),
-        };
-        this.setAccount(acc);
+    const url = `${this.resolveBase()}/api/User/register`;
+    return this.http.post(url, body, { observe: 'response' as const }).pipe(
+      tap((resp) => {
+        const statusOk = resp.status === 200;
+        const b: any = resp.body;
+        const codeOk = typeof b?.status_code === 'number' ? b.status_code === 200 : true;
+        if (statusOk && codeOk) {
+          const acc: IndividualAccount = {
+            id: 1,
+            type: 'Individual',
+            fullName: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            createdAt: new Date().toISOString(),
+          };
+          this.setAccount(acc);
+        }
       }),
+      map((resp) => ({ body: resp.body as any, status: resp.status })),
     );
   }
 

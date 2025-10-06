@@ -86,7 +86,11 @@
                 </div>
               </div>
 
-              <button class="btn btn-join btn-lg w-100" type="submit" [disabled]="f.invalid || submitting">
+              <button
+                class="btn btn-join btn-lg w-100"
+                type="submit"
+                [disabled]="f.invalid || submitting"
+              >
                 {{ submitting ? 'Signing up...' : 'Sign up' }}
               </button>
             </form>

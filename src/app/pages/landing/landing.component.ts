@@ -48,7 +48,6 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent implements OnInit {
-
   ngOnInit(): void {
     this.api.getCategories().subscribe({
       next: (res) => {

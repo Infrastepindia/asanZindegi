@@ -1,10 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
+import { HttpClient } from '@angular/common/http';
+import { Meta } from '@angular/platform-browser';
 
 interface ListingItem {
   id: number;
@@ -34,6 +36,10 @@ export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
   constructor(private route: ActivatedRoute) {}
+
+  private readonly http = inject(HttpClient);
+  private readonly meta = inject(Meta);
+  private readonly doc = inject(DOCUMENT);
 
   // First-time city chooser
   showCityPicker = false;
@@ -108,6 +114,9 @@ export class ListingsComponent implements OnInit {
     minRating: 0 as number,
     verified: 'all' as 'all' | 'verified' | 'unverified',
     provider: 'all' as 'all' | 'company' | 'individual',
+    category: '' as string,
+    type: '' as '' | ListingItem['type'],
+    serviceType: '' as string,
   };
 
   // Super category → subcategory treeview data
@@ -235,7 +244,7 @@ export class ListingsComponent implements OnInit {
     'Soft Skills Training',
     'CSR – Free Community Tutoring',
     'CSR – Vocational Training',
-    'CSR – Literacy Campaigns',
+    'CSR �� Literacy Campaigns',
     'CSR – Health Awareness Workshops',
     'CSR – Environment Education',
     'CSR – Women Empowerment Programs',

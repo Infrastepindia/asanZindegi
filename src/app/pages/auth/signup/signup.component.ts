@@ -21,7 +21,7 @@ export class SignupComponent {
 
   model = { name: '', email: '', password: '', confirmPassword: '' };
   loading = false;
-  error = 'dsfasdf';
+  error = '';
   success = '';
 
   private passwordsMatch() {

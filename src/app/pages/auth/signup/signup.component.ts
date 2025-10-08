@@ -16,19 +16,36 @@ export class SignupComponent {
   private readonly accounts = inject(AccountService);
   private readonly router = inject(Router);
 
-  model = { name: '', email: '', password: '' };
+  model = { name: '', email: '', password: '', confirmPassword: '' };
+  loading = false;
+  error = '';
+
+  private passwordsMatch() {
+    return (this.model.password || '') === (this.model.confirmPassword || '');
+  }
 
   onSubmit(e: Event) {
     e.preventDefault();
-    console.log(e);
+    this.error = '';
+    if (!this.passwordsMatch()) {
+      this.error = 'Passwords do not match';
+      return;
+    }
     const payload = {
       fullName: this.model.name,
       email: this.model.email,
       phone: this.model.password,
     };
+    this.loading = true;
     this.accounts.registerIndividual(payload).subscribe({
-      next: () => this.router.navigate(['/login']),
-      error: () => this.router.navigate(['/login']),
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.loading = false;
+        this.router.navigate(['/login']);
+      },
     });
   }
 }

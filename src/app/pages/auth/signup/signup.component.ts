@@ -41,31 +41,38 @@ export class SignupComponent {
       email: this.model.email,
       phone: this.model.password,
     };
-    this.loading = true;
-    this.accounts
-      .registerIndividual(payload)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (resp: any) => {
-          if (
-            resp &&
-            typeof resp === 'object' &&
-            typeof resp.status_code === 'number' &&
-            resp.status_code >= 400
-          ) {
-            this.error = resp.message || 'Registration failed';
-            return;
-          }
-          const msg =
-            (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) ||
-            'Account created successfully.';
-          this.success = msg;
-          setTimeout(() => this.router.navigate(['/login']), 1200);
-        },
-        error: (err) => {
-          const e = this.api.extractError(err);
-          this.error = e.message || 'Registration failed';
-        },
-      });
+    try {
+      this.loading = true;
+      this.accounts
+        .registerIndividual(payload)
+        .pipe(finalize(() => (this.loading = false)))
+        .subscribe({
+          next: (resp: any) => {
+            if (
+              resp &&
+              typeof resp === 'object' &&
+              typeof resp.status_code === 'number' &&
+              resp.status_code >= 400
+            ) {
+              this.loading = false;
+              this.error = resp.message || 'Registration failed';
+              return;
+            }
+            const msg =
+              (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) ||
+              'Account created successfully.';
+            this.success = msg;
+            setTimeout(() => this.router.navigate(['/login']), 1200);
+          },
+          error: (err) => {
+            this.loading = false;
+            const e = this.api.extractError(err);
+            this.error = e.message || 'Registration failed';
+          },
+        });
+    } catch (ex: any) {
+      this.loading = false;
+      this.error = ex?.message || 'Registration failed';
+    }
   }
 }

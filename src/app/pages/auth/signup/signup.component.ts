@@ -56,7 +56,7 @@ export class SignupComponent {
             ) {
               this.loading = false;
               this.error = resp.message || 'Registration failed';
-              return;
+              
             }
             const msg =
               (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) ||

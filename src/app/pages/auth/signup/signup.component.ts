@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-signup',
@@ -15,10 +16,12 @@ import { AccountService } from '../../../services/account.service';
 export class SignupComponent {
   private readonly accounts = inject(AccountService);
   private readonly router = inject(Router);
+  private readonly api = inject(ApiService);
 
   model = { name: '', email: '', password: '', confirmPassword: '' };
   loading = false;
   error = '';
+  success = '';
 
   private passwordsMatch() {
     return (this.model.password || '') === (this.model.confirmPassword || '');
@@ -27,6 +30,7 @@ export class SignupComponent {
   onSubmit(e: Event) {
     e.preventDefault();
     this.error = '';
+    this.success = '';
     if (!this.passwordsMatch()) {
       this.error = 'Passwords do not match';
       return;
@@ -38,13 +42,20 @@ export class SignupComponent {
     };
     this.loading = true;
     this.accounts.registerIndividual(payload).subscribe({
-      next: () => {
+      next: (resp: any) => {
         this.loading = false;
-        this.router.navigate(['/login']);
+        if (resp && typeof resp === 'object' && typeof resp.status_code === 'number' && resp.status_code >= 400) {
+          this.error = resp.message || 'Registration failed';
+          return;
+        }
+        const msg = (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) || 'Account created successfully.';
+        this.success = msg;
+        setTimeout(() => this.router.navigate(['/login']), 1200);
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.router.navigate(['/login']);
+        const e = this.api.extractError(err);
+        this.error = e.message || 'Registration failed';
       },
     });
   }

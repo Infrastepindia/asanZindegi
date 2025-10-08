@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -48,8 +48,6 @@ interface BlogItem {
   styleUrl: './landing.component.css',
 })
 export class LandingComponent implements OnInit {
-  constructor() {}
-
   ngOnInit(): void {
     this.api.getCategories().subscribe({
       next: (res) => {
@@ -80,6 +78,7 @@ export class LandingComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly api = inject(ApiService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly doc = inject(DOCUMENT);
 
   readonly year = new Date().getFullYear();
 
@@ -94,9 +93,9 @@ export class LandingComponent implements OnInit {
   private updateCanonical() {
     const origin = this.getOrigin();
     const href = origin ? `${origin}/` : '/';
-    let link: HTMLLinkElement | null = this.doc.querySelector("link[rel='canonical']");
+    let link = this.doc.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
     if (!link) {
-      link = this.doc.createElement('link');
+      link = this.doc.createElement('link') as HTMLLinkElement;
       link.setAttribute('rel', 'canonical');
       this.doc.head.appendChild(link);
     }

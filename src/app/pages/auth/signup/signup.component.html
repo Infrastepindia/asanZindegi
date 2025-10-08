@@ -38,7 +38,10 @@
                   #nameCtrl="ngModel"
                   [class.is-invalid]="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
                 />
-                <div class="invalid-feedback" *ngIf="nameCtrl.errors && (nameCtrl.dirty || nameCtrl.touched)">
+                <div
+                  class="invalid-feedback"
+                  *ngIf="nameCtrl.errors && (nameCtrl.dirty || nameCtrl.touched)"
+                >
                   <span *ngIf="nameCtrl.errors['required']">Full name is required.</span>
                   <span *ngIf="nameCtrl.errors['minlength']">Enter at least 2 characters.</span>
                 </div>
@@ -55,7 +58,10 @@
                   #emailCtrl="ngModel"
                   [class.is-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
                 />
-                <div class="invalid-feedback" *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)">
+                <div
+                  class="invalid-feedback"
+                  *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)"
+                >
                   <span *ngIf="emailCtrl.errors['required']">Email is required.</span>
                   <span *ngIf="emailCtrl.errors['email']">Enter a valid email.</span>
                 </div>
@@ -71,9 +77,14 @@
                   minlength="8"
                   pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
                   #passwordCtrl="ngModel"
-                  [class.is-invalid]="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)"
+                  [class.is-invalid]="
+                    passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)
+                  "
                 />
-                <div class="invalid-feedback" *ngIf="passwordCtrl.errors && (passwordCtrl.dirty || passwordCtrl.touched)">
+                <div
+                  class="invalid-feedback"
+                  *ngIf="passwordCtrl.errors && (passwordCtrl.dirty || passwordCtrl.touched)"
+                >
                   <span *ngIf="passwordCtrl.errors['required']">Password is required.</span>
                   <span *ngIf="passwordCtrl.errors['minlength']">Minimum 8 characters.</span>
                   <span *ngIf="passwordCtrl.errors['pattern']">Use letters and numbers.</span>
@@ -88,15 +99,34 @@
                   name="confirmPassword"
                   required
                   #confirmCtrl="ngModel"
-                  [class.is-invalid]="(confirmCtrl.dirty || confirmCtrl.touched) && model.confirmPassword && model.confirmPassword !== model.password"
+                  [class.is-invalid]="
+                    (confirmCtrl.dirty || confirmCtrl.touched) &&
+                    model.confirmPassword &&
+                    model.confirmPassword !== model.password
+                  "
                 />
-                <div class="invalid-feedback" *ngIf="(confirmCtrl.dirty || confirmCtrl.touched) && model.confirmPassword && model.confirmPassword !== model.password">
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    (confirmCtrl.dirty || confirmCtrl.touched) &&
+                    model.confirmPassword &&
+                    model.confirmPassword !== model.password
+                  "
+                >
                   Passwords must match.
                 </div>
               </div>
-              <div *ngIf="error!=''" class="alert alert-danger py-2 small" role="alert">{{ error }}</div>
-              <div *ngIf="success" class="alert alert-success py-2 small" role="alert">{{ success }}</div>
-              <button class="btn btn-join btn-lg w-100" type="submit" [disabled]="signupForm.invalid || loading">
+              <div *ngIf="error != ''" class="alert alert-danger py-2 small" role="alert">
+                {{ error }}
+              </div>
+              <div *ngIf="success" class="alert alert-success py-2 small" role="alert">
+                {{ success }}
+              </div>
+              <button
+                class="btn btn-join btn-lg w-100"
+                type="submit"
+                [disabled]="signupForm.invalid || loading"
+              >
                 {{ loading ? 'Creating account…' : 'Sign up' }}
               </button>
             </form>

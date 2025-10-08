@@ -56,10 +56,12 @@ export class SignupComponent {
             ) {
               this.loading = false;
               this.error = resp.message || 'Registration failed';
-
             } else {
               const msg =
-                (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) ||
+                (resp &&
+                  typeof resp === 'object' &&
+                  typeof resp.message === 'string' &&
+                  resp.message) ||
                 'Account created successfully.';
               this.success = msg;
               setTimeout(() => this.router.navigate(['/login']), 1200);

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { ApiService } from '../../../services/api.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup',
@@ -41,22 +42,30 @@ export class SignupComponent {
       phone: this.model.password,
     };
     this.loading = true;
-    this.accounts.registerIndividual(payload).subscribe({
-      next: (resp: any) => {
-        this.loading = false;
-        if (resp && typeof resp === 'object' && typeof resp.status_code === 'number' && resp.status_code >= 400) {
-          this.error = resp.message || 'Registration failed';
-          return;
-        }
-        const msg = (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) || 'Account created successfully.';
-        this.success = msg;
-        setTimeout(() => this.router.navigate(['/login']), 1200);
-      },
-      error: (err) => {
-        this.loading = false;
-        const e = this.api.extractError(err);
-        this.error = e.message || 'Registration failed';
-      },
-    });
+    this.accounts
+      .registerIndividual(payload)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (resp: any) => {
+          if (
+            resp &&
+            typeof resp === 'object' &&
+            typeof resp.status_code === 'number' &&
+            resp.status_code >= 400
+          ) {
+            this.error = resp.message || 'Registration failed';
+            return;
+          }
+          const msg =
+            (resp && typeof resp === 'object' && typeof resp.message === 'string' && resp.message) ||
+            'Account created successfully.';
+          this.success = msg;
+          setTimeout(() => this.router.navigate(['/login']), 1200);
+        },
+        error: (err) => {
+          const e = this.api.extractError(err);
+          this.error = e.message || 'Registration failed';
+        },
+      });
   }
 }

@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [main-new]
+    branches: [main-new2]
   workflow_dispatch:
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main-new'
+    if: github.ref == 'refs/heads/main-new2'
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4

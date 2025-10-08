@@ -23,6 +23,10 @@ jobs:
 
       - name: Build Angular app
         run: npm run build -- --configuration production
+
+      - name: Copy .htaccess file
+        run: |
+          cp .htaccess dist/asanZindegi/browser/.htaccess
         
       - name: Show dist folder (debug)
         run: ls -R dist/asanZindegi

@@ -35,8 +35,17 @@ export class LoginComponent {
     if (!this.model.email || !this.model.password) return;
     this.loading = true;
     this.api.login({ email: this.model.email, password: this.model.password }).subscribe({
-      next: () => {
+      next: (resp) => {
         this.loading = false;
+        const statusCode = typeof resp?.status_code === 'number' ? resp.status_code : 200;
+        if (statusCode !== 200) {
+          const msg =
+            (typeof resp?.status_message === 'string' && resp.status_message) ||
+            (typeof resp?.message === 'string' && resp.message) ||
+            'Login failed';
+          this.error = msg;
+          return;
+        }
         this.router.navigateByUrl('/');
       },
       error: (err) => {

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
 import {
   ProviderAccount,
   CompanyAccount,
@@ -17,6 +19,18 @@ export class AccountService {
   private mem: string | null = null; // SSR-safe fallback
 
   private http = inject(HttpClient);
+
+  private resolveBase(): string {
+    let base = environment.base_path || '';
+    if (
+      typeof window !== 'undefined' &&
+      window.location?.protocol === 'https:' &&
+      base.startsWith('http://')
+    ) {
+      base = 'https://' + base.substring('http://'.length);
+    }
+    return base;
+  }
 
   private get storageAvailable() {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -70,7 +84,7 @@ export class AccountService {
       company: '',
     };
 
-    const url = 'api/User/register';
+    const url = `${this.resolveBase()}/api/User/register`;
     return this.http.post(url, body).pipe(
       tap(() => {
         const acc: IndividualAccount = {

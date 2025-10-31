@@ -280,6 +280,18 @@ export class ProviderRegisterComponent {
       return;
     }
 
+    const advertisements = Object.values(this.selection.advertisements).map((ad) => ({
+      categoryId: ad.categoryId,
+      categoryName: ad.categoryName,
+      priceStartForm: ad.priceStartForm,
+      priceType: ad.priceType,
+      serviceOverview: ad.serviceOverview,
+      areaCoveredPolygon: ad.areaCoveredPolygon,
+      videoLink: ad.videoLink,
+      detailDescription: ad.detailDescription,
+      availabilityHours: ad.availabilityHours,
+    }));
+
     const payload: ProviderDetailsPayload = {
       firstName: this.account.firstName,
       lastName: this.account.lastName,
@@ -298,8 +310,12 @@ export class ProviderRegisterComponent {
       isCompany: this.provider.isCompany,
 
       categoryIds: this.selection.categories.map((c) => c.id),
-      //serviceTypes: this.selection.serviceTypes,
+      advertisements: advertisements.length > 0 ? advertisements : undefined,
     };
+
+    const advertisementFiles: File[] = Object.values(this.advertisementImageFiles).filter(
+      (f) => f instanceof File,
+    );
 
     const files = {
       profileImage: this.profileImageFile,
@@ -307,6 +323,7 @@ export class ProviderRegisterComponent {
       registrationCertificates: this.regFiles.length > 0 ? this.regFiles : undefined,
       licenses: this.licenseFiles.length > 0 ? this.licenseFiles : undefined,
       portfolio: this.portfolioFiles.length > 0 ? this.portfolioFiles : undefined,
+      advertisementImages: advertisementFiles.length > 0 ? advertisementFiles : undefined,
     };
 
     this.api.addProviderDetails(payload, files).subscribe({

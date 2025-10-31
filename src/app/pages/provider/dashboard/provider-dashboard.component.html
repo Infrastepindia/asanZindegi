@@ -1,5 +1,5 @@
 <section class="py-5">
-  <div class="container" *ngIf="acc as a; else noAcc">
+  <div class="container" *ngIf="!isLoading && acc as a; else loadingOrNoAcc">
     <div class="row g-4">
       <div class="col-lg-8">
         <!-- Account Information Card -->

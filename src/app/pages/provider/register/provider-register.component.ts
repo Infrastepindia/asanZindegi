@@ -210,6 +210,20 @@ export class ProviderRegisterComponent {
     this.writeDraft();
   }
 
+  getAdvertisement(catId: number, catName: string): Advertisement {
+    if (!this.selection.advertisements[catId]) {
+      this.selection.advertisements[catId] = {
+        categoryId: catId,
+        categoryName: catName,
+        priceStartForm: '',
+        priceType: '',
+        serviceOverview: '',
+        detailDescription: '',
+      };
+    }
+    return this.selection.advertisements[catId];
+  }
+
   // File handlers (store previews only)
   async onProfileImage(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];

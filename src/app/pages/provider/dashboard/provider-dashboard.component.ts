@@ -49,6 +49,25 @@ export class ProviderDashboardComponent {
     return this.acc && this.acc.type === 'Individual' ? (this.acc as IndividualAccount) : null;
   }
 
+  getProviderCategories() {
+    const uniqueCategories = new Set(this.providerAds.map(ad => ad.category));
+    return Array.from(uniqueCategories);
+  }
+
+  getTotalAds(): number {
+    return this.providerAds.length;
+  }
+
+  getTotalViews(): number {
+    return this.providerAds.reduce((sum, ad) => sum + ad.views, 0);
+  }
+
+  getAverageRating(): number {
+    if (this.providerAds.length === 0) return 0;
+    const totalRating = this.providerAds.reduce((sum, ad) => sum + ad.rating, 0);
+    return Math.round((totalRating / this.providerAds.length) * 10) / 10;
+  }
+
   addPersonnel(e: Event) {
     e.preventDefault();
     const res = this.accounts.addPersonnel(this.person);

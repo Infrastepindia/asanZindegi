@@ -261,7 +261,7 @@ export class ProviderRegisterComponent {
       isCompany: this.provider.isCompany,
 
       categoryIds: this.selection.categories.map((c) => c.id),
-      serviceTypes: this.selection.serviceTypes,
+      //serviceTypes: this.selection.serviceTypes,
     };
 
     const files = {

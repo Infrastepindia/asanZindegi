@@ -22,7 +22,7 @@ export interface ProviderDetailsPayload {
   categoryIds: number[];
 
   // Service Types
-  serviceTypes: Record<number, string[]>; // key by category id
+  serviceTypes?: Record<number, string[]>; // key by category id
 
   // Documents (file names or IDs after upload)
   registrationCertificateFileIds?: string[];

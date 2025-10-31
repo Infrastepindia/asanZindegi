@@ -56,7 +56,6 @@ export class ApiService {
   }
 
   addProviderDetails(
-
     payload: any,
     files?: {
       profileImage?: File;
@@ -64,11 +63,12 @@ export class ApiService {
       registrationCertificates?: File[];
       licenses?: File[];
       portfolio?: File[];
+      advertisementImages?: File[];
     },
   ): Observable<any> {
     const formData = new FormData();
     formData.append('providerDetailsPayload', JSON.stringify(payload));
-    console.log(JSON.stringify(payload))
+    console.log(JSON.stringify(payload));
     if (files) {
       if (files.profileImage) {
         formData.append('profileImage', files.profileImage);
@@ -91,8 +91,13 @@ export class ApiService {
           formData.append(`portfolio`, f);
         });
       }
+      if (files.advertisementImages && files.advertisementImages.length > 0) {
+        files.advertisementImages.forEach((f) => {
+          formData.append(`advertisementImages`, f);
+        });
+      }
     }
-    console.log(formData)
+    console.log(formData);
     const url = `${this.resolveBase()}/api/Provider/registerProviderWithCompany`;
 
     return this.http.post(url, formData);

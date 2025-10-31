@@ -100,9 +100,7 @@
               </div>
               <!-- [disabled]="!phoneVerified" -->
               <div class="d-flex justify-content-end gap-2 mt-3">
-                <button type="submit" class="btn btn-join btn-lg" >
-                  Continue
-                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
 
@@ -238,34 +236,133 @@
               </div>
             </form>
 
-            <!-- Step 5: Service Types -->
+            <!-- Step 5: Service Types & Advertisement Details -->
             <form *ngIf="step === 5" (ngSubmit)="next()" class="wizard-form">
               <div *ngIf="!selection.categories.length" class="alert alert-warning">
                 Select at least one category first.
               </div>
-              <div class="mb-3" *ngFor="let c of selection.categories">
-                <label class="form-label">{{ c.name }} – Service Types</label>
-                <div class="chip-list d-flex flex-wrap gap-2 mb-2">
-                  <span
-                    class="badge pill-badge bg-light text-dark"
-                    *ngFor="let s of serviceTypesFor(c.id)"
-                  >
-                    {{ s }}
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-link p-0 ms-1"
-                      (click)="removeServiceType(c.id, s)"
-                    >
-                      <i class="bi bi-x"></i>
-                    </button>
-                  </span>
+              <div class="mb-4" *ngFor="let c of selection.categories">
+                <div class="filter-card p-4">
+                  <h5 class="mb-3">{{ c.name }}</h5>
+
+                  <!-- Service Types -->
+                  <div class="mb-3">
+                    <label class="form-label">Service Types</label>
+                    <div class="chip-list d-flex flex-wrap gap-2 mb-2">
+                      <span
+                        class="badge pill-badge bg-light text-dark"
+                        *ngFor="let s of serviceTypesFor(c.id)"
+                      >
+                        {{ s }}
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-link p-0 ms-1"
+                          (click)="removeServiceType(c.id, s)"
+                        >
+                          <i class="bi bi-x"></i>
+                        </button>
+                      </span>
+                    </div>
+                    <input
+                      #serviceTypeInput
+                      class="form-control"
+                      (keydown.enter)="
+                        $event.preventDefault(); addServiceType(c.id, serviceTypeInput)
+                      "
+                      placeholder="Type and press Enter to add (e.g., Installation, Repair)"
+                    />
+                  </div>
+
+                  <!-- Advertisement Details -->
+                  <hr class="my-3" />
+                  <h6 class="mb-3">Advertisement Details</h6>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Price Start From</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).priceStartForm"
+                        [name]="'priceStart-' + c.id"
+                        placeholder="e.g., 500"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Price Type</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).priceType"
+                        [name]="'priceType-' + c.id"
+                        placeholder="e.g., per hour, per visit, flat rate"
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Service Overview</label>
+                      <textarea
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).serviceOverview"
+                        [name]="'serviceOverview-' + c.id"
+                        rows="3"
+                        placeholder="Brief overview of your service"
+                      ></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Area Covered (Polygon)</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).areaCoveredPolygon"
+                        [name]="'areaCovered-' + c.id"
+                        placeholder="e.g., Downtown, Suburbs"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Video Link (optional)</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).videoLink"
+                        [name]="'videoLink-' + c.id"
+                        type="url"
+                        placeholder="e.g., https://youtube.com/..."
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Detailed Description</label>
+                      <textarea
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).detailDescription"
+                        [name]="'detailDescription-' + c.id"
+                        rows="3"
+                        placeholder="Detailed information about your service"
+                      ></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Availability Hours (optional)</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).availabilityHours"
+                        [name]="'availabilityHours-' + c.id"
+                        placeholder="e.g., Monday-Friday 9AM-6PM"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Advertisement Image (optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        class="form-control"
+                        (change)="onAdvertisementImage(c.id, $event)"
+                      />
+                    </div>
+                    <div class="col-md-6" *ngIf="getAdvertisement(c.id, c.name).advertisementImage">
+                      <label class="form-label">Image Preview</label>
+                      <img
+                        [src]="getAdvertisement(c.id, c.name).advertisementImage"
+                        alt="Advertisement"
+                        class="img-preview"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <input
-                  #serviceTypeInput
-                  class="form-control"
-                  (keydown.enter)="$event.preventDefault(); addServiceType(c.id, serviceTypeInput)"
-                  placeholder="Type and press Enter to add (e.g., Installation, Repair)"
-                />
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
                 <button type="button" class="btn btn-outline-secondary" (click)="back()">

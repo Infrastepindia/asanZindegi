@@ -1,3 +1,15 @@
+export interface AdvertisementPayload {
+  categoryId: number;
+  categoryName: string;
+  priceStartForm: string;
+  priceType: string;
+  serviceOverview: string;
+  areaCoveredPolygon?: string;
+  videoLink?: string;
+  detailDescription: string;
+  availabilityHours?: string;
+}
+
 export interface ProviderDetailsPayload {
   // Account Information
   firstName: string;
@@ -24,10 +36,14 @@ export interface ProviderDetailsPayload {
   // Service Types
   serviceTypes?: Record<number, string[]>; // key by category id
 
+  // Advertisements
+  advertisements?: AdvertisementPayload[];
+
   // Documents (file names or IDs after upload)
   registrationCertificateFileIds?: string[];
   licenseFileIds?: string[];
   portfolioFileIds?: string[];
+  advertisementImageFileIds?: string[];
 
   // Profile Image and Logo (file IDs after upload)
   profileImageFileId?: string;

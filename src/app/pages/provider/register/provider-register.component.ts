@@ -7,6 +7,7 @@ import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
 import { OtpInputComponent } from '../../../shared/otp-input.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
+import { Advertisement } from '../../../models/advertisement.model';
 
 interface AddressForm {
   line1: string;
@@ -36,12 +37,14 @@ interface ProviderForm {
 interface ServiceSelection {
   categories: Array<{ id: number; name: string }>;
   serviceTypes: Record<number, string[]>; // key by category id
+  advertisements: Record<number, Advertisement>; // key by category id
 }
 
 interface DocumentsForm {
   registrationCert?: string[]; // names only for draft
   licenses?: string[];
   portfolio?: string[];
+  advertisementImages?: Record<number, string>; // category id -> filename
 }
 
 interface RegistrationDraft {
@@ -93,7 +96,7 @@ export class ProviderRegisterComponent {
 
   superCategories: ApiSuperCategory[] = [];
   expandedSuperIds = new Set<number>();
-  selection: ServiceSelection = { categories: [], serviceTypes: {} };
+  selection: ServiceSelection = { categories: [], serviceTypes: {}, advertisements: {} };
 
   // Upload previews (not persisted due to size constraints)
   profileImageFile?: File;
@@ -101,6 +104,7 @@ export class ProviderRegisterComponent {
   regFiles: File[] = [];
   licenseFiles: File[] = [];
   portfolioFiles: File[] = [];
+  advertisementImageFiles: Record<number, File> = {};
 
   ngOnInit() {
     const saved = this.readDraft();
@@ -113,6 +117,13 @@ export class ProviderRegisterComponent {
 
   // Draft persistence (text fields only)
   writeDraft() {
+    const advertisementImages: Record<number, string> = {};
+    Object.entries(this.advertisementImageFiles).forEach(([catId, file]) => {
+      if (file) {
+        advertisementImages[Number(catId)] = file.name;
+      }
+    });
+
     const draft: RegistrationDraft = {
       step: this.step,
       account: this.account,
@@ -123,6 +134,8 @@ export class ProviderRegisterComponent {
         registrationCert: this.regFiles.map((f) => f.name),
         licenses: this.licenseFiles.map((f) => f.name),
         portfolio: this.portfolioFiles.map((f) => f.name),
+        advertisementImages:
+          Object.keys(advertisementImages).length > 0 ? advertisementImages : undefined,
       },
     };
     if (typeof window !== 'undefined')
@@ -198,6 +211,20 @@ export class ProviderRegisterComponent {
     this.writeDraft();
   }
 
+  getAdvertisement(catId: number, catName: string): Advertisement {
+    if (!this.selection.advertisements[catId]) {
+      this.selection.advertisements[catId] = {
+        categoryId: catId,
+        categoryName: catName,
+        priceStartForm: '',
+        priceType: '',
+        serviceOverview: '',
+        detailDescription: '',
+      };
+    }
+    return this.selection.advertisements[catId];
+  }
+
   // File handlers (store previews only)
   async onProfileImage(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
@@ -216,6 +243,17 @@ export class ProviderRegisterComponent {
     if (kind === 'reg') this.regFiles = files;
     if (kind === 'lic') this.licenseFiles = files;
     if (kind === 'port') this.portfolioFiles = files;
+    this.writeDraft();
+  }
+
+  async onAdvertisementImage(catId: number, e: Event) {
+    const f = (e.target as HTMLInputElement).files?.[0];
+    if (!f) return;
+    this.advertisementImageFiles[catId] = f;
+    const ad = this.selection.advertisements[catId];
+    if (ad) {
+      ad.advertisementImage = await this.readAsDataURL(f);
+    }
     this.writeDraft();
   }
   private readAsDataURL(f: File): Promise<string> {
@@ -243,6 +281,18 @@ export class ProviderRegisterComponent {
       return;
     }
 
+    const advertisements = Object.values(this.selection.advertisements).map((ad) => ({
+      categoryId: ad.categoryId,
+      categoryName: ad.categoryName,
+      priceStartForm: ad.priceStartForm,
+      priceType: ad.priceType,
+      serviceOverview: ad.serviceOverview,
+      areaCoveredPolygon: ad.areaCoveredPolygon,
+      videoLink: ad.videoLink,
+      detailDescription: ad.detailDescription,
+      availabilityHours: ad.availabilityHours,
+    }));
+
     const payload: ProviderDetailsPayload = {
       firstName: this.account.firstName,
       lastName: this.account.lastName,
@@ -261,8 +311,12 @@ export class ProviderRegisterComponent {
       isCompany: this.provider.isCompany,
 
       categoryIds: this.selection.categories.map((c) => c.id),
-      //serviceTypes: this.selection.serviceTypes,
+      advertisements: advertisements.length > 0 ? advertisements : undefined,
     };
+
+    const advertisementFiles: File[] = Object.values(this.advertisementImageFiles).filter(
+      (f) => f instanceof File,
+    );
 
     const files = {
       profileImage: this.profileImageFile,
@@ -270,6 +324,7 @@ export class ProviderRegisterComponent {
       registrationCertificates: this.regFiles.length > 0 ? this.regFiles : undefined,
       licenses: this.licenseFiles.length > 0 ? this.licenseFiles : undefined,
       portfolio: this.portfolioFiles.length > 0 ? this.portfolioFiles : undefined,
+      advertisementImages: advertisementFiles.length > 0 ? advertisementFiles : undefined,
     };
 
     this.api.addProviderDetails(payload, files).subscribe({

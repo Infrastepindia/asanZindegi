@@ -6,6 +6,7 @@ import { AccountService } from '../../../services/account.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
 import { OtpInputComponent } from '../../../shared/otp-input.component';
+import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 
 interface AddressForm {
   line1: string;
@@ -237,21 +238,69 @@ export class ProviderRegisterComponent {
 
   // Submit
   submit() {
-    if (this.provider.isCompany) {
-      this.accounts.registerCompany({
-        companyName: this.provider.name,
-        contactName: this.fullName,
-        email: this.account.email,
-        phone: this.account.phone,
-      });
-    } else {
-      this.accounts.registerIndividual({
-        fullName: this.fullName,
-        email: this.account.email,
-        phone: this.account.phone,
-      });
+    if (!this.validateAllSteps()) {
+      alert('Please complete all required fields.');
+      return;
     }
-    this.clearDraft();
-    this.router.navigate(['/provider/dashboard']);
+
+    const payload: ProviderDetailsPayload = {
+      firstName: this.account.firstName,
+      lastName: this.account.lastName,
+      email: this.account.email,
+      phone: this.account.phone,
+      password: this.account.password,
+
+      addressLine1: this.address.line1,
+      addressLine2: this.address.line2,
+      city: this.address.city,
+      state: this.address.state,
+      pinCode: this.address.pin,
+
+      providerName: this.provider.name,
+      profileTitle: this.provider.title,
+      isCompany: this.provider.isCompany,
+
+      categoryIds: this.selection.categories.map((c) => c.id),
+      serviceTypes: this.selection.serviceTypes,
+    };
+
+    const files = {
+      profileImage: this.profileImageFile,
+      logo: this.logoFile,
+      registrationCertificates: this.regFiles.length > 0 ? this.regFiles : undefined,
+      licenses: this.licenseFiles.length > 0 ? this.licenseFiles : undefined,
+      portfolio: this.portfolioFiles.length > 0 ? this.portfolioFiles : undefined,
+    };
+
+    this.api.addProviderDetails(payload, files).subscribe({
+      next: (response) => {
+        this.clearDraft();
+        alert('Provider registration submitted successfully!');
+        this.router.navigate(['/provider/dashboard']);
+      },
+      error: (err) => {
+        const errorInfo = this.api.extractError(err);
+        alert(`Submission failed: ${errorInfo.message}`);
+      },
+    });
+  }
+
+  private validateAllSteps(): boolean {
+    if (!this.account.firstName || !this.account.email || !this.account.phone) {
+      return false;
+    }
+    if (this.account.password !== this.account.confirmPassword) {
+      return false;
+    }
+    if (!this.address.line1 || !this.address.city || !this.address.state || !this.address.pin) {
+      return false;
+    }
+    if (!this.provider.name) {
+      return false;
+    }
+    if (this.selection.categories.length === 0) {
+      return false;
+    }
+    return true;
   }
 }

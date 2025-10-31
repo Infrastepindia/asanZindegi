@@ -55,6 +55,48 @@ export class ApiService {
     return this.http.post(url, payload);
   }
 
+  addProviderDetails(
+    payload: any,
+    files?: {
+      profileImage?: File;
+      logo?: File;
+      registrationCertificates?: File[];
+      licenses?: File[];
+      portfolio?: File[];
+    },
+  ): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('providerDetailsPayload', JSON.stringify(payload));
+
+    if (files) {
+      if (files.profileImage) {
+        formData.append('profileImage', files.profileImage);
+      }
+      if (files.logo) {
+        formData.append('logo', files.logo);
+      }
+      if (files.registrationCertificates && files.registrationCertificates.length > 0) {
+        files.registrationCertificates.forEach((f, idx) => {
+          formData.append(`registrationCertificates`, f);
+        });
+      }
+      if (files.licenses && files.licenses.length > 0) {
+        files.licenses.forEach((f) => {
+          formData.append(`licenses`, f);
+        });
+      }
+      if (files.portfolio && files.portfolio.length > 0) {
+        files.portfolio.forEach((f) => {
+          formData.append(`portfolio`, f);
+        });
+      }
+    }
+
+    const url = `${this.resolveBase()}/api/Provider/addProviderDetails`;
+    return this.http.post(url, formData);
+  }
+
   extractError(err: any): { message: string; status_code?: number; status_message?: string } {
     const body = err?.error ?? err;
     if (body && typeof body === 'object') {

@@ -64,6 +64,7 @@ export class ApiService {
       registrationCertificates?: File[];
       licenses?: File[];
       portfolio?: File[];
+      advertisementImages?: File[];
     },
   ): Observable<any> {
     const formData = new FormData();
@@ -89,6 +90,11 @@ export class ApiService {
       if (files.portfolio && files.portfolio.length > 0) {
         files.portfolio.forEach((f) => {
           formData.append(`portfolio`, f);
+        });
+      }
+      if (files.advertisementImages && files.advertisementImages.length > 0) {
+        files.advertisementImages.forEach((f) => {
+          formData.append(`advertisementImages`, f);
         });
       }
     }

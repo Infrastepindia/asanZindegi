@@ -72,27 +72,32 @@ export class ProviderDashboardComponent {
             }
 
             if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
-              this.providerAds = data.advertisements.map((ad: any) => ({
-                id: ad.id || Math.random(),
-                title: ad.title || '',
-                category: ad.category || '',
-                type: ad.type || '',
-                location: ad.location || '',
-                price: ad.price || 0,
-                unit: ad.unit || '',
-                cover: ad.cover || '',
-                date: ad.date || new Date().toISOString().slice(0, 10),
-                views: ad.views || 0,
-                rating: ad.rating || 5,
-                verified: ad.verified || false,
-                verifiedType: ad.verifiedType || '',
-                accountId: this.acc.id,
-                accountType: this.acc.type,
-                companyName: ad.companyName || this.acc.type === 'Company' ? (this.acc as CompanyAccount).companyName : (this.acc as IndividualAccount).fullName,
-                contactName: ad.contactName || (this.acc.type === 'Company' ? (this.acc as CompanyAccount).contactName : (this.acc as IndividualAccount).fullName),
-                contactEmail: ad.contactEmail || this.acc.email,
-                contactPhone: ad.contactPhone || this.acc.phone,
-              } as PostedAd));
+              this.providerAds = data.advertisements.map((ad: any) => {
+                const companyName = ad.companyName || (this.acc!.type === 'Company' ? (this.acc as CompanyAccount).companyName : (this.acc as IndividualAccount).fullName);
+                const contactName = ad.contactName || (this.acc!.type === 'Company' ? (this.acc as CompanyAccount).contactName : (this.acc as IndividualAccount).fullName);
+
+                return {
+                  id: ad.id || Math.random(),
+                  title: ad.title || '',
+                  category: ad.category || '',
+                  type: ad.type || '',
+                  location: ad.location || '',
+                  price: ad.price || 0,
+                  unit: ad.unit || '',
+                  cover: ad.cover || '',
+                  date: ad.date || new Date().toISOString().slice(0, 10),
+                  views: ad.views || 0,
+                  rating: ad.rating || 5,
+                  verified: ad.verified || false,
+                  verifiedType: ad.verifiedType || '',
+                  accountId: this.acc!.id,
+                  accountType: this.acc!.type,
+                  companyName,
+                  contactName,
+                  contactEmail: ad.contactEmail || this.acc!.email,
+                  contactPhone: ad.contactPhone || this.acc!.phone,
+                } as PostedAd;
+              });
             }
           }
           this.isLoading = false;

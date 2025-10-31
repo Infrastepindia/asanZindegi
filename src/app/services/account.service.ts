@@ -215,4 +215,12 @@ export class AccountService {
     this.setAccount(c);
     return c;
   }
+
+  /**
+   * Check if the current account is a company
+   */
+  isCompanyAccount(): boolean {
+    const acc = this.getAccount();
+    return acc?.type === 'Company';
+  }
 }

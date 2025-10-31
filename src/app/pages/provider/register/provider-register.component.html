@@ -100,9 +100,7 @@
               </div>
               <!-- [disabled]="!phoneVerified" -->
               <div class="d-flex justify-content-end gap-2 mt-3">
-                <button type="submit" class="btn btn-join btn-lg" >
-                  Continue
-                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
               </div>
             </form>
 
@@ -268,7 +266,9 @@
                     <input
                       #serviceTypeInput
                       class="form-control"
-                      (keydown.enter)="$event.preventDefault(); addServiceType(c.id, serviceTypeInput)"
+                      (keydown.enter)="
+                        $event.preventDefault(); addServiceType(c.id, serviceTypeInput)
+                      "
                       placeholder="Type and press Enter to add (e.g., Installation, Repair)"
                     />
                   </div>

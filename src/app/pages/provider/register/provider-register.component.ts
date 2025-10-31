@@ -134,7 +134,8 @@ export class ProviderRegisterComponent {
         registrationCert: this.regFiles.map((f) => f.name),
         licenses: this.licenseFiles.map((f) => f.name),
         portfolio: this.portfolioFiles.map((f) => f.name),
-        advertisementImages: Object.keys(advertisementImages).length > 0 ? advertisementImages : undefined,
+        advertisementImages:
+          Object.keys(advertisementImages).length > 0 ? advertisementImages : undefined,
       },
     };
     if (typeof window !== 'undefined')

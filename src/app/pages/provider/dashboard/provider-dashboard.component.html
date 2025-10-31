@@ -79,12 +79,8 @@
                     <span class="meta-item">{{ ad.date | date: 'shortDate' }}</span>
                   </div>
                   <div class="ad-stats">
-                    <span class="stat-item">
-                      <i class="icon">👁️</i> {{ ad.views }} views
-                    </span>
-                    <span class="stat-item">
-                      <i class="icon">⭐</i> {{ ad.rating }}/5
-                    </span>
+                    <span class="stat-item"> <i class="icon">👁️</i> {{ ad.views }} views </span>
+                    <span class="stat-item"> <i class="icon">⭐</i> {{ ad.rating }}/5 </span>
                     <span class="stat-item" *ngIf="ad.verified">
                       <i class="icon">✓</i> {{ ad.verifiedType }}
                     </span>

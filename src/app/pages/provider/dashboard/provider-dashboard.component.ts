@@ -50,7 +50,7 @@ export class ProviderDashboardComponent {
   }
 
   getProviderCategories() {
-    const uniqueCategories = new Set(this.providerAds.map(ad => ad.category));
+    const uniqueCategories = new Set(this.providerAds.map((ad) => ad.category));
     return Array.from(uniqueCategories);
   }
 

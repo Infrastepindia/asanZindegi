@@ -55,6 +55,11 @@ export class ApiService {
     return this.http.post(url, payload);
   }
 
+  getCompanyDetails(userId: string | number): Observable<any> {
+    const url = `${this.resolveBase()}/Provider/getCompanyDetails/${userId}`;
+    return this.http.get(url);
+  }
+
   addProviderDetails(
     payload: any,
     files?: {

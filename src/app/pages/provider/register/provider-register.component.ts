@@ -238,26 +238,9 @@ export class ProviderRegisterComponent {
 
   // Submit
   submit() {
-<<<<<<< HEAD
-    debugger
-    if (this.provider.isCompany) {
-      this.accounts.registerCompany({
-        companyName: this.provider.name,
-        contactName: this.fullName,
-        email: this.account.email,
-        phone: this.account.phone,
-      });
-    } else {
-      this.accounts.registerIndividual({
-        fullName: this.fullName,
-        email: this.account.email,
-        phone: this.account.phone,
-      });
-=======
     if (!this.validateAllSteps()) {
       alert('Please complete all required fields.');
       return;
->>>>>>> 65654ef93934a3150d63eca71982b766308c8d6e
     }
 
     const payload: ProviderDetailsPayload = {

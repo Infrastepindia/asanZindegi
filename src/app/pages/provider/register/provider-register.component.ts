@@ -244,6 +244,17 @@ export class ProviderRegisterComponent {
     if (kind === 'port') this.portfolioFiles = files;
     this.writeDraft();
   }
+
+  async onAdvertisementImage(catId: number, e: Event) {
+    const f = (e.target as HTMLInputElement).files?.[0];
+    if (!f) return;
+    this.advertisementImageFiles[catId] = f;
+    const ad = this.selection.advertisements[catId];
+    if (ad) {
+      ad.advertisementImage = await this.readAsDataURL(f);
+    }
+    this.writeDraft();
+  }
   private readAsDataURL(f: File): Promise<string> {
     return new Promise((res, rej) => {
       const reader = new FileReader();

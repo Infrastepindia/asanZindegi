@@ -63,7 +63,7 @@ export class ApiService {
       registrationCertificates?: File[];
       licenses?: File[];
       portfolio?: File[];
-    }
+    },
   ): Observable<any> {
     const formData = new FormData();
 

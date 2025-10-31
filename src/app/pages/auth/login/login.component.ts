@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { ApiService } from '../../../services/api.service';
 export class LoginComponent {
   private router = inject(Router);
   private api = inject(ApiService);
+  private authService = inject(AuthService);
 
   loginMode: 'password' | 'otp' = 'password';
   otpSent = false;
@@ -35,8 +37,9 @@ export class LoginComponent {
     if (!this.model.email || !this.model.password) return;
     this.loading = true;
     this.api.login({ email: this.model.email, password: this.model.password }).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.loading = false;
+        this.storeUserData(response);
         this.router.navigateByUrl('/');
       },
       error: (err) => {
@@ -45,6 +48,19 @@ export class LoginComponent {
         this.error = e.message || 'Login failed';
       },
     });
+  }
+
+  private storeUserData(response: any): void {
+    if (response && typeof response === 'object') {
+      const user = {
+        id: response.id || response.userId || response.user?.id || '',
+        firstName: response.firstName || response.user?.firstName || '',
+        lastName: response.lastName || response.user?.lastName || '',
+        email: response.email || this.model.email,
+        ...response,
+      };
+      this.authService.setUser(user);
+    }
   }
 
   sendOtp() {

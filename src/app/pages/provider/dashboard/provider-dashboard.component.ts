@@ -5,6 +5,8 @@ import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { AdsService } from '../../../services/ads.service';
 import { ListingsService } from '../../../services/listings.service';
+import { ApiService } from '../../../services/api.service';
+import { AuthService } from '../../../services/auth.service';
 import {
   ProviderAccount,
   CompanyAccount,
@@ -23,19 +25,93 @@ export class ProviderDashboardComponent {
   private accounts = inject(AccountService);
   private adsService = inject(AdsService);
   private listingsService = inject(ListingsService);
+  private apiService = inject(ApiService);
+  private authService = inject(AuthService);
 
   acc: ProviderAccount | null = null;
   providerAds: PostedAd[] = [];
   categories = this.listingsService.getCategories();
+  isLoading = true;
 
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
   editModel = { id: 0, name: '', email: '', phone: '' };
 
   ngOnInit() {
-    this.acc = this.accounts.getAccount();
-    if (this.acc) {
-      this.providerAds = this.adsService.getByAccount(this.acc.id);
+    const userId = this.authService.getUserId();
+
+    if (userId) {
+      this.apiService.getCompanyDetails(userId).subscribe({
+        next: (response: any) => {
+          if (response && response.data) {
+            const data = response.data;
+
+            if (data.isCompany) {
+              this.acc = {
+                id: data.id || 1,
+                type: 'Company',
+                companyName: data.companyName,
+                contactName: data.contactName || '',
+                email: data.email,
+                phone: data.phone,
+                personnel: data.personnel || [],
+                verification: {
+                  status: data.verification?.status || 'Unverified',
+                },
+                createdAt: data.createdAt || new Date().toISOString(),
+              } as CompanyAccount;
+            } else {
+              this.acc = {
+                id: data.id || 1,
+                type: 'Individual',
+                fullName: data.fullName || `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+                email: data.email,
+                phone: data.phone,
+                createdAt: data.createdAt || new Date().toISOString(),
+              } as IndividualAccount;
+            }
+
+            if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
+              this.providerAds = data.advertisements.map((ad: any) => ({
+                id: ad.id || Math.random(),
+                title: ad.title || '',
+                category: ad.category || '',
+                type: ad.type || '',
+                location: ad.location || '',
+                price: ad.price || 0,
+                unit: ad.unit || '',
+                cover: ad.cover || '',
+                date: ad.date || new Date().toISOString().slice(0, 10),
+                views: ad.views || 0,
+                rating: ad.rating || 5,
+                verified: ad.verified || false,
+                verifiedType: ad.verifiedType || '',
+                accountId: this.acc.id,
+                accountType: this.acc.type,
+                companyName: ad.companyName || this.acc.type === 'Company' ? (this.acc as CompanyAccount).companyName : (this.acc as IndividualAccount).fullName,
+                contactName: ad.contactName || (this.acc.type === 'Company' ? (this.acc as CompanyAccount).contactName : (this.acc as IndividualAccount).fullName),
+                contactEmail: ad.contactEmail || this.acc.email,
+                contactPhone: ad.contactPhone || this.acc.phone,
+              } as PostedAd));
+            }
+          }
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching company details:', error);
+          this.isLoading = false;
+          this.acc = this.accounts.getAccount();
+          if (this.acc) {
+            this.providerAds = this.adsService.getByAccount(this.acc.id);
+          }
+        },
+      });
+    } else {
+      this.acc = this.accounts.getAccount();
+      if (this.acc) {
+        this.providerAds = this.adsService.getByAccount(this.acc.id);
+      }
+      this.isLoading = false;
     }
   }
 

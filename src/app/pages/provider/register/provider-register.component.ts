@@ -117,6 +117,13 @@ export class ProviderRegisterComponent {
 
   // Draft persistence (text fields only)
   writeDraft() {
+    const advertisementImages: Record<number, string> = {};
+    Object.entries(this.advertisementImageFiles).forEach(([catId, file]) => {
+      if (file) {
+        advertisementImages[Number(catId)] = file.name;
+      }
+    });
+
     const draft: RegistrationDraft = {
       step: this.step,
       account: this.account,
@@ -127,6 +134,7 @@ export class ProviderRegisterComponent {
         registrationCert: this.regFiles.map((f) => f.name),
         licenses: this.licenseFiles.map((f) => f.name),
         portfolio: this.portfolioFiles.map((f) => f.name),
+        advertisementImages: Object.keys(advertisementImages).length > 0 ? advertisementImages : undefined,
       },
     };
     if (typeof window !== 'undefined')

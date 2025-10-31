@@ -6,6 +6,7 @@ export interface User {
   lastName: string;
   email: string;
   [key: string]: any;
+  userData:any
 }
 
 const USER_STORAGE_KEY = 'az_user';
@@ -71,8 +72,8 @@ export class AuthService {
    */
   getUserId(): string | number | null {
     const user = this.userSignal();
-    if (user && user.id) {
-      return user.id;
+    if (user && user.userData) {
+      return user.userData.udId;
     }
     // Fallback to localStorage if signal is not set
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
@@ -91,8 +92,8 @@ export class AuthService {
    */
   getUserFullName(): string {
     const user = this.userSignal();
-    if (user) {
-      return `${user.firstName} ${user.lastName}`.trim();
+    if (user?.userData) {
+      return `${user.userData.firstName} ${user.userData.lastName}`.trim();
     }
     return '';
   }

@@ -66,7 +66,6 @@ export class ApiService {
       portfolio?: File[];
     },
   ): Observable<any> {
-    debugger
     const formData = new FormData();
     formData.append('providerDetailsPayload', JSON.stringify(payload));
     console.log(JSON.stringify(payload))

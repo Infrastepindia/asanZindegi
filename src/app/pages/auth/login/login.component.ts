@@ -52,12 +52,14 @@ export class LoginComponent {
 
   private storeUserData(response: any): void {
     if (response && typeof response === 'object') {
+      // Extract user data from nested structure (data.userdata)
+      const userData = response.data?.userdata || response.data || response;
       const user = {
-        id: response.id || response.userId || response.user?.id || '',
-        firstName: response.firstName || response.user?.firstName || '',
-        lastName: response.lastName || response.user?.lastName || '',
-        email: response.email || this.model.email,
-        ...response,
+        id: userData.id || response.id || userData.userId || response.userId || '',
+        firstName: userData.firstName || response.firstName || userData.first_name || '',
+        lastName: userData.lastName || response.lastName || userData.last_name || '',
+        email: userData.email || response.email || this.model.email,
+        ...userData,
       };
       this.authService.setUser(user);
     }

@@ -48,62 +48,56 @@ export class ProviderDashboardComponent {
 
             if (data.isCompany) {
               this.acc = {
-                id: data.id || 1,
+                id: data.providerId || 1,
                 type: 'Company',
-                companyName: data.companyName,
-                contactName: data.contactName || '',
-                email: data.email,
-                phone: data.phone,
-                personnel: data.personnel || [],
+                companyName: data.providerName || '',
+                contactName: data.providerName || '',
+                email: '',
+                phone: '',
+                personnel: [],
                 verification: {
-                  status: data.verification?.status || 'Unverified',
+                  status: 'Verified',
                 },
-                createdAt: data.createdAt || new Date().toISOString(),
+                createdAt: data.audit?.createdDate || new Date().toISOString(),
               } as CompanyAccount;
             } else {
               this.acc = {
-                id: data.id || 1,
+                id: data.providerId || 1,
                 type: 'Individual',
-                fullName: data.fullName || `${data.firstName || ''} ${data.lastName || ''}`.trim(),
-                email: data.email,
-                phone: data.phone,
-                createdAt: data.createdAt || new Date().toISOString(),
+                fullName: data.providerName || '',
+                email: '',
+                phone: '',
+                createdAt: data.audit?.createdDate || new Date().toISOString(),
               } as IndividualAccount;
             }
 
             if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
               this.providerAds = data.advertisements.map((ad: any) => {
                 const companyName =
-                  ad.companyName ||
-                  (this.acc!.type === 'Company'
+                  this.acc!.type === 'Company'
                     ? (this.acc as CompanyAccount).companyName
-                    : (this.acc as IndividualAccount).fullName);
-                const contactName =
-                  ad.contactName ||
-                  (this.acc!.type === 'Company'
-                    ? (this.acc as CompanyAccount).contactName
-                    : (this.acc as IndividualAccount).fullName);
+                    : (this.acc as IndividualAccount).fullName;
 
                 return {
-                  id: ad.id || Math.random(),
-                  title: ad.title || '',
-                  category: ad.category || '',
-                  type: ad.type || '',
-                  location: ad.location || '',
-                  price: ad.price || 0,
-                  unit: ad.unit || '',
-                  cover: ad.cover || '',
-                  date: ad.date || new Date().toISOString().slice(0, 10),
-                  views: ad.views || 0,
-                  rating: ad.rating || 5,
-                  verified: ad.verified || false,
-                  verifiedType: ad.verifiedType || '',
+                  id: ad.aId || Math.random(),
+                  title: ad.serviceOverview || '',
+                  category: ad.categoryName || '',
+                  type: 'Service' as const,
+                  location: '',
+                  price: parseFloat(ad.priceStartForm) || 0,
+                  unit: ad.priceType || '',
+                  cover: '',
+                  date: new Date().toISOString().slice(0, 10),
+                  views: 0,
+                  rating: 5,
+                  verified: ad.isActive || false,
+                  verifiedType: this.acc!.type === 'Company' ? 'Company' : 'KYC',
                   accountId: this.acc!.id,
                   accountType: this.acc!.type,
                   companyName,
-                  contactName,
-                  contactEmail: ad.contactEmail || this.acc!.email,
-                  contactPhone: ad.contactPhone || this.acc!.phone,
+                  contactName: companyName,
+                  contactEmail: '',
+                  contactPhone: '',
                 } as PostedAd;
               });
             }

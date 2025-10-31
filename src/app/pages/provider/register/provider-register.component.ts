@@ -44,6 +44,7 @@ interface DocumentsForm {
   registrationCert?: string[]; // names only for draft
   licenses?: string[];
   portfolio?: string[];
+  advertisementImages?: Record<number, string>; // category id -> filename
 }
 
 interface RegistrationDraft {

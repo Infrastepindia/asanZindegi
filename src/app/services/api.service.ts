@@ -56,7 +56,7 @@ export class ApiService {
   }
 
   getCompanyDetails(userId: string | number): Observable<any> {
-    const url = `${this.resolveBase()}/Provider/getCompanyDetails/${userId}`;
+    const url = `${this.resolveBase()}/api/Provider/getCompanyDetails/${userId}`;
     return this.http.get(url);
   }
 

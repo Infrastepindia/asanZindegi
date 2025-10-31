@@ -73,8 +73,16 @@ export class ProviderDashboardComponent {
 
             if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
               this.providerAds = data.advertisements.map((ad: any) => {
-                const companyName = ad.companyName || (this.acc!.type === 'Company' ? (this.acc as CompanyAccount).companyName : (this.acc as IndividualAccount).fullName);
-                const contactName = ad.contactName || (this.acc!.type === 'Company' ? (this.acc as CompanyAccount).contactName : (this.acc as IndividualAccount).fullName);
+                const companyName =
+                  ad.companyName ||
+                  (this.acc!.type === 'Company'
+                    ? (this.acc as CompanyAccount).companyName
+                    : (this.acc as IndividualAccount).fullName);
+                const contactName =
+                  ad.contactName ||
+                  (this.acc!.type === 'Company'
+                    ? (this.acc as CompanyAccount).contactName
+                    : (this.acc as IndividualAccount).fullName);
 
                 return {
                   id: ad.id || Math.random(),

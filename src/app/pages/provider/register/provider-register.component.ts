@@ -96,7 +96,7 @@ export class ProviderRegisterComponent {
 
   superCategories: ApiSuperCategory[] = [];
   expandedSuperIds = new Set<number>();
-  selection: ServiceSelection = { categories: [], serviceTypes: {} };
+  selection: ServiceSelection = { categories: [], serviceTypes: {}, advertisements: {} };
 
   // Upload previews (not persisted due to size constraints)
   profileImageFile?: File;
@@ -104,6 +104,7 @@ export class ProviderRegisterComponent {
   regFiles: File[] = [];
   licenseFiles: File[] = [];
   portfolioFiles: File[] = [];
+  advertisementImageFiles: Record<number, File> = {};
 
   ngOnInit() {
     const saved = this.readDraft();

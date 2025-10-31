@@ -37,6 +37,7 @@ interface ProviderForm {
 interface ServiceSelection {
   categories: Array<{ id: number; name: string }>;
   serviceTypes: Record<number, string[]>; // key by category id
+  advertisements: Record<number, Advertisement>; // key by category id
 }
 
 interface DocumentsForm {

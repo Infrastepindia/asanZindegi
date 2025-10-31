@@ -6,6 +6,7 @@ import { AccountService } from '../../../services/account.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
 import { OtpInputComponent } from '../../../shared/otp-input.component';
+import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 
 interface AddressForm {
   line1: string;

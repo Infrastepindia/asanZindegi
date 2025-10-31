@@ -237,6 +237,7 @@ export class ProviderRegisterComponent {
 
   // Submit
   submit() {
+    debugger
     if (this.provider.isCompany) {
       this.accounts.registerCompany({
         companyName: this.provider.name,

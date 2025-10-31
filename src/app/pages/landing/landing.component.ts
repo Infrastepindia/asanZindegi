@@ -49,6 +49,7 @@ interface BlogItem {
 })
 export class LandingComponent implements OnInit {
   ngOnInit(): void {
+    debugger
     this.api.getCategories().subscribe({
       next: (res) => {
         this.apiSuperCategories = (res && (res as any).data) || [];

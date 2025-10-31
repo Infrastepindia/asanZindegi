@@ -18,8 +18,8 @@ export class App {
   protected authService = inject(AuthService);
   private accountService = inject(AccountService);
 
-  isCompanyUser = computed(() =>
-    this.authService.isLoggedIn() && this.accountService.isCompanyAccount()
+  isCompanyUser = computed(
+    () => this.authService.isLoggedIn() && this.accountService.isCompanyAccount(),
   );
 
   logout(): void {

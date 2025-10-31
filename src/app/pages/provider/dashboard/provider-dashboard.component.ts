@@ -79,7 +79,7 @@ export class ProviderDashboardComponent {
                   id: ad.aId || Math.random(),
                   title: ad.serviceOverview || '',
                   category: ad.categoryName || '',
-                  type: 'service',
+                  type: 'Service' as const,
                   location: '',
                   price: parseFloat(ad.priceStartForm) || 0,
                   unit: ad.priceType || '',

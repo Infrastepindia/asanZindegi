@@ -37,7 +37,10 @@
               </div>
               <div class="mb-2" *ngIf="company?.verification as verification">
                 <strong>Verification Status:</strong>
-                <span class="verification-badge" [ngClass]="'status-' + verification.status.toLowerCase()">
+                <span
+                  class="verification-badge"
+                  [ngClass]="'status-' + verification.status.toLowerCase()"
+                >
                   {{ verification.status }}
                 </span>
               </div>
@@ -106,7 +109,10 @@
                   <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" />
                   <div *ngIf="!ad.cover" class="ad-placeholder">No Image</div>
                   <span class="ad-type-badge">{{ ad.type }}</span>
-                  <span class="ad-status-badge" [ngClass]="ad.verified ? 'status-active' : 'status-inactive'">
+                  <span
+                    class="ad-status-badge"
+                    [ngClass]="ad.verified ? 'status-active' : 'status-inactive'"
+                  >
                     {{ ad.verified ? 'Active' : 'Inactive' }}
                   </span>
                 </div>

@@ -29,7 +29,7 @@ export class ProviderDashboardComponent {
   private authService = inject(AuthService);
 
   acc: ProviderAccount | null = null;
-  providerAds: PostedAd[] = [];
+  providerAds: (PostedAd & { availabilityHours?: string; detailDescription?: string })[] = [];
   categories = this.listingsService.getCategories();
   isLoading = true;
 

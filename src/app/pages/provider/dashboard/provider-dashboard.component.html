@@ -45,7 +45,10 @@
           <div class="card border-0 shadow-sm mb-3">
             <div class="card-body p-4">
               <h3 class="h6 mb-3">{{ providerData.providerName }}</h3>
-              <div *ngIf="providerData.categories && providerData.categories.length > 0" class="mb-3">
+              <div
+                *ngIf="providerData.categories && providerData.categories.length > 0"
+                class="mb-3"
+              >
                 <strong class="d-block mb-2">Categories:</strong>
                 <div class="category-badges">
                   <span
@@ -56,9 +59,7 @@
                   </span>
                 </div>
               </div>
-              <div *ngIf="providerData.isCompany" class="mb-2">
-                <strong>Type:</strong> Company
-              </div>
+              <div *ngIf="providerData.isCompany" class="mb-2"><strong>Type:</strong> Company</div>
               <div *ngIf="providerData.isActive" class="mb-2">
                 <strong>Status:</strong> <span class="badge bg-success">Active</span>
               </div>
@@ -67,7 +68,11 @@
 
           <!-- Logo Section -->
           <div
-            *ngIf="providerData.files && providerData.files['Logo'] && providerData.files['Logo'].length > 0"
+            *ngIf="
+              providerData.files &&
+              providerData.files['Logo'] &&
+              providerData.files['Logo'].length > 0
+            "
             class="card border-0 shadow-sm mb-3"
           >
             <div class="card-body p-4">
@@ -85,7 +90,11 @@
 
           <!-- Licenses Section -->
           <div
-            *ngIf="providerData.files && providerData.files['Licenses'] && providerData.files['Licenses'].length > 0"
+            *ngIf="
+              providerData.files &&
+              providerData.files['Licenses'] &&
+              providerData.files['Licenses'].length > 0
+            "
             class="card border-0 shadow-sm mb-3"
           >
             <div class="card-body p-4">
@@ -104,7 +113,11 @@
 
           <!-- Portfolio Section -->
           <div
-            *ngIf="providerData.files && providerData.files['Portfolio'] && providerData.files['Portfolio'].length > 0"
+            *ngIf="
+              providerData.files &&
+              providerData.files['Portfolio'] &&
+              providerData.files['Portfolio'].length > 0
+            "
             class="card border-0 shadow-sm mb-3"
           >
             <div class="card-body p-4">
@@ -123,7 +136,11 @@
 
           <!-- Advertisement Images Section -->
           <div
-            *ngIf="providerData.files && providerData.files['AdvertisementImages'] && providerData.files['AdvertisementImages'].length > 0"
+            *ngIf="
+              providerData.files &&
+              providerData.files['AdvertisementImages'] &&
+              providerData.files['AdvertisementImages'].length > 0
+            "
             class="card border-0 shadow-sm mb-3"
           >
             <div class="card-body p-4">
@@ -164,9 +181,7 @@
                   <div class="small text-muted mb-2">
                     <strong>Price:</strong> {{ ad.priceStartForm }} {{ ad.priceType }}
                   </div>
-                  <div class="small mb-2">
-                    <strong>Service:</strong> {{ ad.serviceOverview }}
-                  </div>
+                  <div class="small mb-2"><strong>Service:</strong> {{ ad.serviceOverview }}</div>
                   <div class="small text-muted">
                     <strong>Hours:</strong> {{ ad.availabilityHours }}
                   </div>

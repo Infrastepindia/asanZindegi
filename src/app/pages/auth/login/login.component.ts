@@ -20,6 +20,7 @@ export class LoginComponent {
   private api = inject(ApiService);
   private authService = inject(AuthService);
   private accountService = inject(AccountService);
+  private cityService = inject(CityService);
 
   loginMode: 'password' | 'otp' = 'password';
   otpSent = false;

@@ -310,6 +310,129 @@
   margin: 0.25rem 0 0 0;
 }
 
+.company-logo-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  min-height: 200px;
+}
+
+.company-logo-image {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.logo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.placeholder-text {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.company-info-section {
+  margin-top: 0;
+}
+
+.ad-images-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.ad-image-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.ad-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ad-image-wrapper:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.ad-gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ad-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+}
+
+.ad-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+  color: white;
+  padding: 1rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.ad-image-wrapper:hover .ad-image-overlay {
+  transform: translateY(0);
+}
+
+.ad-title-overlay {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ad-category-overlay {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
 @media (max-width: 768px) {
   .stat-card {
     padding: 1rem;
@@ -334,5 +457,23 @@
   .category-badge {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
+  }
+
+  .ad-images-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .ad-image-wrapper {
+    height: 150px;
+  }
+
+  .logo-container {
+    min-height: 150px;
+    padding: 1.5rem;
+  }
+
+  .company-logo-image {
+    max-height: 150px;
   }
 }

@@ -12,45 +12,44 @@
   <div class="container" *ngIf="acc as a">
     <div class="row g-4">
       <div class="col-lg-8">
-         <!-- Account Information Card  -->
+        <!-- Company Logo and Account Information Card -->
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body p-4">
-            <h2 class="h5 mb-2 heading-cta">Your Provider Account</h2>
-            <div class="small text-secondary mb-3">
-              Created {{ a.createdAt | date: 'mediumDate' }}
-            </div>
-            <div *ngIf="isCompany; else ind" class="account-info">
-              <div class="mb-2">
-                <strong>Company:</strong>
-                <span>{{ company?.companyName || 'N/A' }}</span>
-              </div>
-              <div class="mb-2">
-                <strong>Primary Contact:</strong>
-                <span>{{ company?.contactName || 'N/A' }}</span>
-              </div>
-              <div class="mb-2" *ngIf="a.email">
-                <strong>Email:</strong>
-                <span>{{ a.email }}</span>
-              </div>
-              <div class="mb-2" *ngIf="a.phone">
-                <strong>Phone:</strong>
-                <span>{{ a.phone }}</span>
-              </div>
-              <div class="mb-2" *ngIf="company?.verification as verification">
-                <strong>Verification Status:</strong>
-                <span
-                  class="verification-badge"
-                  [ngClass]="'status-' + verification.status.toLowerCase()"
-                >
-                  {{ verification.status }}
-                </span>
+            <h2 class="h5 mb-4 heading-cta">Your Provider Account</h2>
+
+            <!-- Company Logo Section -->
+            <div class="company-logo-section mb-4 pb-4 border-bottom">
+              <h3 class="h6 mb-3">Company Logo</h3>
+              <div class="logo-container">
+                <img
+                  *ngIf="getCompanyLogo(); else logoPlaceholder"
+                  [src]="getCompanyLogo()"
+                  alt="Company Logo"
+                  class="company-logo-image"
+                />
+                <ng-template #logoPlaceholder>
+                  <div class="logo-placeholder">
+                    <div class="placeholder-icon">🏢</div>
+                    <p class="placeholder-text">No logo uploaded</p>
+                  </div>
+                </ng-template>
               </div>
             </div>
-            <ng-template #ind>
-              <div class="account-info">
+
+            <!-- Company Information Section -->
+            <div class="company-info-section">
+              <h3 class="h6 mb-3">Company Information</h3>
+              <div class="small text-secondary mb-3">
+                Created {{ a.createdAt | date: 'mediumDate' }}
+              </div>
+              <div *ngIf="isCompany; else ind" class="account-info">
                 <div class="mb-2">
-                  <strong>Name:</strong>
-                  <span>{{ individual?.fullName || 'N/A' }}</span>
+                  <strong>Company:</strong>
+                  <span>{{ company?.companyName || 'N/A' }}</span>
+                </div>
+                <div class="mb-2">
+                  <strong>Primary Contact:</strong>
+                  <span>{{ company?.contactName || 'N/A' }}</span>
                 </div>
                 <div class="mb-2" *ngIf="a.email">
                   <strong>Email:</strong>
@@ -60,9 +59,33 @@
                   <strong>Phone:</strong>
                   <span>{{ a.phone }}</span>
                 </div>
+                <div class="mb-2" *ngIf="company?.verification as verification">
+                  <strong>Verification Status:</strong>
+                  <span
+                    class="verification-badge"
+                    [ngClass]="'status-' + verification.status.toLowerCase()"
+                  >
+                    {{ verification.status }}
+                  </span>
+                </div>
               </div>
-            </ng-template>
-            <!-- <a routerLink="/post-ad" class="btn btn-join btn-lg mt-3">Post an Ad</a> -->
+              <ng-template #ind>
+                <div class="account-info">
+                  <div class="mb-2">
+                    <strong>Name:</strong>
+                    <span>{{ individual?.fullName || 'N/A' }}</span>
+                  </div>
+                  <div class="mb-2" *ngIf="a.email">
+                    <strong>Email:</strong>
+                    <span>{{ a.email }}</span>
+                  </div>
+                  <div class="mb-2" *ngIf="a.phone">
+                    <strong>Phone:</strong>
+                    <span>{{ a.phone }}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
           </div>
         </div>
 
@@ -100,10 +123,36 @@
           </div>
         </div>
 
+        <!-- Advertisement Images Gallery Section -->
+        <div class="card border-0 shadow-sm mb-4" *ngIf="providerAds.length > 0">
+          <div class="card-body p-4">
+            <h3 class="h6 mb-4">Advertisement Images</h3>
+            <div class="ad-images-gallery">
+              <div class="ad-image-item" *ngFor="let ad of providerAds">
+                <div class="ad-image-wrapper">
+                  <img
+                    *ngIf="ad.cover"
+                    [src]="ad.cover"
+                    [alt]="ad.title"
+                    class="ad-gallery-image"
+                  />
+                  <div *ngIf="!ad.cover" class="ad-image-placeholder">
+                    <div class="placeholder-icon">📷</div>
+                  </div>
+                  <div class="ad-image-overlay">
+                    <div class="ad-title-overlay">{{ ad.title || 'Untitled Service' }}</div>
+                    <div class="ad-category-overlay">{{ ad.category }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Advertisement Details Section -->
         <div class="card border-0 shadow-sm" *ngIf="providerAds.length > 0">
           <div class="card-body p-4">
-            <h3 class="h6 mb-4">Your Advertisements</h3>
+            <h3 class="h6 mb-4">Advertisement Details</h3>
             <div class="ads-grid">
               <div class="ad-item" *ngFor="let ad of providerAds">
                 <div class="ad-cover">

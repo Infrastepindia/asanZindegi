@@ -208,6 +208,18 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     return environment.base_path +"/"+file.url;
   }
 
+  getCompanyLogo(): string | null {
+    const logoFiles = this.files['logo'] || [];
+    if (logoFiles.length > 0) {
+      return logoFiles[0].url;
+    }
+    const brandingFiles = this.files['branding'] || [];
+    if (brandingFiles.length > 0) {
+      return brandingFiles[0].url;
+    }
+    return null;
+  }
+
   getTotalAds(): number {
     return this.providerAds.length;
   }

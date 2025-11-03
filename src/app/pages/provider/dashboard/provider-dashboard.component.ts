@@ -179,6 +179,18 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     return Array.from(uniqueCategories);
   }
 
+  getFileCategories(): string[] {
+    return Object.keys(this.files).sort();
+  }
+
+  getFilesByCategory(category: string) {
+    return this.files[category] || [];
+  }
+
+  getImageUrl(file: { fsId: number; fileName: string; fileType: string; filePath: string; fileCategory: string; url: string }): string {
+    return file.url;
+  }
+
   getTotalAds(): number {
     return this.providerAds.length;
   }

@@ -6,7 +6,7 @@ export interface User {
   lastName: string;
   email: string;
   [key: string]: any;
-  userData:any
+  userData: any;
 }
 
 const USER_STORAGE_KEY = 'az_user';

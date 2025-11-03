@@ -148,6 +148,79 @@
   font-size: 0.9rem;
 }
 
+.verification-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.verification-badge.status-verified {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.verification-badge.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.verification-badge.status-unverified {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.account-info div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.account-info strong {
+  min-width: 140px;
+}
+
+.ad-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+  color: #999;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.ad-description {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.ad-status-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ad-status-badge.status-active {
+  background-color: rgba(40, 167, 69, 0.9);
+  color: white;
+}
+
+.ad-status-badge.status-inactive {
+  background-color: rgba(220, 53, 69, 0.9);
+  color: white;
+}
+
 @media (max-width: 768px) {
   .stat-card {
     padding: 1rem;

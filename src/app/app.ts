@@ -1,5 +1,5 @@
 import { Component, signal, inject, computed } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { Router, RouterOutlet, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CityGateComponent } from './shared/city-gate.component';
 import { AuthService } from './services/auth.service';

@@ -150,9 +150,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events
       .pipe(
         filter(
-          (event) =>
-            event instanceof NavigationStart &&
-            event.url.includes('provider/dashboard'),
+          (event) => event instanceof NavigationStart && event.url.includes('provider/dashboard'),
         ),
       )
       .subscribe(() => {

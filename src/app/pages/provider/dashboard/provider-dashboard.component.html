@@ -130,7 +130,12 @@
             <div class="ad-images-gallery">
               <div class="ad-image-item" *ngFor="let ad of providerAds">
                 <div class="ad-image-wrapper">
-                  <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" class="ad-gallery-image" />
+                  <img
+                    *ngIf="ad.cover"
+                    [src]="ad.cover"
+                    [alt]="ad.title"
+                    class="ad-gallery-image"
+                  />
                   <div *ngIf="!ad.cover" class="ad-image-placeholder">
                     <div class="placeholder-icon">📷</div>
                   </div>

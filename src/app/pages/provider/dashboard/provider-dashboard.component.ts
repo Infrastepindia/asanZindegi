@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute, NavigationStart } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { AdsService } from '../../../services/ads.service';
 import { ListingsService } from '../../../services/listings.service';
@@ -13,7 +13,7 @@ import {
   IndividualAccount,
 } from '../../../models/provider-account.model';
 import { PostedAd } from '../../../models/ad.model';
-import { filter, Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 
 @Component({
   selector: 'app-provider-dashboard',
@@ -29,6 +29,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   private routerSubscription?: Subscription;
 
   acc: ProviderAccount | null = null;
@@ -149,9 +150,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events
       .pipe(
         filter(
-          (event) =>
-            event instanceof NavigationEnd &&
-            event.urlAfterRedirects.includes('provider/dashboard'),
+          (event) => event instanceof NavigationStart && event.url.includes('provider/dashboard'),
         ),
       )
       .subscribe(() => {

@@ -41,12 +41,22 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   editModel = { id: 0, name: '', email: '', phone: '' };
 
   ngOnInit() {
-    debugger
+    this.loadDashboardData();
+    this.subscribeToRouteChanges();
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  private loadDashboardData(): void {
     const userId = this.authService.getUserId();
     console.log('Provider Dashboard - Retrieved userId:', userId);
 
     if (userId) {
-      this.isLoading =true
+      this.isLoading = true;
       this.apiService.getCompanyDetails(userId).subscribe({
         next: (response: any) => {
           console.log('Provider Dashboard - API Response:', response);
@@ -133,6 +143,18 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
       }
       this.isLoading = false;
     }
+  }
+
+  private subscribeToRouteChanges(): void {
+    this.routerSubscription = this.router.events
+      .pipe(
+        filter(
+          (event) => event instanceof NavigationEnd && event.urlAfterRedirects.includes('provider/dashboard'),
+        ),
+      )
+      .subscribe(() => {
+        this.loadDashboardData();
+      });
   }
 
   get isCompany(): boolean {

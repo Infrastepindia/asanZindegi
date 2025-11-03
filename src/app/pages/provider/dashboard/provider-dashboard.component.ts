@@ -91,6 +91,10 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
               } as IndividualAccount;
             }
 
+            if (data.files && typeof data.files === 'object') {
+              this.files = data.files;
+            }
+
             if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
               this.providerAds = data.advertisements.map((ad: any) => {
                 const companyName =

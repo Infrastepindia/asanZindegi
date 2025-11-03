@@ -123,10 +123,31 @@
           </div>
         </div>
 
+        <!-- Advertisement Images Gallery Section -->
+        <div class="card border-0 shadow-sm mb-4" *ngIf="providerAds.length > 0">
+          <div class="card-body p-4">
+            <h3 class="h6 mb-4">Advertisement Images</h3>
+            <div class="ad-images-gallery">
+              <div class="ad-image-item" *ngFor="let ad of providerAds">
+                <div class="ad-image-wrapper">
+                  <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" class="ad-gallery-image" />
+                  <div *ngIf="!ad.cover" class="ad-image-placeholder">
+                    <div class="placeholder-icon">📷</div>
+                  </div>
+                  <div class="ad-image-overlay">
+                    <div class="ad-title-overlay">{{ ad.title || 'Untitled Service' }}</div>
+                    <div class="ad-category-overlay">{{ ad.category }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Advertisement Details Section -->
         <div class="card border-0 shadow-sm" *ngIf="providerAds.length > 0">
           <div class="card-body p-4">
-            <h3 class="h6 mb-4">Your Advertisements</h3>
+            <h3 class="h6 mb-4">Advertisement Details</h3>
             <div class="ads-grid">
               <div class="ad-item" *ngFor="let ad of providerAds">
                 <div class="ad-cover">

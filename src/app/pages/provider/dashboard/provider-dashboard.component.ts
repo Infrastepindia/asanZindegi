@@ -37,7 +37,16 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   categories = this.listingsService.getCategories();
   isLoading: boolean = false;
 
-  files: { [key: string]: Array<{ fsId: number; fileName: string; fileType: string; filePath: string; fileCategory: string; url: string }> } = {};
+  files: {
+    [key: string]: Array<{
+      fsId: number;
+      fileName: string;
+      fileType: string;
+      filePath: string;
+      fileCategory: string;
+      url: string;
+    }>;
+  } = {};
 
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
@@ -187,7 +196,14 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     return this.files[category] || [];
   }
 
-  getImageUrl(file: { fsId: number; fileName: string; fileType: string; filePath: string; fileCategory: string; url: string }): string {
+  getImageUrl(file: {
+    fsId: number;
+    fileName: string;
+    fileType: string;
+    filePath: string;
+    fileCategory: string;
+    url: string;
+  }): string {
     return file.url;
   }
 

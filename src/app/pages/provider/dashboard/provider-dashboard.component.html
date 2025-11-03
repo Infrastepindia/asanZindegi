@@ -35,10 +35,10 @@
                 <strong>Phone:</strong>
                 <span>{{ a.phone }}</span>
               </div>
-              <div class="mb-2" *ngIf="company?.verification">
+              <div class="mb-2" *ngIf="company?.verification as verification">
                 <strong>Verification Status:</strong>
-                <span class="verification-badge" [ngClass]="'status-' + company.verification.status.toLowerCase()">
-                  {{ company.verification.status }}
+                <span class="verification-badge" [ngClass]="'status-' + verification.status.toLowerCase()">
+                  {{ verification.status }}
                 </span>
               </div>
             </div>

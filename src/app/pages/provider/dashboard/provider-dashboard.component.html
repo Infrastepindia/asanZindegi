@@ -2,6 +2,7 @@
   <div class="container" *ngIf="acc as a; else noAcc">
     <div class="row g-4">
       <div class="col-lg-8">
+        <!-- Provider Info Card -->
         <div class="card border-0 shadow-sm mb-3">
           <div class="card-body p-4">
             <h2 class="h5 mb-2 heading-cta">Your Provider Account</h2>
@@ -20,6 +21,158 @@
               <div class="mb-2"><strong>Phone:</strong> {{ a.phone }}</div>
             </ng-template>
             <a routerLink="/post-ad" class="btn btn-join btn-lg mt-2">Post an Ad</a>
+          </div>
+        </div>
+
+        <!-- Provider API Data Section -->
+        <div *ngIf="loading" class="card border-0 shadow-sm mb-3">
+          <div class="card-body p-4">
+            <div class="text-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-2">Loading provider data...</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="error && !loading" class="alert alert-warning" role="alert">
+          {{ error }}
+        </div>
+
+        <div *ngIf="providerData && !loading" class="provider-data-section">
+          <!-- Provider Details -->
+          <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body p-4">
+              <h3 class="h6 mb-3">{{ providerData.providerName }}</h3>
+              <div *ngIf="providerData.categories && providerData.categories.length > 0" class="mb-3">
+                <strong class="d-block mb-2">Categories:</strong>
+                <div class="category-badges">
+                  <span
+                    *ngFor="let cat of providerData.categories"
+                    class="badge bg-light text-dark me-2 mb-2"
+                  >
+                    {{ cat.categoryName }}
+                  </span>
+                </div>
+              </div>
+              <div *ngIf="providerData.isCompany" class="mb-2">
+                <strong>Type:</strong> Company
+              </div>
+              <div *ngIf="providerData.isActive" class="mb-2">
+                <strong>Status:</strong> <span class="badge bg-success">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo Section -->
+          <div
+            *ngIf="providerData.files && providerData.files['Logo'] && providerData.files['Logo'].length > 0"
+            class="card border-0 shadow-sm mb-3"
+          >
+            <div class="card-body p-4">
+              <h4 class="h6 mb-3">Company Logo</h4>
+              <div class="logo-container">
+                <img
+                  *ngFor="let logo of providerData.files['Logo']"
+                  [src]="'http://kunalc-001-site1.ktempurl.com/' + logo.url"
+                  [alt]="logo.fileName"
+                  class="logo-image"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Licenses Section -->
+          <div
+            *ngIf="providerData.files && providerData.files['Licenses'] && providerData.files['Licenses'].length > 0"
+            class="card border-0 shadow-sm mb-3"
+          >
+            <div class="card-body p-4">
+              <h4 class="h6 mb-3">Licenses & Certifications</h4>
+              <div class="images-gallery">
+                <div *ngFor="let license of providerData.files['Licenses']" class="gallery-item">
+                  <img
+                    [src]="'http://kunalc-001-site1.ktempurl.com/' + license.url"
+                    [alt]="license.fileName"
+                    class="gallery-image"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Portfolio Section -->
+          <div
+            *ngIf="providerData.files && providerData.files['Portfolio'] && providerData.files['Portfolio'].length > 0"
+            class="card border-0 shadow-sm mb-3"
+          >
+            <div class="card-body p-4">
+              <h4 class="h6 mb-3">Portfolio</h4>
+              <div class="images-gallery">
+                <div *ngFor="let portfolio of providerData.files['Portfolio']" class="gallery-item">
+                  <img
+                    [src]="'http://kunalc-001-site1.ktempurl.com/' + portfolio.url"
+                    [alt]="portfolio.fileName"
+                    class="gallery-image"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Advertisement Images Section -->
+          <div
+            *ngIf="providerData.files && providerData.files['AdvertisementImages'] && providerData.files['AdvertisementImages'].length > 0"
+            class="card border-0 shadow-sm mb-3"
+          >
+            <div class="card-body p-4">
+              <h4 class="h6 mb-3">Advertisement Images</h4>
+              <div class="images-gallery">
+                <div
+                  *ngFor="let adImage of providerData.files['AdvertisementImages']"
+                  class="gallery-item"
+                >
+                  <img
+                    [src]="'http://kunalc-001-site1.ktempurl.com/' + adImage.url"
+                    [alt]="adImage.fileName"
+                    class="gallery-image"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Advertisements Section -->
+          <div
+            *ngIf="providerData.advertisements && providerData.advertisements.length > 0"
+            class="card border-0 shadow-sm mb-3"
+          >
+            <div class="card-body p-4">
+              <h4 class="h6 mb-3">Active Advertisements</h4>
+              <div class="advertisements-list">
+                <div
+                  *ngFor="let ad of providerData.advertisements"
+                  class="advertisement-card"
+                  [class.inactive]="!ad.isActive"
+                >
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <strong>{{ ad.categoryName }}</strong>
+                    <span *ngIf="ad.isActive" class="badge bg-success">Active</span>
+                    <span *ngIf="!ad.isActive" class="badge bg-secondary">Inactive</span>
+                  </div>
+                  <div class="small text-muted mb-2">
+                    <strong>Price:</strong> {{ ad.priceStartForm }} {{ ad.priceType }}
+                  </div>
+                  <div class="small mb-2">
+                    <strong>Service:</strong> {{ ad.serviceOverview }}
+                  </div>
+                  <div class="small text-muted">
+                    <strong>Hours:</strong> {{ ad.availabilityHours }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

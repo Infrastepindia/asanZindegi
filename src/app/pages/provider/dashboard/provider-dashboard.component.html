@@ -17,16 +17,45 @@
             <div class="small text-secondary mb-3">
               Created {{ a.createdAt | date: 'mediumDate' }}
             </div>
-            <div *ngIf="isCompany; else ind">
-              <div class="mb-2"><strong>Company:</strong> {{ company?.companyName }}</div>
-              <div class="mb-2"><strong>Primary Contact:</strong> {{ company?.contactName }}</div>
-              <div class="mb-2"><strong>Email:</strong> {{ a.email }}</div>
-              <div class="mb-2"><strong>Phone:</strong> {{ a.phone }}</div>
+            <div *ngIf="isCompany; else ind" class="account-info">
+              <div class="mb-2">
+                <strong>Company:</strong>
+                <span>{{ company?.companyName || 'N/A' }}</span>
+              </div>
+              <div class="mb-2">
+                <strong>Primary Contact:</strong>
+                <span>{{ company?.contactName || 'N/A' }}</span>
+              </div>
+              <div class="mb-2" *ngIf="a.email">
+                <strong>Email:</strong>
+                <span>{{ a.email }}</span>
+              </div>
+              <div class="mb-2" *ngIf="a.phone">
+                <strong>Phone:</strong>
+                <span>{{ a.phone }}</span>
+              </div>
+              <div class="mb-2" *ngIf="company?.verification">
+                <strong>Verification Status:</strong>
+                <span class="verification-badge" [ngClass]="'status-' + company?.verification.status?.toLowerCase()">
+                  {{ company?.verification.status }}
+                </span>
+              </div>
             </div>
             <ng-template #ind>
-              <div class="mb-2"><strong>Name:</strong> {{ individual?.fullName }}</div>
-              <div class="mb-2"><strong>Email:</strong> {{ a.email }}</div>
-              <div class="mb-2"><strong>Phone:</strong> {{ a.phone }}</div>
+              <div class="account-info">
+                <div class="mb-2">
+                  <strong>Name:</strong>
+                  <span>{{ individual?.fullName || 'N/A' }}</span>
+                </div>
+                <div class="mb-2" *ngIf="a.email">
+                  <strong>Email:</strong>
+                  <span>{{ a.email }}</span>
+                </div>
+                <div class="mb-2" *ngIf="a.phone">
+                  <strong>Phone:</strong>
+                  <span>{{ a.phone }}</span>
+                </div>
+              </div>
             </ng-template>
             <a routerLink="/post-ad" class="btn btn-join btn-lg mt-3">Post an Ad</a>
           </div>

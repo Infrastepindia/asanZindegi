@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { AccountService } from '../../../services/account.service';
+import { CityService } from '../../../shared/city.service';
 import { CompanyAccount, IndividualAccount } from '../../../models/provider-account.model';
 
 @Component({
@@ -19,6 +20,7 @@ export class LoginComponent {
   private api = inject(ApiService);
   private authService = inject(AuthService);
   private accountService = inject(AccountService);
+  private cityService = inject(CityService);
 
   loginMode: 'password' | 'otp' = 'password';
   otpSent = false;
@@ -33,7 +35,8 @@ export class LoginComponent {
       if (!this.otpSent) return;
       const valid = /^\d{6}$/.test(this.model.otp || '');
       if (valid) {
-        this.router.navigateByUrl('/');
+        this.cityService.clearCity();
+        this.router.navigateByUrl('/home');
       }
       return;
     }
@@ -44,7 +47,8 @@ export class LoginComponent {
         this.storeUserData(response);
         this.fetchAndSetAccountData().then(() => {
           this.loading = false;
-          this.router.navigateByUrl('/');
+          this.cityService.clearCity();
+          this.router.navigateByUrl('/home');
         });
       },
       error: (err) => {

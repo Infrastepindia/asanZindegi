@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './pages/landing/landing.component';
+import { HomeComponent } from './pages/home/home.component';
 import { ListingsComponent } from './pages/listings/listings.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { SignupComponent } from './pages/auth/signup/signup.component';
@@ -16,6 +17,7 @@ import { AdEditComponent } from './pages/ad-edit/ad-edit.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },
+  { path: 'home', component: HomeComponent, title: 'Home' },
   { path: 'listings/:slug', component: ListingsComponent, title: 'Listings' },
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },

@@ -147,17 +147,9 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToRouteChanges(): void {
-    this.routerSubscription = this.router.events
-      .pipe(
-        filter(
-          (event) =>
-            event instanceof NavigationEnd &&
-            event.urlAfterRedirects.includes('provider/dashboard'),
-        ),
-      )
-      .subscribe(() => {
-        this.loadDashboardData();
-      });
+    this.routerSubscription = this.activatedRoute.data.subscribe(() => {
+      this.loadDashboardData();
+    });
   }
 
   get isCompany(): boolean {

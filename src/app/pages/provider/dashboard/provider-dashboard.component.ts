@@ -31,17 +31,19 @@ export class ProviderDashboardComponent {
   acc: ProviderAccount | null = null;
   providerAds: (PostedAd & { availabilityHours?: string; detailDescription?: string })[] = [];
   categories = this.listingsService.getCategories();
-  isLoading = true;
+  isLoading : boolean = false;
 
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
   editModel = { id: 0, name: '', email: '', phone: '' };
 
   ngOnInit() {
+    debugger
     const userId = this.authService.getUserId();
     console.log('Provider Dashboard - Retrieved userId:', userId);
 
     if (userId) {
+      this.isLoading =true
       this.apiService.getCompanyDetails(userId).subscribe({
         next: (response: any) => {
           console.log('Provider Dashboard - API Response:', response);

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
+import { ApiService } from '../../../services/api.service';
 import {
   ProviderAccount,
   CompanyAccount,
@@ -18,7 +19,11 @@ import {
 })
 export class ProviderDashboardComponent {
   private accounts = inject(AccountService);
+  private api = inject(ApiService);
   acc: ProviderAccount | null = null;
+  providerData: any = null;
+  loading = false;
+  error: string | null = null;
 
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
@@ -26,6 +31,24 @@ export class ProviderDashboardComponent {
 
   ngOnInit() {
     this.acc = this.accounts.getAccount();
+    this.loadProviderData();
+  }
+
+  loadProviderData() {
+    this.loading = true;
+    this.error = null;
+    this.api.getProviderDetails(13).subscribe(
+      (response) => {
+        if (response?.data) {
+          this.providerData = response.data;
+        }
+        this.loading = false;
+      },
+      (err) => {
+        this.error = 'Failed to load provider data';
+        this.loading = false;
+      },
+    );
   }
 
   get isCompany(): boolean {

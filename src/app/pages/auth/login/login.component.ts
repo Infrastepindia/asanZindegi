@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
+import { AccountService } from '../../../services/account.service';
+import { CompanyAccount, IndividualAccount } from '../../../models/provider-account.model';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +18,7 @@ export class LoginComponent {
   private router = inject(Router);
   private api = inject(ApiService);
   private authService = inject(AuthService);
+  private accountService = inject(AccountService);
 
   loginMode: 'password' | 'otp' = 'password';
   otpSent = false;
@@ -40,6 +43,7 @@ export class LoginComponent {
       next: (response: any) => {
         this.loading = false;
         this.storeUserData(response);
+        this.fetchAndSetAccountData();
         this.router.navigateByUrl('/');
       },
       error: (err) => {
@@ -62,6 +66,48 @@ export class LoginComponent {
         ...userData,
       };
       this.authService.setUser(user);
+    }
+  }
+
+  private fetchAndSetAccountData(): void {
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.api.getCompanyDetails(userId).subscribe({
+        next: (response: any) => {
+          if (response && response.data) {
+            const data = response.data;
+            if (data.isCompany) {
+              const companyAccount: CompanyAccount = {
+                id: data.providerId || 1,
+                type: 'Company',
+                companyName: data.providerName || '',
+                contactName: data.contactName || data.providerName || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                personnel: [],
+                verification: {
+                  status: data.isActive ? 'Verified' : 'Unverified',
+                },
+                createdAt: data.audit?.createdDate || new Date().toISOString(),
+              };
+              this.accountService.setAccount(companyAccount);
+            } else {
+              const individualAccount: IndividualAccount = {
+                id: data.providerId || 1,
+                type: 'Individual',
+                fullName: data.providerName || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                createdAt: data.audit?.createdDate || new Date().toISOString(),
+              };
+              this.accountService.setAccount(individualAccount);
+            }
+          }
+        },
+        error: () => {
+          // Silently fail - account data fetch is optional
+        },
+      });
     }
   }
 

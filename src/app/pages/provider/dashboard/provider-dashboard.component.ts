@@ -37,6 +37,8 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   categories = this.listingsService.getCategories();
   isLoading: boolean = false;
 
+  files: { [key: string]: Array<{ fsId: number; fileName: string; fileType: string; filePath: string; fileCategory: string; url: string }> } = {};
+
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
   editModel = { id: 0, name: '', email: '', phone: '' };

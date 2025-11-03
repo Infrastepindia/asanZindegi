@@ -39,10 +39,12 @@ export class ProviderDashboardComponent {
 
   ngOnInit() {
     const userId = this.authService.getUserId();
+    console.log('Provider Dashboard - Retrieved userId:', userId);
 
     if (userId) {
       this.apiService.getCompanyDetails(userId).subscribe({
         next: (response: any) => {
+          console.log('Provider Dashboard - API Response:', response);
           if (response && response.data) {
             const data = response.data;
 
@@ -51,12 +53,12 @@ export class ProviderDashboardComponent {
                 id: data.providerId || 1,
                 type: 'Company',
                 companyName: data.providerName || '',
-                contactName: data.providerName || '',
-                email: '',
-                phone: '',
+                contactName: data.profileTitle || data.providerName || '',
+                email: data.email || '',
+                phone: data.phone || '',
                 personnel: [],
                 verification: {
-                  status: 'Verified',
+                  status: data.isActive ? 'Verified' : 'Unverified',
                 },
                 createdAt: data.audit?.createdDate || new Date().toISOString(),
               } as CompanyAccount;
@@ -65,8 +67,8 @@ export class ProviderDashboardComponent {
                 id: data.providerId || 1,
                 type: 'Individual',
                 fullName: data.providerName || '',
-                email: '',
-                phone: '',
+                email: data.email || '',
+                phone: data.phone || '',
                 createdAt: data.audit?.createdDate || new Date().toISOString(),
               } as IndividualAccount;
             }
@@ -80,10 +82,10 @@ export class ProviderDashboardComponent {
 
                 return {
                   id: ad.aId || Math.random(),
-                  title: ad.serviceOverview || '',
+                  title: ad.serviceOverview || ad.detailDescription || '',
                   category: ad.categoryName || '',
                   type: 'Service' as const,
-                  location: '',
+                  location: ad.areaCoveredPolygon ? `${ad.areaCoveredPolygon} km radius` : '',
                   price: parseFloat(ad.priceStartForm) || 0,
                   unit: ad.priceType || '',
                   cover: '',
@@ -96,11 +98,14 @@ export class ProviderDashboardComponent {
                   accountType: this.acc!.type,
                   companyName,
                   contactName: companyName,
-                  contactEmail: '',
-                  contactPhone: '',
+                  contactEmail: this.acc!.email,
+                  contactPhone: this.acc!.phone,
                 } as PostedAd;
               });
             }
+
+            console.log('Provider Dashboard - Processed Account:', this.acc);
+            console.log('Provider Dashboard - Processed Ads:', this.providerAds);
           }
           this.isLoading = false;
         },
@@ -114,6 +119,7 @@ export class ProviderDashboardComponent {
         },
       });
     } else {
+      console.warn('No userId found - loading from local storage');
       this.acc = this.accounts.getAccount();
       if (this.acc) {
         this.providerAds = this.adsService.getByAccount(this.acc.id);

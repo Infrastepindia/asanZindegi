@@ -1,5 +1,5 @@
 import { Component, signal, inject, computed } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { Router, RouterOutlet, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CityGateComponent } from './shared/city-gate.component';
 import { AuthService } from './services/auth.service';
@@ -17,6 +17,7 @@ export class App {
   readonly year = new Date().getFullYear();
   protected authService = inject(AuthService);
   private accountService = inject(AccountService);
+  private router = inject(Router);
 
   isCompanyUser = computed(
     () => this.authService.isLoggedIn() && this.accountService.isCompanyAccount(),
@@ -24,5 +25,6 @@ export class App {
 
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

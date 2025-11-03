@@ -41,10 +41,11 @@ export class LoginComponent {
     this.loading = true;
     this.api.login({ email: this.model.email, password: this.model.password }).subscribe({
       next: (response: any) => {
-        this.loading = false;
         this.storeUserData(response);
-        this.fetchAndSetAccountData();
-        this.router.navigateByUrl('/');
+        this.fetchAndSetAccountData().then(() => {
+          this.loading = false;
+          this.router.navigateByUrl('/');
+        });
       },
       error: (err) => {
         this.loading = false;

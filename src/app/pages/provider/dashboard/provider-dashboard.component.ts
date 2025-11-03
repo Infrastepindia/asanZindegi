@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { AdsService } from '../../../services/ads.service';
 import { ListingsService } from '../../../services/listings.service';
@@ -13,6 +13,7 @@ import {
   IndividualAccount,
 } from '../../../models/provider-account.model';
 import { PostedAd } from '../../../models/ad.model';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-provider-dashboard',
@@ -21,12 +22,14 @@ import { PostedAd } from '../../../models/ad.model';
   templateUrl: './provider-dashboard.component.html',
   styleUrl: './provider-dashboard.component.css',
 })
-export class ProviderDashboardComponent {
+export class ProviderDashboardComponent implements OnInit, OnDestroy {
   private accounts = inject(AccountService);
   private adsService = inject(AdsService);
   private listingsService = inject(ListingsService);
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
+  private router = inject(Router);
+  private routerSubscription?: Subscription;
 
   acc: ProviderAccount | null = null;
   providerAds: (PostedAd & { availabilityHours?: string; detailDescription?: string })[] = [];

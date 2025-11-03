@@ -34,7 +34,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   acc: ProviderAccount | null = null;
   providerAds: (PostedAd & { availabilityHours?: string; detailDescription?: string })[] = [];
   categories = this.listingsService.getCategories();
-  isLoading : boolean = false;
+  isLoading: boolean = false;
 
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
@@ -149,7 +149,9 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events
       .pipe(
         filter(
-          (event) => event instanceof NavigationEnd && event.urlAfterRedirects.includes('provider/dashboard'),
+          (event) =>
+            event instanceof NavigationEnd &&
+            event.urlAfterRedirects.includes('provider/dashboard'),
         ),
       )
       .subscribe(() => {

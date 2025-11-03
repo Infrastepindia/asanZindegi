@@ -41,10 +41,11 @@ export class LoginComponent {
     this.loading = true;
     this.api.login({ email: this.model.email, password: this.model.password }).subscribe({
       next: (response: any) => {
-        this.loading = false;
         this.storeUserData(response);
-        this.fetchAndSetAccountData();
-        this.router.navigateByUrl('/');
+        this.fetchAndSetAccountData().then(() => {
+          this.loading = false;
+          this.router.navigateByUrl('/');
+        });
       },
       error: (err) => {
         this.loading = false;
@@ -69,46 +70,51 @@ export class LoginComponent {
     }
   }
 
-  private fetchAndSetAccountData(): void {
-    const userId = this.authService.getUserId();
-    if (userId) {
-      this.api.getCompanyDetails(userId).subscribe({
-        next: (response: any) => {
-          if (response && response.data) {
-            const data = response.data;
-            if (data.isCompany) {
-              const companyAccount: CompanyAccount = {
-                id: data.providerId || 1,
-                type: 'Company',
-                companyName: data.providerName || '',
-                contactName: data.contactName || data.providerName || '',
-                email: data.email || '',
-                phone: data.phone || '',
-                personnel: [],
-                verification: {
-                  status: data.isActive ? 'Verified' : 'Unverified',
-                },
-                createdAt: data.audit?.createdDate || new Date().toISOString(),
-              };
-              this.accountService.setAccount(companyAccount);
-            } else {
-              const individualAccount: IndividualAccount = {
-                id: data.providerId || 1,
-                type: 'Individual',
-                fullName: data.providerName || '',
-                email: data.email || '',
-                phone: data.phone || '',
-                createdAt: data.audit?.createdDate || new Date().toISOString(),
-              };
-              this.accountService.setAccount(individualAccount);
+  private fetchAndSetAccountData(): Promise<void> {
+    return new Promise((resolve) => {
+      const userId = this.authService.getUserId();
+      if (userId) {
+        this.api.getCompanyDetails(userId).subscribe({
+          next: (response: any) => {
+            if (response && response.data) {
+              const data = response.data;
+              if (data.isCompany) {
+                const companyAccount: CompanyAccount = {
+                  id: data.providerId || 1,
+                  type: 'Company',
+                  companyName: data.providerName || '',
+                  contactName: data.contactName || data.providerName || '',
+                  email: data.email || '',
+                  phone: data.phone || '',
+                  personnel: [],
+                  verification: {
+                    status: data.isActive ? 'Verified' : 'Unverified',
+                  },
+                  createdAt: data.audit?.createdDate || new Date().toISOString(),
+                };
+                this.accountService.setAccount(companyAccount);
+              } else {
+                const individualAccount: IndividualAccount = {
+                  id: data.providerId || 1,
+                  type: 'Individual',
+                  fullName: data.providerName || '',
+                  email: data.email || '',
+                  phone: data.phone || '',
+                  createdAt: data.audit?.createdDate || new Date().toISOString(),
+                };
+                this.accountService.setAccount(individualAccount);
+              }
             }
-          }
-        },
-        error: () => {
-          // Silently fail - account data fetch is optional
-        },
-      });
-    }
+            resolve();
+          },
+          error: () => {
+            resolve();
+          },
+        });
+      } else {
+        resolve();
+      }
+    });
   }
 
   sendOtp() {

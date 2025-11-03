@@ -100,7 +100,9 @@ export class ProviderDashboardComponent {
                   contactName: companyName,
                   contactEmail: this.acc!.email,
                   contactPhone: this.acc!.phone,
-                } as PostedAd;
+                  availabilityHours: ad.availabilityHours || '',
+                  detailDescription: ad.detailDescription || '',
+                } as PostedAd & { availabilityHours?: string; detailDescription?: string };
               });
             }
 

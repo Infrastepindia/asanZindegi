@@ -99,12 +99,16 @@ export class AuthService {
   }
 
   /**
-   * Logout - clear user data
+   * Logout - clear user data and storage
    */
   logout(): void {
-    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-      window.localStorage.removeItem(USER_STORAGE_KEY);
-      window.localStorage.removeItem(USER_ID_STORAGE_KEY);
+    if (typeof window !== 'undefined') {
+      if (typeof window.localStorage !== 'undefined') {
+        window.localStorage.clear();
+      }
+      if (typeof window.sessionStorage !== 'undefined') {
+        window.sessionStorage.clear();
+      }
     }
     this.userSignal.set(null);
   }

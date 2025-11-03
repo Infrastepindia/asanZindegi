@@ -29,6 +29,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   private routerSubscription?: Subscription;
 
   acc: ProviderAccount | null = null;

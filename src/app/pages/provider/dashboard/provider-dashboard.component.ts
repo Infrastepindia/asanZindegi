@@ -37,6 +37,17 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   categories = this.listingsService.getCategories();
   isLoading: boolean = false;
 
+  files: {
+    [key: string]: Array<{
+      fsId: number;
+      fileName: string;
+      fileType: string;
+      filePath: string;
+      fileCategory: string;
+      url: string;
+    }>;
+  } = {};
+
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
   editModel = { id: 0, name: '', email: '', phone: '' };
@@ -87,6 +98,10 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
                 phone: data.phone || '',
                 createdAt: data.audit?.createdDate || new Date().toISOString(),
               } as IndividualAccount;
+            }
+
+            if (data.files && typeof data.files === 'object') {
+              this.files = data.files;
             }
 
             if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
@@ -171,6 +186,25 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   getProviderCategories() {
     const uniqueCategories = new Set(this.providerAds.map((ad) => ad.category));
     return Array.from(uniqueCategories);
+  }
+
+  getFileCategories(): string[] {
+    return Object.keys(this.files).sort();
+  }
+
+  getFilesByCategory(category: string) {
+    return this.files[category] || [];
+  }
+
+  getImageUrl(file: {
+    fsId: number;
+    fileName: string;
+    fileType: string;
+    filePath: string;
+    fileCategory: string;
+    url: string;
+  }): string {
+    return file.url;
   }
 
   getTotalAds(): number {

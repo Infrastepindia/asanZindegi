@@ -7,26 +7,50 @@
       <p class="mt-3 text-secondary">Loading your dashboard...</p>
       <p class="small text-muted mt-2">If this takes too long, please refresh the page</p>
     </div>
-  </div> -->
-  
-    <div class="container" *ngIf="acc as a">
-      <div class="row g-4">
-        <div class="col-lg-8">
-          <!-- Account Information Card -->
-          <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-              <h2 class="h5 mb-2 heading-cta">Your Provider Account</h2>
-              <div class="small text-secondary mb-3">
-                Created {{ a.createdAt | date: 'mediumDate' }}
+  </div>
+
+  <div class="container" *ngIf="acc as a">
+    <div class="row g-4">
+      <div class="col-lg-8">
+         Account Information Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-2 heading-cta">Your Provider Account</h2>
+            <div class="small text-secondary mb-3">
+              Created {{ a.createdAt | date: 'mediumDate' }}
+            </div>
+            <div *ngIf="isCompany; else ind" class="account-info">
+              <div class="mb-2">
+                <strong>Company:</strong>
+                <span>{{ company?.companyName || 'N/A' }}</span>
               </div>
-              <div *ngIf="isCompany; else ind" class="account-info">
+              <div class="mb-2">
+                <strong>Primary Contact:</strong>
+                <span>{{ company?.contactName || 'N/A' }}</span>
+              </div>
+              <div class="mb-2" *ngIf="a.email">
+                <strong>Email:</strong>
+                <span>{{ a.email }}</span>
+              </div>
+              <div class="mb-2" *ngIf="a.phone">
+                <strong>Phone:</strong>
+                <span>{{ a.phone }}</span>
+              </div>
+              <div class="mb-2" *ngIf="company?.verification as verification">
+                <strong>Verification Status:</strong>
+                <span
+                  class="verification-badge"
+                  [ngClass]="'status-' + verification.status.toLowerCase()"
+                >
+                  {{ verification.status }}
+                </span>
+              </div>
+            </div>
+            <ng-template #ind>
+              <div class="account-info">
                 <div class="mb-2">
-                  <strong>Company:</strong>
-                  <span>{{ company?.companyName || 'N/A' }}</span>
-                </div>
-                <div class="mb-2">
-                  <strong>Primary Contact:</strong>
-                  <span>{{ company?.contactName || 'N/A' }}</span>
+                  <strong>Name:</strong>
+                  <span>{{ individual?.fullName || 'N/A' }}</span>
                 </div>
                 <div class="mb-2" *ngIf="a.email">
                   <strong>Email:</strong>
@@ -36,125 +60,130 @@
                   <strong>Phone:</strong>
                   <span>{{ a.phone }}</span>
                 </div>
-                <div class="mb-2" *ngIf="company?.verification as verification">
-                  <strong>Verification Status:</strong>
-                  <span class="verification-badge" [ngClass]="'status-' + verification.status.toLowerCase()">
-                    {{ verification.status }}
+              </div>
+            </ng-template>
+            <!-- <a routerLink="/post-ad" class="btn btn-join btn-lg mt-3">Post an Ad</a> -->
+          </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-3 mb-4" *ngIf="providerAds.length > 0">
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="stat-value">{{ getTotalAds() }}</div>
+              <div class="stat-label">Active Ads</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="stat-value">{{ getTotalViews() }}</div>
+              <div class="stat-label">Total Views</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card">
+              <div class="stat-value">{{ getAverageRating() }}</div>
+              <div class="stat-label">Average Rating</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Provider Categories Section -->
+        <div class="card border-0 shadow-sm mb-4" *ngIf="getProviderCategories().length > 0">
+          <div class="card-body p-4">
+            <h3 class="h6 mb-3">Service Categories</h3>
+            <div class="categories-list">
+              <span class="category-badge" *ngFor="let cat of getProviderCategories()">
+                {{ cat }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advertisement Details Section -->
+        <div class="card border-0 shadow-sm" *ngIf="providerAds.length > 0">
+          <div class="card-body p-4">
+            <h3 class="h6 mb-4">Your Advertisements</h3>
+            <div class="ads-grid">
+              <div class="ad-item" *ngFor="let ad of providerAds">
+                <div class="ad-cover">
+                  <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" />
+                  <div *ngIf="!ad.cover" class="ad-placeholder">No Image</div>
+                  <span class="ad-type-badge">{{ ad.type }}</span>
+                  <span
+                    class="ad-status-badge"
+                    [ngClass]="ad.verified ? 'status-active' : 'status-inactive'"
+                  >
+                    {{ ad.verified ? 'Active' : 'Inactive' }}
                   </span>
                 </div>
-              </div>
-              <ng-template #ind>
-                <div class="account-info">
-                  <div class="mb-2">
-                    <strong>Name:</strong>
-                    <span>{{ individual?.fullName || 'N/A' }}</span>
-                  </div>
-                  <div class="mb-2" *ngIf="a.email">
-                    <strong>Email:</strong>
-                    <span>{{ a.email }}</span>
-                  </div>
-                  <div class="mb-2" *ngIf="a.phone">
-                    <strong>Phone:</strong>
-                    <span>{{ a.phone }}</span>
-                  </div>
-                </div>
-              </ng-template>
-              <!-- <a routerLink="/post-ad" class="btn btn-join btn-lg mt-3">Post an Ad</a> -->
-            </div>
-          </div>
-
-          <!-- Statistics Cards -->
-          <div class="row g-3 mb-4" *ngIf="providerAds.length > 0">
-            <div class="col-md-4">
-              <div class="stat-card">
-                <div class="stat-value">{{ getTotalAds() }}</div>
-                <div class="stat-label">Active Ads</div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="stat-card">
-                <div class="stat-value">{{ getTotalViews() }}</div>
-                <div class="stat-label">Total Views</div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="stat-card">
-                <div class="stat-value">{{ getAverageRating() }}</div>
-                <div class="stat-label">Average Rating</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Provider Categories Section -->
-          <div class="card border-0 shadow-sm mb-4" *ngIf="getProviderCategories().length > 0">
-            <div class="card-body p-4">
-              <h3 class="h6 mb-3">Service Categories</h3>
-              <div class="categories-list">
-                <span class="category-badge" *ngFor="let cat of getProviderCategories()">
-                  {{ cat }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Advertisement Details Section -->
-          <div class="card border-0 shadow-sm" *ngIf="providerAds.length > 0">
-            <div class="card-body p-4">
-              <h3 class="h6 mb-4">Your Advertisements</h3>
-              <div class="ads-grid">
-                <div class="ad-item" *ngFor="let ad of providerAds">
-                  <div class="ad-cover">
-                    <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" />
-                    <div *ngIf="!ad.cover" class="ad-placeholder">No Image</div>
-                    <span class="ad-type-badge">{{ ad.type }}</span>
-                    <span class="ad-status-badge" [ngClass]="ad.verified ? 'status-active' : 'status-inactive'">
-                      {{ ad.verified ? 'Active' : 'Inactive' }}
+                <div class="ad-content">
+                  <h4 class="ad-title">{{ ad.title || 'Untitled Service' }}</h4>
+                  <p class="ad-description">{{ ad.category }}</p>
+                  <p class="ad-details" *ngIf="ad.availabilityHours">
+                    <i class="icon">🕐</i> {{ ad.availabilityHours }}
+                  </p>
+                  <div class="ad-meta">
+                    <span class="meta-item">
+                      <strong class="price-value">₹{{ ad.price | number: '0.0-2' }}</strong>
+                      <span *ngIf="ad.unit" class="price-unit">{{ ad.unit }}</span>
+                    </span>
+                    <span class="meta-item" *ngIf="ad.location">
+                      <i class="icon">📍</i> {{ ad.location }}
+                    </span>
+                    <span class="meta-item">
+                      <i class="icon">📅</i> {{ ad.date | date: 'shortDate' }}
                     </span>
                   </div>
-                  <div class="ad-content">
-                    <h4 class="ad-title">{{ ad.title || 'Untitled Service' }}</h4>
-                    <p class="ad-description">{{ ad.category }}</p>
-                    <p class="ad-details" *ngIf="ad.availabilityHours">
-                      <i class="icon">🕐</i> {{ ad.availabilityHours }}
-                    </p>
-                    <div class="ad-meta">
-                      <span class="meta-item">
-                        <strong class="price-value">₹{{ ad.price | number: '0.0-2' }}</strong>
-                        <span *ngIf="ad.unit" class="price-unit">{{ ad.unit }}</span>
-                      </span>
-                      <span class="meta-item" *ngIf="ad.location">
-                        <i class="icon">📍</i> {{ ad.location }}
-                      </span>
-                      <span class="meta-item">
-                        <i class="icon">📅</i> {{ ad.date | date: 'shortDate' }}
-                      </span>
+                  <div class="ad-stats">
+                    <span class="stat-item" *ngIf="ad.views > 0">
+                      <i class="icon">👁️</i> {{ ad.views }} views
+                    </span>
+                    <span class="stat-item" *ngIf="ad.rating">
+                      <i class="icon">⭐</i> {{ ad.rating }}/5
+                    </span>
+                    <span class="stat-item" *ngIf="ad.verified">
+                      <i class="icon">✓</i> {{ ad.verifiedType }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Ads Message -->
+        <div class="card border-0 shadow-sm" *ngIf="providerAds.length === 0">
+          <div class="card-body p-4 text-center">
+            <p class="text-secondary mb-3">You haven't posted any advertisements yet.</p>
+            <a routerLink="/post-ad" class="btn btn-join btn-lg">Create Your First Ad</a>
+          </div>
+        </div>
+
+        <!-- Media Files Section -->
+        <div class="card border-0 shadow-sm" *ngIf="getFileCategories().length > 0">
+          <div class="card-body p-4">
+            <h3 class="h6 mb-4">Media Files</h3>
+            <div class="media-sections">
+              <div class="media-category" *ngFor="let category of getFileCategories()">
+                <h4 class="media-category-title">{{ category }}</h4>
+                <div class="media-grid">
+                  <div class="media-item" *ngFor="let file of getFilesByCategory(category)">
+                    <div class="media-preview">
+                      <img [src]="getImageUrl(file)" [alt]="file.fileName" class="media-image" />
                     </div>
-                    <div class="ad-stats">
-                      <span class="stat-item" *ngIf="ad.views > 0">
-                        <i class="icon">👁️</i> {{ ad.views }} views
-                      </span>
-                      <span class="stat-item" *ngIf="ad.rating">
-                        <i class="icon">⭐</i> {{ ad.rating }}/5
-                      </span>
-                      <span class="stat-item" *ngIf="ad.verified">
-                        <i class="icon">✓</i> {{ ad.verifiedType }}
-                      </span>
+                    <div class="media-info">
+                      <p class="media-filename">{{ file.fileName }}</p>
+                      <p class="media-type">{{ file.fileType }}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- No Ads Message -->
-          <div class="card border-0 shadow-sm" *ngIf="providerAds.length === 0">
-            <div class="card-body p-4 text-center">
-              <p class="text-secondary mb-3">You haven't posted any advertisements yet.</p>
-              <a routerLink="/post-ad" class="btn btn-join btn-lg">Create Your First Ad</a>
-            </div>
-          </div>
-
-          <!-- <div class="card border-0 shadow-sm" *ngIf="isCompany">
+        <!-- <div class="card border-0 shadow-sm" *ngIf="isCompany">
           <div class="card-body p-4">
             <h3 class="h6 mb-3">Personnel</h3>
             <form class="row g-2 align-items-end" (submit)="addPersonnel($event)">
@@ -239,14 +268,14 @@
             </div>
           </div>
         </div> -->
-        </div>
-
-        <aside class="col-lg-4">
-          <div class="ad-slot">Advertisement</div>
-        </aside>
       </div>
+
+      <aside class="col-lg-4">
+        <div class="ad-slot">Advertisement</div>
+      </aside>
     </div>
-  
+  </div>
+
   <div *ngIf="!isLoading && !acc" class="container py-5">
     <h2 class="h5">No provider account found</h2>
     <a routerLink="/provider/register" class="btn btn-join btn-lg mt-2">Register now</a>

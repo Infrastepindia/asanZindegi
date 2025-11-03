@@ -14,6 +14,7 @@ import {
 } from '../../../models/provider-account.model';
 import { PostedAd } from '../../../models/ad.model';
 import { Subscription, filter } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-provider-dashboard',
@@ -204,7 +205,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     fileCategory: string;
     url: string;
   }): string {
-    return file.url;
+    return environment.base_path +"/"+file.url;
   }
 
   getTotalAds(): number {

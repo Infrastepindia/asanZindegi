@@ -113,6 +113,9 @@
                 <div class="ad-content">
                   <h4 class="ad-title">{{ ad.title || 'Untitled Service' }}</h4>
                   <p class="ad-description">{{ ad.category }}</p>
+                  <p class="ad-details" *ngIf="ad.availabilityHours">
+                    <i class="icon">🕐</i> {{ ad.availabilityHours }}
+                  </p>
                   <div class="ad-meta">
                     <span class="meta-item">
                       <strong class="price-value">₹{{ ad.price | number: '0.0-2' }}</strong>

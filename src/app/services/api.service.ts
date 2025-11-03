@@ -40,6 +40,11 @@ export class ApiService {
     return this.http.get<{ data: ApiSuperCategory[] }>(url);
   }
 
+  getProviderDetails(providerId: number): Observable<any> {
+    const url = `${this.resolveBase()}/api/Provider/${providerId}`;
+    return this.http.get<any>(url);
+  }
+
   login(payload: { email: string; password: string }): Observable<any> {
     const url = `${this.resolveBase()}/api/User/login`;
     return this.http.post(url, payload);

@@ -154,6 +154,29 @@
             </div>
           </div>
 
+          <!-- Media Files Section -->
+          <div class="card border-0 shadow-sm" *ngIf="getFileCategories().length > 0">
+            <div class="card-body p-4">
+              <h3 class="h6 mb-4">Media Files</h3>
+              <div class="media-sections">
+                <div class="media-category" *ngFor="let category of getFileCategories()">
+                  <h4 class="media-category-title">{{ category }}</h4>
+                  <div class="media-grid">
+                    <div class="media-item" *ngFor="let file of getFilesByCategory(category)">
+                      <div class="media-preview">
+                        <img [src]="getImageUrl(file)" [alt]="file.fileName" class="media-image" />
+                      </div>
+                      <div class="media-info">
+                        <p class="media-filename">{{ file.fileName }}</p>
+                        <p class="media-type">{{ file.fileType }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- <div class="card border-0 shadow-sm" *ngIf="isCompany">
           <div class="card-body p-4">
             <h3 class="h6 mb-3">Personnel</h3>

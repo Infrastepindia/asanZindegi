@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { AccountService } from '../../../services/account.service';
+import { CityService } from '../../../shared/city.service';
 import { CompanyAccount, IndividualAccount } from '../../../models/provider-account.model';
 
 @Component({

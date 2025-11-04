@@ -8,6 +8,7 @@ export interface AdvertisementPayload {
   videoLink?: string;
   detailDescription: string;
   availabilityHours?: string;
+  images?: File[]; // advertisement images attached to this ad
 }
 
 export interface ProviderDetailsPayload {

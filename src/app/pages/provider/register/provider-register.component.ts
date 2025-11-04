@@ -162,6 +162,32 @@ export class ProviderRegisterComponent {
     if (typeof window !== 'undefined') window.localStorage.removeItem(this.draftKey);
   }
 
+  resetForm() {
+    if (confirm('Are you sure you want to reset the entire form? This cannot be undone.')) {
+      this.step = 1;
+      this.account = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: '',
+      };
+      this.phoneVerified = false;
+      this.otpError = null;
+      this.address = { line1: '', line2: '', city: '', state: '', pin: '' };
+      this.provider = { name: '', title: '', isCompany: false };
+      this.selection = { categories: [], serviceTypes: {}, advertisements: {} };
+      this.profileImageFile = undefined;
+      this.logoFile = undefined;
+      this.regFiles = [];
+      this.licenseFiles = [];
+      this.portfolioFiles = [];
+      this.advertisementImageFiles = {};
+      this.clearDraft();
+    }
+  }
+
   // Navigation
   next() {
     if (this.step === 1) {

@@ -72,19 +72,24 @@ export class ApiService {
   ): Observable<any> {
     const formData = new FormData();
 
-    // Serialize payload, extracting advertisement images to attach separately
-    const payloadForSubmit = JSON.parse(JSON.stringify(payload));
+    // Extract advertisement images from original payload BEFORE JSON serialization
+    // (File objects are not JSON-serializable and will be lost during stringify/parse)
     const advertisementImages: File[] = [];
-
-    if (payloadForSubmit.advertisements && Array.isArray(payloadForSubmit.advertisements)) {
-      payloadForSubmit.advertisements = payloadForSubmit.advertisements.map((ad: any) => {
+    if (payload.advertisements && Array.isArray(payload.advertisements)) {
+      payload.advertisements.forEach((ad: any) => {
         if (ad.images && Array.isArray(ad.images)) {
           ad.images.forEach((img: File) => {
             advertisementImages.push(img);
           });
-          // Remove images from the payload JSON (they'll be sent as FormData)
-          delete ad.images;
         }
+      });
+    }
+
+    // Serialize payload, removing advertisement images (they'll be sent as FormData)
+    const payloadForSubmit = JSON.parse(JSON.stringify(payload));
+    if (payloadForSubmit.advertisements && Array.isArray(payloadForSubmit.advertisements)) {
+      payloadForSubmit.advertisements = payloadForSubmit.advertisements.map((ad: any) => {
+        delete ad.images;
         return ad;
       });
     }

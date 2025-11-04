@@ -68,12 +68,30 @@ export class ApiService {
       registrationCertificates?: File[];
       licenses?: File[];
       portfolio?: File[];
-      advertisementImages?: File[];
     },
   ): Observable<any> {
     const formData = new FormData();
-    formData.append('providerDetailsPayload', JSON.stringify(payload));
-    console.log(JSON.stringify(payload));
+
+    // Serialize payload, extracting advertisement images to attach separately
+    const payloadForSubmit = JSON.parse(JSON.stringify(payload));
+    const advertisementImages: File[] = [];
+
+    if (payloadForSubmit.advertisements && Array.isArray(payloadForSubmit.advertisements)) {
+      payloadForSubmit.advertisements = payloadForSubmit.advertisements.map((ad: any) => {
+        if (ad.images && Array.isArray(ad.images)) {
+          ad.images.forEach((img: File) => {
+            advertisementImages.push(img);
+          });
+          // Remove images from the payload JSON (they'll be sent as FormData)
+          delete ad.images;
+        }
+        return ad;
+      });
+    }
+
+    formData.append('providerDetailsPayload', JSON.stringify(payloadForSubmit));
+    console.log(JSON.stringify(payloadForSubmit));
+
     if (files) {
       if (files.profileImage) {
         formData.append('profileImage', files.profileImage);
@@ -82,7 +100,7 @@ export class ApiService {
         formData.append('logo', files.logo);
       }
       if (files.registrationCertificates && files.registrationCertificates.length > 0) {
-        files.registrationCertificates.forEach((f, idx) => {
+        files.registrationCertificates.forEach((f) => {
           formData.append(`registrationCertificates`, f);
         });
       }
@@ -96,12 +114,15 @@ export class ApiService {
           formData.append(`portfolio`, f);
         });
       }
-      if (files.advertisementImages && files.advertisementImages.length > 0) {
-        files.advertisementImages.forEach((f) => {
-          formData.append(`advertisementImages`, f);
-        });
-      }
     }
+
+    // Attach advertisement images to FormData
+    if (advertisementImages.length > 0) {
+      advertisementImages.forEach((f) => {
+        formData.append(`advertisementImages`, f);
+      });
+    }
+
     console.log(formData);
     const url = `${this.resolveBase()}/api/Provider/registerProviderWithCompany`;
 

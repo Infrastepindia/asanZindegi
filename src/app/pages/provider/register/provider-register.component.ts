@@ -281,17 +281,27 @@ export class ProviderRegisterComponent {
       return;
     }
 
-    const advertisements = Object.values(this.selection.advertisements).map((ad) => ({
-      categoryId: ad.categoryId,
-      categoryName: ad.categoryName,
-      priceStartForm: ad.priceStartForm,
-      priceType: ad.priceType,
-      serviceOverview: ad.serviceOverview,
-      areaCoveredPolygon: ad.areaCoveredPolygon,
-      videoLink: ad.videoLink,
-      detailDescription: ad.detailDescription,
-      availabilityHours: ad.availabilityHours,
-    }));
+    const advertisements = Object.values(this.selection.advertisements).map((ad) => {
+      const adPayload: any = {
+        categoryId: ad.categoryId,
+        categoryName: ad.categoryName,
+        priceStartForm: ad.priceStartForm,
+        priceType: ad.priceType,
+        serviceOverview: ad.serviceOverview,
+        areaCoveredPolygon: ad.areaCoveredPolygon,
+        videoLink: ad.videoLink,
+        detailDescription: ad.detailDescription,
+        availabilityHours: ad.availabilityHours,
+      };
+
+      // Attach advertisement images for this category
+      const categoryImages = this.advertisementImageFiles[ad.categoryId];
+      if (categoryImages) {
+        adPayload.images = [categoryImages];
+      }
+
+      return adPayload;
+    });
 
     const payload: ProviderDetailsPayload = {
       firstName: this.account.firstName,
@@ -314,17 +324,12 @@ export class ProviderRegisterComponent {
       advertisements: advertisements.length > 0 ? advertisements : undefined,
     };
 
-    const advertisementFiles: File[] = Object.values(this.advertisementImageFiles).filter(
-      (f) => f instanceof File,
-    );
-
     const files = {
       profileImage: this.profileImageFile,
       logo: this.logoFile,
       registrationCertificates: this.regFiles.length > 0 ? this.regFiles : undefined,
       licenses: this.licenseFiles.length > 0 ? this.licenseFiles : undefined,
       portfolio: this.portfolioFiles.length > 0 ? this.portfolioFiles : undefined,
-      advertisementImages: advertisementFiles.length > 0 ? advertisementFiles : undefined,
     };
 
     this.api.addProviderDetails(payload, files).subscribe({

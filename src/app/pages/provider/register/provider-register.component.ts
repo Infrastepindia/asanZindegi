@@ -302,6 +302,7 @@ export class ProviderRegisterComponent {
 
   // Submit
   submit() {
+    debugger
     if (!this.validateAllSteps()) {
       alert('Please complete all required fields.');
       return;

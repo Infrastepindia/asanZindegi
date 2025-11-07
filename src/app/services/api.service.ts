@@ -19,6 +19,34 @@ export interface ApiSuperCategory {
   categories: ApiCategory[];
 }
 
+export interface ApiListing {
+  id: number;
+  title: string;
+  category: string;
+  type: 'Sell' | 'Rent' | 'Exchange' | 'Service' | string;
+  location: string;
+  price: string | number;
+  unit: string;
+  cover: string | null;
+  date: string;
+  views: number;
+  rating: number;
+  verified: boolean;
+  verifiedType?: 'Company' | 'Individual';
+}
+
+export interface ApiListingResponse {
+  data: {
+    page: number;
+    perPage: number;
+    total: number;
+    items: ApiListing[];
+  };
+  status_code: number;
+  status_message: string;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);

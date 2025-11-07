@@ -113,22 +113,32 @@ export class ListingsComponent implements OnInit {
     this.api.getListings(this.apiPage, this.apiPerPage).subscribe({
       next: (res) => {
         if (res?.data?.items) {
-          const apiListings = res.data.items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            category: item.category || 'Service',
-            type: (item.type as ListingItem['type']) || 'Service',
-            location: item.location,
-            price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
-            unit: item.unit || '',
-            cover: item.cover || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
-            date: item.date,
-            views: item.views,
-            rating: item.rating,
-            verified: item.verified,
-            verifiedType: item.verifiedType === 'Company' ? 'Company' : item.verifiedType === 'Individual' ? 'KYC' : undefined,
-            serviceType: (item.title || '').split(' - ')[0].trim() || item.title,
-          } as ListingItem));
+          const apiListings = res.data.items.map(
+            (item) =>
+              ({
+                id: item.id,
+                title: item.title,
+                category: item.category || 'Service',
+                type: (item.type as ListingItem['type']) || 'Service',
+                location: item.location,
+                price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
+                unit: item.unit || '',
+                cover:
+                  item.cover ||
+                  'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+                date: item.date,
+                views: item.views,
+                rating: item.rating,
+                verified: item.verified,
+                verifiedType:
+                  item.verifiedType === 'Company'
+                    ? 'Company'
+                    : item.verifiedType === 'Individual'
+                      ? 'KYC'
+                      : undefined,
+                serviceType: (item.title || '').split(' - ')[0].trim() || item.title,
+              }) as ListingItem,
+          );
 
           // Combine API listings with posted ads
           this.all = [...this.posted(), ...apiListings];

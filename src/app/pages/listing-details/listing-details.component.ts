@@ -36,6 +36,8 @@ export class ListingDetailsComponent {
   };
   includes: string[] = [];
   overview = '';
+  isLoading = false;
+  error: string | null = null;
 
   // Contact visibility flags
   showPhone = false;

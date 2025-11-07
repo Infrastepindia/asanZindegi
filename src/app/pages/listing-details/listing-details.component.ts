@@ -94,70 +94,91 @@ export class ListingDetailsComponent {
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!isNaN(id)) {
-      this.item = this.svc.getById(id);
-      if (!this.item && isPlatformBrowser(this.platformId)) {
-        const ad = this.ads.getById(id);
-        if (ad) {
+      this.isLoading = true;
+      this.apiService.getListingDetails(id).subscribe({
+        next: (response) => {
+          const apiData = response.data;
           this.item = {
-            id: ad.id,
-            title: ad.title,
-            category: ad.category,
-            type: ad.type,
-            location: ad.location,
-            price: ad.price,
-            unit: ad.unit,
-            cover: ad.cover,
-            date: ad.date,
-            views: ad.views,
-            rating: ad.rating,
-            verified: ad.verified,
-            verifiedType: ad.verifiedType,
+            id: apiData.id,
+            title: apiData.title,
+            category: apiData.category,
+            type: apiData.type,
+            location: apiData.location,
+            price: apiData.price,
+            unit: apiData.unit,
+            cover: apiData.cover || '',
+            date: apiData.date,
+            views: apiData.views,
+            rating: apiData.rating,
+            verified: apiData.verified,
+            verifiedType: apiData.verifiedType,
           };
-          // Set provider contact details (company and personnel contact)
-          this.provider.name = ad.companyName || '';
-          this.provider.email = ad.contactEmail;
-          this.provider.phone = ad.contactPhone;
-        }
-      }
+
+          // Set provider contact details
+          this.provider.name = apiData.companyName || apiData.providerName || 'Provider';
+          this.provider.email = apiData.contactEmail || apiData.providerEmail || '';
+          this.provider.phone = apiData.contactPhone || apiData.providerPhone || '';
+          if (apiData.providerMemberSince) {
+            this.provider.memberSince = apiData.providerMemberSince;
+          }
+
+          // Set thumbnails from images or cover
+          if (apiData.images && apiData.images.length > 0) {
+            this.thumbnails = apiData.images;
+          } else if (this.item.cover) {
+            this.thumbnails = [this.item.cover];
+          }
+
+          this.updateCanonical();
+          this.loadRelatedListings();
+          this.setupIncludes();
+          this.setupOverview();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = this.apiService.extractError(err).message;
+          this.isLoading = false;
+        },
+      });
     }
-    if (this.item) {
-      this.updateCanonical();
-      const all = this.svc.getAll();
-      this.related = all
-        .filter((i) => i.category === this.item!.category && i.id !== this.item!.id)
-        .slice(0, 6);
-      this.thumbnails = [this.item.cover, ...this.related.map((r) => r.cover)].slice(0, 6);
-      if (this.provider.name === 'Provider Demo' && isPlatformBrowser(this.platformId)) {
-        const adMeta = this.ads.getProviderMeta(this.item.id);
-        if (adMeta) {
-          this.provider.name = adMeta.companyName;
-          this.provider.email = adMeta.contactEmail;
-          this.provider.phone = adMeta.contactPhone;
-        }
-      }
-      const map: Record<string, string[]> = {
-        Plumbing: [
-          'Inspection and Diagnosis',
-          'Circuit Breaker Replacement',
-          'Panel Replacement or Upgrade',
-          'Fuse Box to Circuit Breaker Conversion',
-        ],
-        Electrical: ['Wiring Check', 'Appliance Installation', 'Lighting Setup', 'Panel Repair'],
-        Cleaning: ['Home Deep Clean', 'Kitchen Degreasing', 'Bathroom Descale', 'Sofa Shampoo'],
-        Tutoring: ['Course Material', 'Weekly Assessment', 'Doubt Clearing', 'Progress Reports'],
-        Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Alignment', 'Hardware Replacement'],
-        Painting: ['Interior Painting', 'Exterior Painting', 'Primer and Putty', 'Touch‑ups'],
-        Moving: ['Packing', 'Loading & Unloading', 'Transport', 'Placement'],
-        'Appliance Repair': [
-          'Diagnosis',
-          'Spare Parts Replacement',
-          'Performance Test',
-          'Warranty Support',
-        ],
-      };
-      this.includes = map[this.item.category] || ['Consultation', 'Standard Service'];
-      this.overview = `${this.item.title} available in ${this.item.location}. Professional ${this.item.category.toLowerCase()} service performed by verified providers with transparent pricing. Reach out to schedule and get an exact quote for your requirement.`;
-    }
+  }
+
+  private loadRelatedListings() {
+    if (!this.item) return;
+    const all = this.svc.getAll();
+    this.related = all
+      .filter((i) => i.category === this.item!.category && i.id !== this.item!.id)
+      .slice(0, 6);
+  }
+
+  private setupIncludes() {
+    if (!this.item) return;
+    const map: Record<string, string[]> = {
+      Plumbing: [
+        'Inspection and Diagnosis',
+        'Circuit Breaker Replacement',
+        'Panel Replacement or Upgrade',
+        'Fuse Box to Circuit Breaker Conversion',
+      ],
+      Electrical: ['Wiring Check', 'Appliance Installation', 'Lighting Setup', 'Panel Repair'],
+      Cleaning: ['Home Deep Clean', 'Kitchen Degreasing', 'Bathroom Descale', 'Sofa Shampoo'],
+      Tutoring: ['Course Material', 'Weekly Assessment', 'Doubt Clearing', 'Progress Reports'],
+      Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Alignment', 'Hardware Replacement'],
+      Painting: ['Interior Painting', 'Exterior Painting', 'Primer and Putty', 'Touch‑ups'],
+      Moving: ['Packing', 'Loading & Unloading', 'Transport', 'Placement'],
+      'Appliance Repair': [
+        'Diagnosis',
+        'Spare Parts Replacement',
+        'Performance Test',
+        'Warranty Support',
+      ],
+    };
+    this.includes = map[this.item.category] || ['Consultation', 'Standard Service'];
+  }
+
+  private setupOverview() {
+    if (!this.item) return;
+    this.overview = `${this.item.title} available in ${this.item.location}. Professional ${this.item.category.toLowerCase()} service performed by verified providers with transparent pricing. Reach out to schedule and get an exact quote for your requirement.`;
   }
 
   private coordsForLocation(loc: string | undefined): [number, number] {

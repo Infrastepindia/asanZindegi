@@ -7,6 +7,7 @@ import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
 import { HttpClient } from '@angular/common/http';
 import { Meta } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
 
 interface ListingItem {
   id: number;
@@ -109,6 +110,7 @@ export class ListingsComponent implements OnInit {
   }
 
   private loadListings(): void {
+    debugger
     this.isLoadingListings = true;
     this.api.getListings(this.apiPage, this.apiPerPage).subscribe({
       next: (res) => {
@@ -124,8 +126,8 @@ export class ListingsComponent implements OnInit {
                 price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
                 unit: item.unit || '',
                 cover:
-                  item.cover ||
-                  'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+                 environment.base_path +  item.cover || ''
+                ,
                 date: item.date,
                 views: item.views,
                 rating: item.rating,
@@ -141,14 +143,14 @@ export class ListingsComponent implements OnInit {
           );
 
           // Combine API listings with posted ads
-          this.all = [...this.posted(), ...apiListings];
+          this.all = [...apiListings];
           this.apiTotal = res.data.total;
         }
         this.isLoadingListings = false;
       },
       error: () => {
         // Fallback to posted ads only
-        this.all = this.posted();
+        this.all = [];
         this.isLoadingListings = false;
       },
     });
@@ -588,10 +590,10 @@ export class ListingsComponent implements OnInit {
     let out = this.all.slice();
     if (this.filters.selectedCategories.length)
       out = out.filter((i) => this.filters.selectedCategories.includes(i.category));
-    if (this.filters.location)
-      out = out.filter((i) =>
-        i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
-      );
+    // if (this.filters.location)
+    //   out = out.filter((i) =>
+    //     i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
+    //   );
 
     const minR = Number(this.filters.minRating) || 0;
     if (minR > 0) out = out.filter((i) => i.rating >= minR);

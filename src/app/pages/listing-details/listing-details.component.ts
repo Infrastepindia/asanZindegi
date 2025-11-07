@@ -19,6 +19,7 @@ export class ListingDetailsComponent {
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
   private ads = inject(AdsService);
+  private apiService = inject(ApiService);
   private platformId = inject(PLATFORM_ID);
   private doc = inject(DOCUMENT);
   private meta = inject(Meta);

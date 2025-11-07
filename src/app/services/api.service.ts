@@ -47,6 +47,39 @@ export interface ApiListingResponse {
   message: string;
 }
 
+export interface ApiListingDetails {
+  id: number;
+  title: string;
+  category: string;
+  type: 'Sell' | 'Rent' | 'Exchange' | 'Service' | string;
+  location: string;
+  price: string | number;
+  unit: string;
+  cover: string | null;
+  date: string;
+  views: number;
+  rating: number;
+  verified: boolean;
+  verifiedType?: 'Company' | 'Individual';
+  description?: string;
+  detailDescription?: string;
+  images?: string[];
+  providerName?: string;
+  providerEmail?: string;
+  providerPhone?: string;
+  providerMemberSince?: string;
+  companyName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+}
+
+export interface ApiListingDetailsResponse {
+  data: ApiListingDetails;
+  status_code: number;
+  status_message: string;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);

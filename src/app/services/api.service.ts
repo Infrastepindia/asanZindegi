@@ -19,6 +19,34 @@ export interface ApiSuperCategory {
   categories: ApiCategory[];
 }
 
+export interface ApiListing {
+  id: number;
+  title: string;
+  category: string;
+  type: 'Sell' | 'Rent' | 'Exchange' | 'Service' | string;
+  location: string;
+  price: string | number;
+  unit: string;
+  cover: string | null;
+  date: string;
+  views: number;
+  rating: number;
+  verified: boolean;
+  verifiedType?: 'Company' | 'Individual';
+}
+
+export interface ApiListingResponse {
+  data: {
+    page: number;
+    perPage: number;
+    total: number;
+    items: ApiListing[];
+  };
+  status_code: number;
+  status_message: string;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
@@ -38,6 +66,11 @@ export class ApiService {
   getCategories(): Observable<{ data: ApiSuperCategory[] }> {
     const url = `${this.resolveBase()}/api/Category`;
     return this.http.get<{ data: ApiSuperCategory[] }>(url);
+  }
+
+  getListings(page: number = 1, perPage: number = 10): Observable<ApiListingResponse> {
+    const url = `${this.resolveBase()}/api/Listing?page=${page}&perPage=${perPage}`;
+    return this.http.get<ApiListingResponse>(url);
   }
 
   login(payload: { email: string; password: string }): Observable<any> {

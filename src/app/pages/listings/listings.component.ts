@@ -526,7 +526,11 @@ export class ListingsComponent implements OnInit {
     });
   }
 
-  all: ListingItem[] = [...this.posted(), ...this.generateListings()];
+  all: ListingItem[] = [];
+  apiTotal = 0;
+  apiPage = 1;
+  apiPerPage = 10;
+  isLoadingListings = false;
 
   page = 1;
   perPage = 5;

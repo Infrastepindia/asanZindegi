@@ -3,6 +3,7 @@ import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
+import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
 
 declare const L: any;

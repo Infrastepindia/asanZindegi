@@ -7,7 +7,7 @@ export interface ListingItem {
   id: number;
   title: string;
   category: string;
-  type: 'Sell' | 'Rent' | 'Exchange' | 'Service';
+  type: string;
   location: string;
   price: number;
   unit?: string;
@@ -16,7 +16,7 @@ export interface ListingItem {
   views: number;
   rating: number;
   verified: boolean;
-  verifiedType?: 'Company' | 'KYC';
+  verifiedType?: string;
 }
 
 @Injectable({ providedIn: 'root' })

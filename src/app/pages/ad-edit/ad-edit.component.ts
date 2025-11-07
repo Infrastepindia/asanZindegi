@@ -28,7 +28,7 @@ export class AdEditComponent {
   model = {
     title: '',
     category: '',
-    type: 'Service' as 'Sell' | 'Rent' | 'Exchange' | 'Service',
+    type: '',
     location: '',
     price: 0,
     unit: '' as string | undefined,

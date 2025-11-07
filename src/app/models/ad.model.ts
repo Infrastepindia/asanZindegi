@@ -4,7 +4,7 @@ export interface PostedAd {
   id: number; // unique within posted ads, high-offset used to avoid collisions
   title: string;
   category: string;
-  type: 'Sell' | 'Rent' | 'Exchange' | 'Service';
+  type: string;
   location: string;
   price: number;
   unit?: string;
@@ -13,7 +13,7 @@ export interface PostedAd {
   views: number;
   rating: number;
   verified: boolean;
-  verifiedType?: 'Company' | 'KYC';
+  verifiedType?: string;
   // Provider association
   accountId: number;
   accountType: AccountType;

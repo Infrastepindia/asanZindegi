@@ -106,6 +106,11 @@ export class ApiService {
     return this.http.get<ApiListingResponse>(url);
   }
 
+  getListingDetails(id: number | string): Observable<ApiListingDetailsResponse> {
+    const url = `${this.resolveBase()}/api/Listing/Details/${id}`;
+    return this.http.get<ApiListingDetailsResponse>(url);
+  }
+
   login(payload: { email: string; password: string }): Observable<any> {
     const url = `${this.resolveBase()}/api/User/login`;
     return this.http.post(url, payload);

@@ -68,6 +68,11 @@ export class ApiService {
     return this.http.get<{ data: ApiSuperCategory[] }>(url);
   }
 
+  getListings(page: number = 1, perPage: number = 10): Observable<ApiListingResponse> {
+    const url = `${this.resolveBase()}/api/Listing?page=${page}&perPage=${perPage}`;
+    return this.http.get<ApiListingResponse>(url);
+  }
+
   login(payload: { email: string; password: string }): Observable<any> {
     const url = `${this.resolveBase()}/api/User/login`;
     return this.http.post(url, payload);

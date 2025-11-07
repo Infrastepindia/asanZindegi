@@ -11,7 +11,7 @@ import {
   Personnel,
 } from '../models/provider-account.model';
 
-const KEY = 'az_account';
+const KEY = 'az_user';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -220,6 +220,7 @@ export class AccountService {
    * Check if the current account is a company
    */
   isCompanyAccount(): boolean {
+    debugger
     const acc = this.getAccount();
     return acc?.type === 'Company';
   }

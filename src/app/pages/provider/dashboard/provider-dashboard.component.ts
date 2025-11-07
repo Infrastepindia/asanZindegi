@@ -120,7 +120,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
                   location: ad.areaCoveredPolygon ? `${ad.areaCoveredPolygon} km radius` : '',
                   price: parseFloat(ad.priceStartForm) || 0,
                   unit: ad.priceType || '',
-                  cover: '',
+                  cover: ad.mainImage != null ?  environment.base_path +"/"+ ad.mainImage.url : "",
                   date: new Date().toISOString().slice(0, 10),
                   views: 0,
                   rating: 5,

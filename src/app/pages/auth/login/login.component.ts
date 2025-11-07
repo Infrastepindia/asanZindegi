@@ -68,6 +68,7 @@ export class LoginComponent {
         firstName: userData.firstName || response.firstName || userData.first_name || '',
         lastName: userData.lastName || response.lastName || userData.last_name || '',
         email: userData.email || response.email || this.model.email,
+        type: response.data.role,
         userData: userData,
         ...userData,
       };

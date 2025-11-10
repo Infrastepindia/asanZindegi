@@ -53,7 +53,7 @@ export interface ApiListingDetails {
   category: string;
   type: 'Sell' | 'Rent' | 'Exchange' | 'Service' | string;
   location: string;
-  price: string | number;
+  price: number;
   unit: string;
   cover: string | null;
   date: string;

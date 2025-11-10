@@ -1,14 +1,14 @@
 <section class="details-wrap py-5">
-  <div class="container" *ngIf="isLoading; else contentReady">
+  <!-- <div class="container" *ngIf="isLoading; else contentReady">
     <div class="details-card p-4 text-center">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
       <p class="text-secondary mt-3">Loading listing details...</p>
     </div>
-  </div>
+  </div> -->
 
-  <ng-template #contentReady>
+  <ng-template>
     <div class="container" *ngIf="item as it; else notFound">
       <!-- Breadcrumb -->
       <div class="small text-secondary mb-3">

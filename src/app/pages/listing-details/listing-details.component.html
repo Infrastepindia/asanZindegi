@@ -8,7 +8,7 @@
     </div>
   </div> -->
 
-  <div class="container" *ngIf="item as it; else notFound">
+  <div class="container" *ngIf="item as it">
     <!-- Breadcrumb -->
     <div class="small text-secondary mb-3">
       <a routerLink="/listings" class="text-decoration-none">Service Detail</a>
@@ -241,7 +241,17 @@
       </aside>
     </div>
   </div>
-
+  <!-- <ng-template #notFound>
+    <div class="container py-5">
+      <div class="details-card p-4">
+        <h2 class="h5 text-danger">{{ error ? 'Error Loading Listing' : 'Listing not found' }}</h2>
+        <p class="text-secondary mb-3">
+          {{ error ? error : 'The listing you are looking for could not be found.' }}
+        </p>
+        <a routerLink="/listings" class="btn btn-join">Back to listings</a>
+      </div>
+    </div>
+  </ng-template> -->
   <!-- Pricing Modal -->
   <div class="modal fade" id="priceModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -317,16 +327,4 @@
       </div>
     </div>
   </div>
-
-  <ng-template #notFound>
-    <div class="container py-5">
-      <div class="details-card p-4">
-        <h2 class="h5 text-danger">{{ error ? 'Error Loading Listing' : 'Listing not found' }}</h2>
-        <p class="text-secondary mb-3">
-          {{ error ? error : 'The listing you are looking for could not be found.' }}
-        </p>
-        <a routerLink="/listings" class="btn btn-join">Back to listings</a>
-      </div>
-    </div>
-  </ng-template>
 </section>

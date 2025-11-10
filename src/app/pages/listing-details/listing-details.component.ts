@@ -1,10 +1,12 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
 import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
+import { takeUntil, switchMap } from 'rxjs/operators';
 
 declare const L: any;
 
@@ -15,7 +17,7 @@ declare const L: any;
   templateUrl: './listing-details.component.html',
   styleUrl: './listing-details.component.css',
 })
-export class ListingDetailsComponent {
+export class ListingDetailsComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
   private ads = inject(AdsService);
@@ -23,6 +25,7 @@ export class ListingDetailsComponent {
   private platformId = inject(PLATFORM_ID);
   private doc = inject(DOCUMENT);
   private meta = inject(Meta);
+  private destroy$ = new Subject<void>();
 
   item?: ListingItem;
   thumbnails: string[] = [];
@@ -91,11 +94,24 @@ export class ListingDetailsComponent {
     return [min, max];
   }
 
-  constructor() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!isNaN(id)) {
-      this.isLoading = true;
-      this.apiService.getListingDetails(id).subscribe({
+  ngOnInit() {
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          const id = Number(params.get('id'));
+          if (isNaN(id)) {
+            this.error = 'Invalid listing ID';
+            this.isLoading = false;
+            return [];
+          }
+          this.isLoading = true;
+          this.error = null;
+          this.item = undefined;
+          return this.apiService.getListingDetails(id);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
         next: (response) => {
           const apiData = response.data;
           this.item = {
@@ -114,7 +130,6 @@ export class ListingDetailsComponent {
             verifiedType: apiData.verifiedType,
           };
 
-          // Set provider contact details
           this.provider.name = apiData.companyName || apiData.providerName || 'Provider';
           this.provider.email = apiData.contactEmail || apiData.providerEmail || '';
           this.provider.phone = apiData.contactPhone || apiData.providerPhone || '';
@@ -122,7 +137,6 @@ export class ListingDetailsComponent {
             this.provider.memberSince = apiData.providerMemberSince;
           }
 
-          // Set thumbnails from images or cover
           if (apiData.images && apiData.images.length > 0) {
             this.thumbnails = apiData.images;
           } else if (this.item.cover) {
@@ -140,7 +154,6 @@ export class ListingDetailsComponent {
           this.isLoading = false;
         },
       });
-    }
   }
 
   private loadRelatedListings() {
@@ -286,5 +299,7 @@ export class ListingDetailsComponent {
 
   ngOnDestroy() {
     if (this.map && this.map.remove) this.map.remove();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

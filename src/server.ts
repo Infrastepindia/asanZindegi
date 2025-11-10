@@ -251,8 +251,81 @@ app.get('/api/listings/:id', async (req, res, next) => {
 // API endpoints with proper casing for frontend
 app.get('/api/Category', async (_req, res, next) => {
   try {
-    const data = await readJson('categories.json');
-    return res.json({ data });
+    const superCategories = [
+      {
+        id: 1,
+        title: 'Household',
+        colorClass: 'bg-primary',
+        icon: 'bi-house',
+        categories: [
+          { id: 1, name: 'Plumbing', icon: 'bi-droplet', count: 120, superCategoryId: 1 },
+          { id: 2, name: 'Electrical Repair', icon: 'bi-lightning', count: 85, superCategoryId: 1 },
+          { id: 3, name: 'Carpentry', icon: 'bi-hammer', count: 90, superCategoryId: 1 },
+          { id: 4, name: 'Painting & Whitewashing', icon: 'bi-palette', count: 75, superCategoryId: 1 },
+          { id: 5, name: 'Home Cleaning', icon: 'bi-broom', count: 150, superCategoryId: 1 },
+          { id: 6, name: 'Appliance Repair', icon: 'bi-tools', count: 110, superCategoryId: 1 },
+          { id: 7, name: 'Pest Control', icon: 'bi-bug', count: 60, superCategoryId: 1 },
+        ]
+      },
+      {
+        id: 2,
+        title: 'Office',
+        colorClass: 'bg-success',
+        icon: 'bi-building',
+        categories: [
+          { id: 8, name: 'Electrical Maintenance', icon: 'bi-lightning', count: 45, superCategoryId: 2 },
+          { id: 9, name: 'HVAC', icon: 'bi-fan', count: 50, superCategoryId: 2 },
+          { id: 10, name: 'Office Cleaning & Sanitization', icon: 'bi-broom', count: 80, superCategoryId: 2 },
+          { id: 11, name: 'IT Support', icon: 'bi-cpu', count: 100, superCategoryId: 2 },
+        ]
+      },
+      {
+        id: 3,
+        title: 'Transport',
+        colorClass: 'bg-warning',
+        icon: 'bi-truck',
+        categories: [
+          { id: 12, name: 'House Shifting', icon: 'bi-box', count: 95, superCategoryId: 3 },
+          { id: 13, name: 'Office Relocation', icon: 'bi-building', count: 40, superCategoryId: 3 },
+          { id: 14, name: 'Packers & Movers', icon: 'bi-archive', count: 120, superCategoryId: 3 },
+          { id: 15, name: 'Vehicle Rental', icon: 'bi-car-front', count: 70, superCategoryId: 3 },
+        ]
+      },
+      {
+        id: 4,
+        title: 'Personal Care',
+        colorClass: 'bg-danger',
+        icon: 'bi-heart',
+        categories: [
+          { id: 16, name: 'Salon at Home', icon: 'bi-scissors', count: 110, superCategoryId: 4 },
+          { id: 17, name: 'Fitness Trainer', icon: 'bi-person-check', count: 60, superCategoryId: 4 },
+          { id: 18, name: 'Spa & Massage', icon: 'bi-hand-thumbs-up', count: 75, superCategoryId: 4 },
+        ]
+      },
+      {
+        id: 5,
+        title: 'Education',
+        colorClass: 'bg-info',
+        icon: 'bi-book',
+        categories: [
+          { id: 19, name: 'School Tutoring', icon: 'bi-mortarboard', count: 130, superCategoryId: 5 },
+          { id: 20, name: 'Competitive Exam Coaching', icon: 'bi-pencil-square', count: 85, superCategoryId: 5 },
+          { id: 21, name: 'Spoken English', icon: 'bi-chat-dots', count: 55, superCategoryId: 5 },
+        ]
+      },
+      {
+        id: 6,
+        title: 'Food & Catering',
+        colorClass: 'bg-secondary',
+        icon: 'bi-cake2',
+        categories: [
+          { id: 22, name: 'Catering Services', icon: 'bi-cup-hot', count: 80, superCategoryId: 6 },
+          { id: 23, name: 'Home Tiffin Service', icon: 'bi-basket', count: 60, superCategoryId: 6 },
+          { id: 24, name: 'Bakery & Cake Order', icon: 'bi-cake2', count: 45, superCategoryId: 6 },
+        ]
+      },
+    ];
+    return res.json({ data: superCategories });
   } catch (e) {
     return next(e);
   }

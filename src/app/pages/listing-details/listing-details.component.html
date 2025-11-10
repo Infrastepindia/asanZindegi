@@ -8,8 +8,7 @@
     </div>
   </div> -->
 
-  <ng-template>
-    <div class="container" *ngIf="item as it; else notFound">
+  <div class="container" *ngIf="item as it; else notFound">
       <!-- Breadcrumb -->
       <div class="small text-secondary mb-3">
         <a routerLink="/listings" class="text-decoration-none">Service Detail</a>
@@ -246,7 +245,6 @@
         </aside>
       </div>
     </div>
-  </ng-template>
 
   <!-- Pricing Modal -->
   <div class="modal fade" id="priceModal" tabindex="-1" aria-hidden="true">

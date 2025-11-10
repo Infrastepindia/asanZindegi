@@ -94,11 +94,24 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
     return [min, max];
   }
 
-  constructor() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!isNaN(id)) {
-      this.isLoading = true;
-      this.apiService.getListingDetails(id).subscribe({
+  ngOnInit() {
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          const id = Number(params.get('id'));
+          if (isNaN(id)) {
+            this.error = 'Invalid listing ID';
+            this.isLoading = false;
+            return [];
+          }
+          this.isLoading = true;
+          this.error = null;
+          this.item = undefined;
+          return this.apiService.getListingDetails(id);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
         next: (response) => {
           const apiData = response.data;
           this.item = {
@@ -117,7 +130,6 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
             verifiedType: apiData.verifiedType,
           };
 
-          // Set provider contact details
           this.provider.name = apiData.companyName || apiData.providerName || 'Provider';
           this.provider.email = apiData.contactEmail || apiData.providerEmail || '';
           this.provider.phone = apiData.contactPhone || apiData.providerPhone || '';
@@ -125,7 +137,6 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
             this.provider.memberSince = apiData.providerMemberSince;
           }
 
-          // Set thumbnails from images or cover
           if (apiData.images && apiData.images.length > 0) {
             this.thumbnails = apiData.images;
           } else if (this.item.cover) {
@@ -143,7 +154,6 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         },
       });
-    }
   }
 
   private loadRelatedListings() {

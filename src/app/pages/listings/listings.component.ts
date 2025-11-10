@@ -110,7 +110,6 @@ export class ListingsComponent implements OnInit {
   }
 
   private loadListings(): void {
-    debugger
     this.isLoadingListings = true;
     this.api.getListings(this.apiPage, this.apiPerPage).subscribe({
       next: (res) => {

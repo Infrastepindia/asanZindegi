@@ -1,10 +1,12 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
 import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
+import { takeUntil, switchMap } from 'rxjs/operators';
 
 declare const L: any;
 
@@ -15,7 +17,7 @@ declare const L: any;
   templateUrl: './listing-details.component.html',
   styleUrl: './listing-details.component.css',
 })
-export class ListingDetailsComponent {
+export class ListingDetailsComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
   private ads = inject(AdsService);
@@ -23,6 +25,7 @@ export class ListingDetailsComponent {
   private platformId = inject(PLATFORM_ID);
   private doc = inject(DOCUMENT);
   private meta = inject(Meta);
+  private destroy$ = new Subject<void>();
 
   item?: ListingItem;
   thumbnails: string[] = [];

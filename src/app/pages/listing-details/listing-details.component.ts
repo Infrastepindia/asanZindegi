@@ -299,5 +299,7 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.map && this.map.remove) this.map.remove();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -9,242 +9,238 @@
   </div> -->
 
   <div class="container" *ngIf="item as it; else notFound">
-      <!-- Breadcrumb -->
-      <div class="small text-secondary mb-3">
-        <a routerLink="/listings" class="text-decoration-none">Service Detail</a>
-        &nbsp;›&nbsp;
-        <a
-          [routerLink]="['/listings']"
-          [queryParams]="{ category: it.category }"
-          class="text-decoration-none"
-          >{{ it.category }} Services</a
-        >
-      </div>
+    <!-- Breadcrumb -->
+    <div class="small text-secondary mb-3">
+      <a routerLink="/listings" class="text-decoration-none">Service Detail</a>
+      &nbsp;›&nbsp;
+      <a
+        [routerLink]="['/listings']"
+        [queryParams]="{ category: it.category }"
+        class="text-decoration-none"
+        >{{ it.category }} Services</a
+      >
+    </div>
 
-      <div class="row g-4">
-        <!-- Main -->
-        <div class="col-lg-8">
-          <div class="details-card p-3 p-md-4 mb-3">
-            <h1 class="h4 mb-2 heading-cta d-flex align-items-center justify-content-between">
-              <span>{{ it.title }}</span>
-              <span
-                class="badge pill-badge"
-                [ngClass]="{
-                  'badge-sell': it.type === 'Sell',
-                  'badge-rent': it.type === 'Rent',
-                  'badge-exchange': it.type === 'Exchange',
-                  'badge-service': it.type === 'Service',
-                }"
-                >{{ it.type }}</span
-              >
-            </h1>
-            <div class="small text-secondary mb-2">
-              <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
-              &nbsp;•&nbsp;
-              <i class="bi bi-clock me-1"></i>{{ it.date | date: 'mediumDate' }}
-              &nbsp;•&nbsp;
-              <i class="bi bi-eye me-1"></i>{{ it.views }} views
-            </div>
-            <div class="small text-secondary mb-2" *ngIf="provider?.name">
-              Provided by {{ provider.name }}
-            </div>
-            <div class="mb-2">
-              <a
-                class="badge bg-light text-dark text-decoration-none"
-                [routerLink]="['/listings']"
-                [queryParams]="{ category: it.category }"
-                ># {{ it.category }}</a
-              >
-            </div>
-            <div class="mb-2" *ngIf="it.verified">
-              <span
-                class="verified-badge"
-                [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'"
-              >
-                <i
-                  class="bi"
-                  [ngClass]="
-                    it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'
-                  "
-                ></i>
-                <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
-              </span>
-            </div>
-            <div class="text-warning mb-3">
+    <div class="row g-4">
+      <!-- Main -->
+      <div class="col-lg-8">
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h1 class="h4 mb-2 heading-cta d-flex align-items-center justify-content-between">
+            <span>{{ it.title }}</span>
+            <span
+              class="badge pill-badge"
+              [ngClass]="{
+                'badge-sell': it.type === 'Sell',
+                'badge-rent': it.type === 'Rent',
+                'badge-exchange': it.type === 'Exchange',
+                'badge-service': it.type === 'Service',
+              }"
+              >{{ it.type }}</span
+            >
+          </h1>
+          <div class="small text-secondary mb-2">
+            <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
+            &nbsp;•&nbsp;
+            <i class="bi bi-clock me-1"></i>{{ it.date | date: 'mediumDate' }}
+            &nbsp;•&nbsp;
+            <i class="bi bi-eye me-1"></i>{{ it.views }} views
+          </div>
+          <div class="small text-secondary mb-2" *ngIf="provider?.name">
+            Provided by {{ provider.name }}
+          </div>
+          <div class="mb-2">
+            <a
+              class="badge bg-light text-dark text-decoration-none"
+              [routerLink]="['/listings']"
+              [queryParams]="{ category: it.category }"
+              ># {{ it.category }}</a
+            >
+          </div>
+          <div class="mb-2" *ngIf="it.verified">
+            <span
+              class="verified-badge"
+              [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'"
+            >
               <i
-                class="bi bi-star-fill"
-                *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
-                [ngClass]="{ 'text-muted': i >= it.rating }"
+                class="bi"
+                [ngClass]="
+                  it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'
+                "
               ></i>
-            </div>
-
-            <div class="media-wrap mb-3">
-              <img [src]="it.cover" [alt]="it.title" class="img-fluid rounded-4 shadow" />
-            </div>
-            <div class="thumbs d-flex gap-2 overflow-auto pb-1">
-              <img
-                *ngFor="let t of thumbnails"
-                [src]="t"
-                [alt]="it.title"
-                class="thumb-sm rounded-3"
-              />
-            </div>
+              <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
+            </span>
+          </div>
+          <div class="text-warning mb-3">
+            <i
+              class="bi bi-star-fill"
+              *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
+              [ngClass]="{ 'text-muted': i >= it.rating }"
+            ></i>
           </div>
 
-          <div class="ad-slot ad-banner-lg mb-3">Advertisement</div>
-
-          <!-- Overview -->
-          <div class="details-card p-3 p-md-4 mb-3">
-            <h2 class="h6 mb-2">Service Overview</h2>
-            <p class="text-secondary mb-0">{{ overview }}</p>
+          <div class="media-wrap mb-3">
+            <img [src]="it.cover" [alt]="it.title" class="img-fluid rounded-4 shadow" />
           </div>
-
-          <!-- Includes -->
-          <div class="details-card p-3 p-md-4 mb-3">
-            <h2 class="h6 mb-2">Includes</h2>
-            <ul class="list-unstyled meta-list mb-0">
-              <li *ngFor="let inc of includes">
-                <i class="bi bi-check-circle text-success me-2"></i>{{ inc }}
-              </li>
-            </ul>
+          <div class="thumbs d-flex gap-2 overflow-auto pb-1">
+            <img
+              *ngFor="let t of thumbnails"
+              [src]="t"
+              [alt]="it.title"
+              class="thumb-sm rounded-3"
+            />
           </div>
+        </div>
 
-          <div class="ad-slot ad-banner-sm mb-3">Advertisement</div>
+        <div class="ad-slot ad-banner-lg mb-3">Advertisement</div>
 
-          <!-- Gallery -->
-          <div class="details-card p-3 p-md-4 mb-3">
-            <h2 class="h6 mb-2">Gallery</h2>
-            <div class="row g-2">
-              <div class="col-4 col-md-3" *ngFor="let g of thumbnails">
-                <img [src]="g" [alt]="it.title" class="img-fluid rounded-3" />
-              </div>
+        <!-- Overview -->
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-2">Service Overview</h2>
+          <p class="text-secondary mb-0">{{ overview }}</p>
+        </div>
+
+        <!-- Includes -->
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-2">Includes</h2>
+          <ul class="list-unstyled meta-list mb-0">
+            <li *ngFor="let inc of includes">
+              <i class="bi bi-check-circle text-success me-2"></i>{{ inc }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="ad-slot ad-banner-sm mb-3">Advertisement</div>
+
+        <!-- Gallery -->
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-2">Gallery</h2>
+          <div class="row g-2">
+            <div class="col-4 col-md-3" *ngFor="let g of thumbnails">
+              <img [src]="g" [alt]="it.title" class="img-fluid rounded-3" />
             </div>
           </div>
+        </div>
 
-          <div class="ad-slot ad-rect-md mb-3">Advertisement</div>
+        <div class="ad-slot ad-rect-md mb-3">Advertisement</div>
 
-          <!-- Video -->
-          <div class="details-card p-3 p-md-4 mb-3">
-            <h2 class="h6 mb-2">Video</h2>
-            <div class="ratio ratio-16x9 rounded-3 overflow-hidden video-box">
-              <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="Service video"
-                allowfullscreen
-              ></iframe>
-            </div>
+        <!-- Video -->
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-2">Video</h2>
+          <div class="ratio ratio-16x9 rounded-3 overflow-hidden video-box">
+            <iframe
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="Service video"
+              allowfullscreen
+            ></iframe>
           </div>
+        </div>
 
-          <div class="ad-slot ad-banner-lg mb-3">Advertisement</div>
+        <div class="ad-slot ad-banner-lg mb-3">Advertisement</div>
 
-          <!-- Service Area Map -->
-          <div class="details-card p-3 p-md-4 mb-3">
-            <h2 class="h6 mb-2">Service Area</h2>
-            <div id="serviceAreaMap" class="map-box rounded-3"></div>
+        <!-- Service Area Map -->
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-2">Service Area</h2>
+          <div id="serviceAreaMap" class="map-box rounded-3"></div>
+        </div>
+
+        <div class="ad-slot ad-banner-sm mb-3">Advertisement</div>
+
+        <!-- Related -->
+        <div class="details-card p-3 p-md-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h2 class="h6 mb-0">Related Services</h2>
           </div>
-
-          <div class="ad-slot ad-banner-sm mb-3">Advertisement</div>
-
-          <!-- Related -->
-          <div class="details-card p-3 p-md-4">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-              <h2 class="h6 mb-0">Related Services</h2>
-            </div>
-            <div class="row g-3">
-              <div class="col-md-6 col-lg-4" *ngFor="let r of related">
-                <div class="listing-card h-100">
-                  <img class="listing-cover" [src]="r.cover" [alt]="r.title" />
-                  <div class="p-3">
-                    <a [routerLink]="['/ad', r.id]" class="text-decoration-none"
-                      ><h3 class="h6 mb-1">{{ r.title }}</h3></a
+          <div class="row g-3">
+            <div class="col-md-6 col-lg-4" *ngFor="let r of related">
+              <div class="listing-card h-100">
+                <img class="listing-cover" [src]="r.cover" [alt]="r.title" />
+                <div class="p-3">
+                  <a [routerLink]="['/ad', r.id]" class="text-decoration-none"
+                    ><h3 class="h6 mb-1">{{ r.title }}</h3></a
+                  >
+                  <div class="small text-secondary mb-2">
+                    <i class="bi bi-geo-alt me-1"></i>{{ r.location }}
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="fw-bold">₹{{ r.price }}</div>
+                    <button
+                      type="button"
+                      class="btn btn-join btn-lg"
+                      (click)="openPrice(r)"
+                      data-bs-toggle="modal"
+                      data-bs-target="#priceModal"
                     >
-                    <div class="small text-secondary mb-2">
-                      <i class="bi bi-geo-alt me-1"></i>{{ r.location }}
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="fw-bold">₹{{ r.price }}</div>
-                      <button
-                        type="button"
-                        class="btn btn-join btn-lg"
-                        (click)="openPrice(r)"
-                        data-bs-toggle="modal"
-                        data-bs-target="#priceModal"
-                      >
-                        View price
-                      </button>
-                    </div>
+                      View price
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Sidebar -->
-        <aside class="col-lg-4">
-          <div class="ad-slot ad-square-md mb-3">Advertisement</div>
-          <div class="details-card p-3 p-md-4 mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <div class="small text-secondary">Starts From</div>
-                <div class="h4 mb-0">₹{{ it.price }}</div>
-              </div>
-            </div>
-            <div class="d-grid mt-3 gap-2">
-              <button type="button" class="btn btn-join btn-lg" (click)="showPhone = true">
-                See phone number
-              </button>
-              <button type="button" class="btn btn-join btn-lg" (click)="showEmail = true">
-                See email
-              </button>
-              <button
-                type="button"
-                class="btn btn-join btn-lg"
-                data-bs-toggle="modal"
-                data-bs-target="#typesModal"
-              >
-                See service types
-              </button>
-            </div>
-          </div>
-          <div class="details-card p-3 p-md-4">
-            <div class="text-center">
-              <img
-                [src]="provider.avatar"
-                alt="{{ provider.name }}"
-                class="rounded-circle avatar-md mb-2"
-              />
-              <div class="fw-semibold">{{ provider.name }}</div>
-              <div class="text-secondary small mb-2">Service Provider</div>
-            </div>
-            <ul class="list-unstyled small text-secondary mb-0">
-              <li class="d-flex align-items-center mb-1">
-                <i class="bi bi-calendar3 me-2"></i>Member Since
-                {{ provider.memberSince | date: 'd MMM yyyy' }}
-              </li>
-              <li class="d-flex align-items-center mb-1">
-                <i class="bi bi-geo-alt me-2"></i>{{ it.location }}
-              </li>
-              <li class="d-flex align-items-center mb-1">
-                <i class="bi bi-envelope me-2"></i>
-                <ng-container *ngIf="showEmail; else emailHidden">{{
-                  provider.email
-                }}</ng-container>
-                <ng-template #emailHidden>Hidden</ng-template>
-              </li>
-              <li class="d-flex align-items-center">
-                <i class="bi bi-telephone me-2"></i>
-                <ng-container *ngIf="showPhone; else phoneHidden">{{
-                  provider.phone
-                }}</ng-container>
-                <ng-template #phoneHidden>Hidden</ng-template>
-              </li>
-            </ul>
-          </div>
-          <div class="ad-slot ad-tall mb-3">Advertisement</div>
-        </aside>
       </div>
+
+      <!-- Sidebar -->
+      <aside class="col-lg-4">
+        <div class="ad-slot ad-square-md mb-3">Advertisement</div>
+        <div class="details-card p-3 p-md-4 mb-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="small text-secondary">Starts From</div>
+              <div class="h4 mb-0">₹{{ it.price }}</div>
+            </div>
+          </div>
+          <div class="d-grid mt-3 gap-2">
+            <button type="button" class="btn btn-join btn-lg" (click)="showPhone = true">
+              See phone number
+            </button>
+            <button type="button" class="btn btn-join btn-lg" (click)="showEmail = true">
+              See email
+            </button>
+            <button
+              type="button"
+              class="btn btn-join btn-lg"
+              data-bs-toggle="modal"
+              data-bs-target="#typesModal"
+            >
+              See service types
+            </button>
+          </div>
+        </div>
+        <div class="details-card p-3 p-md-4">
+          <div class="text-center">
+            <img
+              [src]="provider.avatar"
+              alt="{{ provider.name }}"
+              class="rounded-circle avatar-md mb-2"
+            />
+            <div class="fw-semibold">{{ provider.name }}</div>
+            <div class="text-secondary small mb-2">Service Provider</div>
+          </div>
+          <ul class="list-unstyled small text-secondary mb-0">
+            <li class="d-flex align-items-center mb-1">
+              <i class="bi bi-calendar3 me-2"></i>Member Since
+              {{ provider.memberSince | date: 'd MMM yyyy' }}
+            </li>
+            <li class="d-flex align-items-center mb-1">
+              <i class="bi bi-geo-alt me-2"></i>{{ it.location }}
+            </li>
+            <li class="d-flex align-items-center mb-1">
+              <i class="bi bi-envelope me-2"></i>
+              <ng-container *ngIf="showEmail; else emailHidden">{{ provider.email }}</ng-container>
+              <ng-template #emailHidden>Hidden</ng-template>
+            </li>
+            <li class="d-flex align-items-center">
+              <i class="bi bi-telephone me-2"></i>
+              <ng-container *ngIf="showPhone; else phoneHidden">{{ provider.phone }}</ng-container>
+              <ng-template #phoneHidden>Hidden</ng-template>
+            </li>
+          </ul>
+        </div>
+        <div class="ad-slot ad-tall mb-3">Advertisement</div>
+      </aside>
     </div>
+  </div>
 
   <!-- Pricing Modal -->
   <div class="modal fade" id="priceModal" tabindex="-1" aria-hidden="true">

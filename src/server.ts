@@ -261,11 +261,17 @@ app.get('/api/Category', async (_req, res, next) => {
           { id: 1, name: 'Plumbing', icon: 'bi-droplet', count: 120, superCategoryId: 1 },
           { id: 2, name: 'Electrical Repair', icon: 'bi-lightning', count: 85, superCategoryId: 1 },
           { id: 3, name: 'Carpentry', icon: 'bi-hammer', count: 90, superCategoryId: 1 },
-          { id: 4, name: 'Painting & Whitewashing', icon: 'bi-palette', count: 75, superCategoryId: 1 },
+          {
+            id: 4,
+            name: 'Painting & Whitewashing',
+            icon: 'bi-palette',
+            count: 75,
+            superCategoryId: 1,
+          },
           { id: 5, name: 'Home Cleaning', icon: 'bi-broom', count: 150, superCategoryId: 1 },
           { id: 6, name: 'Appliance Repair', icon: 'bi-tools', count: 110, superCategoryId: 1 },
           { id: 7, name: 'Pest Control', icon: 'bi-bug', count: 60, superCategoryId: 1 },
-        ]
+        ],
       },
       {
         id: 2,
@@ -273,11 +279,23 @@ app.get('/api/Category', async (_req, res, next) => {
         colorClass: 'bg-success',
         icon: 'bi-building',
         categories: [
-          { id: 8, name: 'Electrical Maintenance', icon: 'bi-lightning', count: 45, superCategoryId: 2 },
+          {
+            id: 8,
+            name: 'Electrical Maintenance',
+            icon: 'bi-lightning',
+            count: 45,
+            superCategoryId: 2,
+          },
           { id: 9, name: 'HVAC', icon: 'bi-fan', count: 50, superCategoryId: 2 },
-          { id: 10, name: 'Office Cleaning & Sanitization', icon: 'bi-broom', count: 80, superCategoryId: 2 },
+          {
+            id: 10,
+            name: 'Office Cleaning & Sanitization',
+            icon: 'bi-broom',
+            count: 80,
+            superCategoryId: 2,
+          },
           { id: 11, name: 'IT Support', icon: 'bi-cpu', count: 100, superCategoryId: 2 },
-        ]
+        ],
       },
       {
         id: 3,
@@ -289,7 +307,7 @@ app.get('/api/Category', async (_req, res, next) => {
           { id: 13, name: 'Office Relocation', icon: 'bi-building', count: 40, superCategoryId: 3 },
           { id: 14, name: 'Packers & Movers', icon: 'bi-archive', count: 120, superCategoryId: 3 },
           { id: 15, name: 'Vehicle Rental', icon: 'bi-car-front', count: 70, superCategoryId: 3 },
-        ]
+        ],
       },
       {
         id: 4,
@@ -298,9 +316,21 @@ app.get('/api/Category', async (_req, res, next) => {
         icon: 'bi-heart',
         categories: [
           { id: 16, name: 'Salon at Home', icon: 'bi-scissors', count: 110, superCategoryId: 4 },
-          { id: 17, name: 'Fitness Trainer', icon: 'bi-person-check', count: 60, superCategoryId: 4 },
-          { id: 18, name: 'Spa & Massage', icon: 'bi-hand-thumbs-up', count: 75, superCategoryId: 4 },
-        ]
+          {
+            id: 17,
+            name: 'Fitness Trainer',
+            icon: 'bi-person-check',
+            count: 60,
+            superCategoryId: 4,
+          },
+          {
+            id: 18,
+            name: 'Spa & Massage',
+            icon: 'bi-hand-thumbs-up',
+            count: 75,
+            superCategoryId: 4,
+          },
+        ],
       },
       {
         id: 5,
@@ -308,10 +338,22 @@ app.get('/api/Category', async (_req, res, next) => {
         colorClass: 'bg-info',
         icon: 'bi-book',
         categories: [
-          { id: 19, name: 'School Tutoring', icon: 'bi-mortarboard', count: 130, superCategoryId: 5 },
-          { id: 20, name: 'Competitive Exam Coaching', icon: 'bi-pencil-square', count: 85, superCategoryId: 5 },
+          {
+            id: 19,
+            name: 'School Tutoring',
+            icon: 'bi-mortarboard',
+            count: 130,
+            superCategoryId: 5,
+          },
+          {
+            id: 20,
+            name: 'Competitive Exam Coaching',
+            icon: 'bi-pencil-square',
+            count: 85,
+            superCategoryId: 5,
+          },
           { id: 21, name: 'Spoken English', icon: 'bi-chat-dots', count: 55, superCategoryId: 5 },
-        ]
+        ],
       },
       {
         id: 6,
@@ -322,7 +364,7 @@ app.get('/api/Category', async (_req, res, next) => {
           { id: 22, name: 'Catering Services', icon: 'bi-cup-hot', count: 80, superCategoryId: 6 },
           { id: 23, name: 'Home Tiffin Service', icon: 'bi-basket', count: 60, superCategoryId: 6 },
           { id: 24, name: 'Bakery & Cake Order', icon: 'bi-cake2', count: 45, superCategoryId: 6 },
-        ]
+        ],
       },
     ];
     return res.json({ data: superCategories });
@@ -476,7 +518,12 @@ app.get('/api/Listing', async (req, res, next) => {
     const start = (page - 1) * perPage;
     const items = filtered.slice(start, start + perPage);
 
-    return res.json({ data: { page, perPage, total, items }, status_code: 200, status_message: 'OK', message: 'OK' });
+    return res.json({
+      data: { page, perPage, total, items },
+      status_code: 200,
+      status_message: 'OK',
+      message: 'OK',
+    });
   } catch (e) {
     return next(e);
   }
@@ -607,7 +654,8 @@ app.get('/api/Listing/Details/:id', async (req, res, next) => {
               providerEmail: 'provider@example.com',
               providerPhone: '+91 98765 43210',
               providerMemberSince: new Date(2022, 0, 15).toISOString(),
-              companyName: verified && verifiedType === 'Company' ? 'Prime Services Ltd.' : undefined,
+              companyName:
+                verified && verifiedType === 'Company' ? 'Prime Services Ltd.' : undefined,
               contactEmail: 'contact@services.com',
               contactPhone: '+91 99999 99999',
             };
@@ -619,7 +667,9 @@ app.get('/api/Listing/Details/:id', async (req, res, next) => {
       }
     }
 
-    return res.status(404).json({ message: 'Listing not found', status_code: 404, status_message: 'Not Found' });
+    return res
+      .status(404)
+      .json({ message: 'Listing not found', status_code: 404, status_message: 'Not Found' });
   } catch (e) {
     return next(e);
   }

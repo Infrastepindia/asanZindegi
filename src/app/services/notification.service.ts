@@ -19,7 +19,11 @@ export class NotificationService {
     return this.toasts$.asObservable();
   }
 
-  private showToast(message: string, type: 'success' | 'error' | 'info' | 'warning', duration = 4000) {
+  private showToast(
+    message: string,
+    type: 'success' | 'error' | 'info' | 'warning',
+    duration = 4000,
+  ) {
     const id = `toast-${++this.toastIdCounter}`;
     const toast: Toast = { id, message, type, duration };
 

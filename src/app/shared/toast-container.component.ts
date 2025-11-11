@@ -8,17 +8,9 @@ import { NotificationService, Toast } from '../services/notification.service';
   imports: [CommonModule],
   template: `
     <div class="toast-container">
-      <div
-        *ngFor="let toast of toasts"
-        [class]="'toast toast-' + toast.type"
-        [@fadeInOut]
-      >
+      <div *ngFor="let toast of toasts" [class]="'toast toast-' + toast.type" [@fadeInOut]>
         {{ toast.message }}
-        <button
-          class="toast-close"
-          (click)="dismiss(toast.id)"
-          aria-label="Close notification"
-        >
+        <button class="toast-close" (click)="dismiss(toast.id)" aria-label="Close notification">
           ×
         </button>
       </div>

@@ -1,3 +1,6 @@
+<!-- Global Toast Container -->
+<app-toast-container></app-toast-container>
+
 <!-- Global Header -->
 <div class="top-strip py-1 small bg-light border-bottom d-none d-md-block">
   <div class="container d-flex justify-content-between">
@@ -63,8 +66,8 @@
         <ng-container *ngIf="!authService.isLoggedIn()">
           <li class="nav-item">
             <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/register'"
-              >Become a Service Provider </a
-            >
+              >Become a Service Provider
+            </a>
           </li>
         </ng-container>
       </ul>

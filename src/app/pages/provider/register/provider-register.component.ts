@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
+import { NotificationService } from '../../../services/notification.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
 import { OtpInputComponent } from '../../../shared/otp-input.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
@@ -67,6 +68,7 @@ export class ProviderRegisterComponent {
   private router = inject(Router);
   private accounts = inject(AccountService);
   private api = inject(ApiService);
+  private notification = inject(NotificationService);
 
   private draftKey = 'az_provider_reg_draft';
 
@@ -302,9 +304,8 @@ export class ProviderRegisterComponent {
 
   // Submit
   submit() {
-    debugger
     if (!this.validateAllSteps()) {
-      alert('Please complete all required fields.');
+      this.notification.error('Please complete all required fields.');
       return;
     }
 
@@ -362,12 +363,12 @@ export class ProviderRegisterComponent {
     this.api.addProviderDetails(payload, files).subscribe({
       next: (response) => {
         this.clearDraft();
-        alert('Provider registration submitted successfully!');
-        this.router.navigate(['/provider/dashboard']);
+        this.notification.success('Provider registration submitted successfully!');
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         const errorInfo = this.api.extractError(err);
-        alert(`Submission failed: ${errorInfo.message}`);
+        this.notification.error(`Submission failed: ${errorInfo.message}`);
       },
     });
   }

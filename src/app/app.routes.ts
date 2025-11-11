@@ -38,7 +38,7 @@ export const routes: Routes = [
     path: 'ad/:id',
     component: ListingDetailsComponent,
     title: 'Ad Details',
-    data: { renderMode: 'ssr' },
+    //data: { renderMode: 'ssr' },
   },
   { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];

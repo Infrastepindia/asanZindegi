@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute, NavigationStart } from '@angular/router';
@@ -52,7 +52,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
   editModel = { id: 0, name: '', email: '', phone: '' };
-
+  constructor(private cd: ChangeDetectorRef) {}
   ngOnInit() {
     this.loadDashboardData();
     this.subscribeToRouteChanges();
@@ -141,12 +141,14 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
             console.log('Provider Dashboard - Processed Account:', this.acc);
             console.log('Provider Dashboard - Processed Ads:', this.providerAds);
           }
+          this.cd.detectChanges();
           this.isLoading = false;
         },
         error: (error) => {
           console.error('Error fetching company details:', error);
           this.isLoading = false;
           this.acc = this.accounts.getAccount();
+          this.cd.detectChanges();
           if (this.acc) {
             this.providerAds = this.adsService.getByAccount(this.acc.id);
           }

@@ -1,19 +1,19 @@
-import { Component, inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, PLATFORM_ID, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
 import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { takeUntil, switchMap } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { takeUntil, switchMap, catchError } from 'rxjs/operators';
 
 declare const L: any;
 
 @Component({
   selector: 'app-listing-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './listing-details.component.html',
   styleUrl: './listing-details.component.css',
 })
@@ -27,7 +27,8 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   private meta = inject(Meta);
   private destroy$ = new Subject<void>();
 
-  item?: ListingItem;
+  item: any;
+  listingId: any;
   thumbnails: string[] = [];
   related: ListingItem[] = [];
   provider = {
@@ -93,67 +94,135 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
     }
     return [min, max];
   }
+  constructor(private cd: ChangeDetectorRef) { }
+  // ngOnInit() {
+  //   this.route.paramMap
+  //     .pipe(
+  //       switchMap((params) => {
+  //         const id = Number(params.get('id'));
+  //         if (isNaN(id)) {
+  //           this.error = 'Invalid listing ID';
+  //           this.isLoading = false;
+  //           return [];
+  //         }
+  //         this.isLoading = true;
+  //         this.error = null;
+  //         //this.item = undefined;
+  //         return this.apiService.getListingDetails(id);
+  //       }),
+  //       takeUntil(this.destroy$),
+  //     )
+  //     .subscribe({
+  //       next: (response) => {
+  //         const apiData = response.data;
+  //         this.item = {
+  //           id: apiData.id,
+  //           title: apiData.title,
+  //           category: apiData.category,
+  //           type: apiData.type,
+  //           location: apiData.location,
+  //           price: apiData.price,
+  //           unit: apiData.unit,
+  //           cover: apiData.cover || '',
+  //           date: apiData.date,
+  //           views: apiData.views,
+  //           rating: apiData.rating,
+  //           verified: apiData.verified,
+  //           verifiedType: apiData.verifiedType,
+  //         };
 
+  //         this.provider.name = apiData.companyName || apiData.providerName || 'Provider';
+  //         this.provider.email = apiData.contactEmail || apiData.providerEmail || '';
+  //         this.provider.phone = apiData.contactPhone || apiData.providerPhone || '';
+  //         if (apiData.providerMemberSince) {
+  //           this.provider.memberSince = apiData.providerMemberSince;
+  //         }
+
+  //         if (apiData.images && apiData.images.length > 0) {
+  //           this.thumbnails = apiData.images;
+  //         } else if (this.item.cover) {
+  //           this.thumbnails = [this.item.cover];
+  //         }
+
+  //         this.updateCanonical();
+  //         this.loadRelatedListings();
+  //         this.setupIncludes();
+  //         this.setupOverview();
+  //         this.isLoading = false;
+  //       },
+  //       error: (err) => {
+  //         this.error = this.apiService.extractError(err).message;
+  //         this.isLoading = false;
+  //       },
+  //     });
+  // }
   ngOnInit() {
-    this.route.paramMap
-      .pipe(
-        switchMap((params) => {
-          const id = Number(params.get('id'));
-          if (isNaN(id)) {
-            this.error = 'Invalid listing ID';
-            this.isLoading = false;
-            return [];
-          }
-          this.isLoading = true;
-          this.error = null;
-          this.item = undefined;
-          return this.apiService.getListingDetails(id);
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: (response) => {
-          const apiData = response.data;
-          this.item = {
-            id: apiData.id,
-            title: apiData.title,
-            category: apiData.category,
-            type: apiData.type,
-            location: apiData.location,
-            price: apiData.price,
-            unit: apiData.unit,
-            cover: apiData.cover || '',
-            date: apiData.date,
-            views: apiData.views,
-            rating: apiData.rating,
-            verified: apiData.verified,
-            verifiedType: apiData.verifiedType,
-          };
+    this.isLoading = true;
+    this.route.paramMap.subscribe(params => {
+      this.listingId = Number(params.get('id'));
+      console.log('Listing ID (live):', this.listingId);
+    });
+    if (this.listingId) {
+      this.loadAdDetails(this.listingId)
+    }
+  }
 
-          this.provider.name = apiData.companyName || apiData.providerName || 'Provider';
-          this.provider.email = apiData.contactEmail || apiData.providerEmail || '';
-          this.provider.phone = apiData.contactPhone || apiData.providerPhone || '';
-          if (apiData.providerMemberSince) {
-            this.provider.memberSince = apiData.providerMemberSince;
-          }
-
-          if (apiData.images && apiData.images.length > 0) {
-            this.thumbnails = apiData.images;
-          } else if (this.item.cover) {
-            this.thumbnails = [this.item.cover];
-          }
-
-          this.updateCanonical();
-          this.loadRelatedListings();
-          this.setupIncludes();
-          this.setupOverview();
+  loadAdDetails(id: any) {
+    this.apiService.getListingDetails(id).subscribe((res: any) => {
+      if (res && res.data) {
+        this.isLoading = false;
+        const apiData = res?.data || res; // ✅ Handles both wrapped & direct data
+        if (!apiData || !apiData.id) {
+          this.error = 'No data found';
           this.isLoading = false;
-        },
-        error: (err) => {
-          this.error = this.apiService.extractError(err).message;
-          this.isLoading = false;
-        },
-      });
+          return;
+        }
+
+        // ✅ Set your backend base URL dynamically (use environment.apiUrl if available)
+        const baseUrl = 'https://localhost:7139'; // 🔧 Change to your deployed API URL if needed
+
+        // ✅ Normalize and prepend base path to cover image
+        const normalizedCover = apiData.cover
+          ? `${baseUrl}${apiData.cover.replace(/\\/g, '/')}`
+          : '';
+
+        // ✅ Map data safely
+        this.item = {
+          id: apiData.id,
+          title: apiData.title,
+          category: apiData.category,
+          type: apiData.type,
+          location: apiData.location,
+          price: apiData.price,
+          unit: apiData.unit,
+          cover: normalizedCover,
+          date: apiData.date,
+          views: apiData.views,
+          rating: apiData.rating,
+          verified: apiData.verified,
+          verifiedType: apiData.verifiedType,
+        };
+
+        // ✅ Provider info fallback
+        this.provider = {
+          name: apiData.providerName || 'Service Provider',
+          email: apiData.providerEmail || 'Hidden',
+          phone: apiData.providerPhone || 'Hidden',
+          avatar: normalizedCover || 'assets/images/default-avatar.png',
+          memberSince: new Date().toISOString(),
+        };
+
+        // ✅ Ensure thumbnails exist
+        this.thumbnails = normalizedCover ? [normalizedCover] : [];
+
+        // ✅ Basic overview & includes
+        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services in ${this.item.location}.`;
+        this.includes = ['Inspection', 'Support', 'Service Warranty'];
+        this.cd.detectChanges();
+        console.log(this.item)
+        this.isLoading = false; // ✅ Always hide spinner at end
+      }
+    })
   }
 
   private loadRelatedListings() {
@@ -274,32 +343,35 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    if (!this.item) return;
-    this.center = this.coordsForLocation(this.item.location);
+  // ngAfterViewInit() {
+  //   if (!isPlatformBrowser(this.platformId)) return;
+  //   if (!this.item) return;
+  //   this.center = this.coordsForLocation(this.item.location);
 
-    const el = document.getElementById('serviceAreaMap');
-    if (!el) return;
+  //   const el = document.getElementById('serviceAreaMap');
+  //   if (!el) return;
 
-    this.map = L.map(el).setView(this.center, 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 19,
-    }).addTo(this.map);
+  //   this.map = L.map(el).setView(this.center, 12);
+  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     attribution: '&copy; OpenStreetMap contributors',
+  //     maxZoom: 19,
+  //   }).addTo(this.map);
 
-    this.circle = L.circle(this.center, {
-      radius: this.radiusMeters,
-      color: '#7b61ff',
-      weight: 2,
-      fillColor: '#7b61ff',
-      fillOpacity: 0.12,
-    }).addTo(this.map);
-  }
-
+  //   this.circle = L.circle(this.center, {
+  //     radius: this.radiusMeters,
+  //     color: '#7b61ff',
+  //     weight: 2,
+  //     fillColor: '#7b61ff',
+  //     fillOpacity: 0.12,
+  //   }).addTo(this.map);
+  // }
   ngOnDestroy() {
-    if (this.map && this.map.remove) this.map.remove();
     this.destroy$.next();
     this.destroy$.complete();
   }
+  // ngOnDestroy() {
+  //   if (this.map && this.map.remove) this.map.remove();
+  //   this.destroy$.next();
+  //   this.destroy$.complete();
+  // }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -36,7 +36,7 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute,private cd: ChangeDetectorRef) {}
 
   private readonly http = inject(HttpClient);
   private readonly meta = inject(Meta);
@@ -124,7 +124,7 @@ export class ListingsComponent implements OnInit {
                 location: item.location,
                 price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
                 unit: item.unit || '',
-                cover: item.cover || '',
+                cover:environment.base_path +item.cover || '',
                 date: item.date,
                 views: item.views,
                 rating: item.rating,
@@ -143,6 +143,7 @@ export class ListingsComponent implements OnInit {
           this.all = [...apiListings];
           this.apiTotal = res.data.total;
         }
+        this.cd.detectChanges();
         this.isLoadingListings = false;
       },
       error: () => {

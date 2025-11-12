@@ -183,12 +183,16 @@
                       <span
                         *ngIf="it.verified"
                         class="verified-badge"
-                        [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'"
+                        [title]="
+                          it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'
+                        "
                       >
                         <i
                           class="bi"
                           [ngClass]="
-                            it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'
+                            it.verifiedType === 'Company'
+                              ? 'bi-patch-check-fill'
+                              : 'bi-shield-check'
                           "
                         ></i>
                         <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>

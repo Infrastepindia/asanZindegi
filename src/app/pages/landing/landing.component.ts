@@ -293,7 +293,9 @@ export class LandingComponent implements OnInit {
     else this.router.navigate(['/listings'], { queryParams: params });
   }
 
-  onLocationChange(value: string) {
+  onLocationChange(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+  const value = input.value.trim();
     this.search.location = value;
     this.search.lat = null;
     this.search.lon = null;
@@ -305,12 +307,70 @@ export class LandingComponent implements OnInit {
     this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
   }
 
-  private queryNominatim(q: string) {
+  // private queryNominatim(q: string) {
+  //   this.locationLoading = true;
+  //   const left = 68.176645,
+  //     right = 97.395561,
+  //     bottom = 6.554607,
+  //     top = 35.674545; // India bbox
+  //   const params = new URLSearchParams({
+  //     format: 'jsonv2',
+  //     addressdetails: '1',
+  //     namedetails: '1',
+  //     extratags: '0',
+  //     limit: '8',
+  //     countrycodes: 'in',
+  //     viewbox: `${left},${top},${right},${bottom}`,
+  //     bounded: '1',
+  //     'accept-language': 'en-IN,hi-IN',
+  //     q,
+  //   });
+  //   const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+  //   this.http.get<any[]>(url).subscribe({
+  //     next: (res) => {
+  //       const allowed = new Set([
+  //         'city',
+  //         'town',
+  //         'village',
+  //         'suburb',
+  //         'state',
+  //         'district',
+  //         'county',
+  //         'locality',
+  //       ]);
+  //       const onlyIn = (res || []).filter(
+  //         (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+  //       );
+  //       const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
+  //         allowed.has((r.type || '').toLowerCase()),
+  //       );
+  //       this.locationResults = cleaned.slice(0, 8);
+  //       this.locationLoading = false;
+  //     },
+  //     error: () => {
+  //       this.locationResults = [];
+  //       this.locationLoading = false;
+  //     },
+  //   });
+  // }
+   private queryNominatim(q: string) {
+    debugger
+    if (!q || !q.trim()) return;
+
     this.locationLoading = true;
-    const left = 68.176645,
-      right = 97.395561,
-      bottom = 6.554607,
-      top = 35.674545; // India bbox
+
+    // // India bounding box (min/max lat/lon)
+    // const left = 68.176645,
+    //   right = 97.395561,
+    //   bottom = 6.554607,
+    //   top = 35.674545;
+
+ // India bounding box (min/max lat/lon)
+    const left =  85.8201,
+      right = 89.8859,
+      bottom = 21.5219,
+      top = 27.2230;
+
     const params = new URLSearchParams({
       format: 'jsonv2',
       addressdetails: '1',
@@ -323,7 +383,9 @@ export class LandingComponent implements OnInit {
       'accept-language': 'en-IN,hi-IN',
       q,
     });
+
     const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
         const allowed = new Set([
@@ -336,21 +398,38 @@ export class LandingComponent implements OnInit {
           'county',
           'locality',
         ]);
+
+        // ✅ Only results within India
         const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
+          (r) => (r.address?.country_code || '').toLowerCase() === 'in'
         );
+
+        // ✅ Filter relevant location types
         const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
-          allowed.has((r.type || '').toLowerCase()),
+          allowed.has((r.type || '').toLowerCase())
         );
+
+        // ✅ Pick the top result
+        const bestMatch = cleaned[0];
+        if (bestMatch) {
+          let lat = parseFloat(bestMatch.lat);
+          let lon = parseFloat(bestMatch.lon);
+          console.log('✅ Found:', lat, lon, bestMatch.display_name);
+        } else {
+          console.warn('⚠️ No valid location found');
+        }
+
         this.locationResults = cleaned.slice(0, 8);
         this.locationLoading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Nominatim error:', err);
         this.locationResults = [];
         this.locationLoading = false;
       },
     });
   }
+
 
   selectLocation(item: { display_name: string; lat: string; lon: string }) {
     this.search.location = item.display_name;

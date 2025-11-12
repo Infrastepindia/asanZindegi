@@ -44,13 +44,14 @@
                 <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
               </select>
             </div>
+            <!-- (ngModelChange)="onLocationChange($event)" -->
             <div class="col-md-3 search-field">
               <i class="bi bi-geo-alt input-icon" aria-hidden="true"></i>
               <input
                 class="form-control form-control-lg"
                 placeholder="Enter Location"
                 [(ngModel)]="search.location"
-                (ngModelChange)="onLocationChange($event)"
+                (keyup)="onLocationChange($event)"
                 name="location"
                 aria-label="Enter Location"
                 autocomplete="off"

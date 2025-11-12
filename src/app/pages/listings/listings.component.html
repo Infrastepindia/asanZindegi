@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="col-lg-3">
       <div class="filter-card p-3 mb-3">
-        <h6 class="mb-3">Rating</h6>
+        <!-- <h6 class="mb-3">Rating</h6>
         <div class="form-check">
           <input
             class="form-check-input"
@@ -15,7 +15,7 @@
             (change)="setPage(1)"
           />
           <label class="form-check-label" for="r-any">Any</label>
-        </div>
+        </div> 
         <div class="form-check" *ngFor="let r of [5, 4, 3, 2, 1]">
           <input
             class="form-check-input"
@@ -32,7 +32,7 @@
             </span>
             &nbsp;and up
           </label>
-        </div>
+        </div>-->
       </div>
 
       <div class="filter-card p-3 mb-3">
@@ -202,8 +202,8 @@
                       <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
                       &nbsp;•&nbsp;
                       <i class="bi bi-clock me-1"></i>{{ it.date | date: 'mediumDate' }}
-                      &nbsp;•&nbsp;
-                      <i class="bi bi-eye me-1"></i>{{ it.views }} views
+                      <!-- &nbsp;•&nbsp; -->
+                      <!-- <i class="bi bi-eye me-1"></i>{{ it.views }} views -->
                     </div>
                     <div class="small">
                       <a
@@ -213,13 +213,13 @@
                         >More in {{ it.category }}</a
                       >
                     </div>
-                    <div class="text-warning mb-2">
+                    <!-- <div class="text-warning mb-2">
                       <i
                         class="bi bi-star-fill"
                         *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
                         [ngClass]="{ 'text-muted': i >= it.rating }"
                       ></i>
-                    </div>
+                    </div> -->
                   </div>
                   <div class="text-end">
                     <div class="price fw-bold">

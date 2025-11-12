@@ -140,125 +140,140 @@
 
     <!-- Main -->
     <section class="col-lg-9">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <div class="small text-secondary">
-          Showing {{ showingStart }}–{{ showingEnd }} of {{ filtered.length }} results
-        </div>
-        <div>
-          <select class="form-select form-select-sm">
-            <option>Relevance</option>
-            <option>Newest</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-          </select>
+      <!-- Loader -->
+      <div class="loader-container" *ngIf="isLoadingListings">
+        <div class="spinner-wrapper">
+          <div class="spinner"></div>
+          <p class="loader-text">Loading listings...</p>
         </div>
       </div>
 
-      <div class="list-group-v gap-3">
-        <div class="listing-row" *ngFor="let it of paged">
-          <div class="row g-3 align-items-stretch">
-            <div class="col-md-4">
-              <a class="thumb-wrap" [routerLink]="['/ad', it.id]">
-                <img [src]="it.cover" [alt]="it.title" class="thumb" />
-                <span class="tag badge bg-light text-dark">{{ it.category }}</span>
-              </a>
-            </div>
-            <div class="col-md-8">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <div class="d-flex align-items-center gap-2">
-                    <a [routerLink]="['/ad', it.id]" class="text-decoration-none"
-                      ><h3 class="h6 mb-1">{{ it.title }}</h3></a
-                    >
-                    <span
-                      *ngIf="it.verified"
-                      class="verified-badge"
-                      [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'"
-                    >
-                      <i
-                        class="bi"
-                        [ngClass]="
-                          it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'
+      <!-- Content -->
+      <ng-container *ngIf="!isLoadingListings">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="small text-secondary">
+            Showing {{ showingStart }}–{{ showingEnd }} of {{ filtered.length }} results
+          </div>
+          <div>
+            <select class="form-select form-select-sm">
+              <option>Relevance</option>
+              <option>Newest</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="list-group-v gap-3">
+          <div class="listing-row" *ngFor="let it of paged">
+            <div class="row g-3 align-items-stretch">
+              <div class="col-md-4">
+                <a class="thumb-wrap" [routerLink]="['/ad', it.id]">
+                  <img [src]="it.cover" [alt]="it.title" class="thumb" />
+                  <span class="tag badge bg-light text-dark">{{ it.category }}</span>
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="d-flex align-items-start justify-content-between">
+                  <div>
+                    <div class="d-flex align-items-center gap-2">
+                      <a [routerLink]="['/ad', it.id]" class="text-decoration-none"
+                        ><h3 class="h6 mb-1">{{ it.title }}</h3></a
+                      >
+                      <span
+                        *ngIf="it.verified"
+                        class="verified-badge"
+                        [title]="
+                          it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'
                         "
+                      >
+                        <i
+                          class="bi"
+                          [ngClass]="
+                            it.verifiedType === 'Company'
+                              ? 'bi-patch-check-fill'
+                              : 'bi-shield-check'
+                          "
+                        ></i>
+                        <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
+                      </span>
+                    </div>
+                    <div class="small text-secondary mb-2">
+                      <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
+                      &nbsp;•&nbsp;
+                      <i class="bi bi-clock me-1"></i>{{ it.date | date: 'mediumDate' }}
+                      &nbsp;•&nbsp;
+                      <i class="bi bi-eye me-1"></i>{{ it.views }} views
+                    </div>
+                    <div class="small">
+                      <a
+                        class="text-decoration-none"
+                        [routerLink]="['/listings']"
+                        [queryParams]="{ category: it.category }"
+                        >More in {{ it.category }}</a
+                      >
+                    </div>
+                    <div class="text-warning mb-2">
+                      <i
+                        class="bi bi-star-fill"
+                        *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
+                        [ngClass]="{ 'text-muted': i >= it.rating }"
                       ></i>
-                      <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
-                    </span>
+                    </div>
                   </div>
-                  <div class="small text-secondary mb-2">
-                    <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
-                    &nbsp;•&nbsp;
-                    <i class="bi bi-clock me-1"></i>{{ it.date | date: 'mediumDate' }}
-                    &nbsp;•&nbsp;
-                    <i class="bi bi-eye me-1"></i>{{ it.views }} views
-                  </div>
-                  <div class="small">
-                    <a
-                      class="text-decoration-none"
-                      [routerLink]="['/listings']"
-                      [queryParams]="{ category: it.category }"
-                      >More in {{ it.category }}</a
+                  <div class="text-end">
+                    <div class="price fw-bold">
+                      ₹{{ it.price
+                      }}<small class="text-secondary" *ngIf="it.unit"> / {{ it.unit }}</small>
+                    </div>
+                    <span
+                      class="badge pill-badge"
+                      [ngClass]="{
+                        'badge-sell': it.type === 'Sell',
+                        'badge-rent': it.type === 'Rent',
+                        'badge-exchange': it.type === 'Exchange',
+                        'badge-service': it.type === 'Service',
+                      }"
+                      >{{ it.type }}</span
                     >
-                  </div>
-                  <div class="text-warning mb-2">
-                    <i
-                      class="bi bi-star-fill"
-                      *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
-                      [ngClass]="{ 'text-muted': i >= it.rating }"
-                    ></i>
-                  </div>
-                </div>
-                <div class="text-end">
-                  <div class="price fw-bold">
-                    ₹{{ it.price
-                    }}<small class="text-secondary" *ngIf="it.unit"> / {{ it.unit }}</small>
-                  </div>
-                  <span
-                    class="badge pill-badge"
-                    [ngClass]="{
-                      'badge-sell': it.type === 'Sell',
-                      'badge-rent': it.type === 'Rent',
-                      'badge-exchange': it.type === 'Exchange',
-                      'badge-service': it.type === 'Service',
-                    }"
-                    >{{ it.type }}</span
-                  >
-                  <div class="mt-2 d-flex flex-wrap gap-2 justify-content-end">
-                    <span class="badge pill-badge bg-light text-dark">{{
-                      availabilityLabel(it)
-                    }}</span>
-                    <span class="badge pill-badge bg-light text-dark">{{
-                      distanceBadge(it.location)
-                    }}</span>
-                  </div>
-                  <div class="mt-2">
-                    <a class="btn btn-join btn-lg" [routerLink]="['/ad', it.id]">Details</a>
+                    <div class="mt-2 d-flex flex-wrap gap-2 justify-content-end">
+                      <span class="badge pill-badge bg-light text-dark">{{
+                        availabilityLabel(it)
+                      }}</span>
+                      <span class="badge pill-badge bg-light text-dark">{{
+                        distanceBadge(it.location)
+                      }}</span>
+                    </div>
+                    <div class="mt-2">
+                      <a class="btn btn-join btn-lg" [routerLink]="['/ad', it.id]">Details</a>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Pagination -->
-      <nav class="mt-3 d-flex justify-content-center">
-        <ul class="pagination smart-pagination">
-          <li class="page-item" [class.disabled]="page === 1">
-            <button class="page-link" (click)="setPage(page - 1)">Previous</button>
-          </li>
-          <ng-container *ngFor="let p of visiblePages">
-            <li class="page-item ellipsis" *ngIf="p === '...'">
-              <span class="page-link">…</span>
+        <!-- Pagination -->
+        <nav class="mt-3 d-flex justify-content-center">
+          <ul class="pagination smart-pagination">
+            <li class="page-item" [class.disabled]="page === 1">
+              <button class="page-link" (click)="setPage(page - 1)">Previous</button>
             </li>
-            <li class="page-item" [class.active]="page === p" *ngIf="p !== '...'">
-              <button class="page-link" (click)="setPage(+p)">{{ p }}</button>
+            <ng-container *ngFor="let p of visiblePages">
+              <li class="page-item ellipsis" *ngIf="p === '...'">
+                <span class="page-link">…</span>
+              </li>
+              <li class="page-item" [class.active]="page === p" *ngIf="p !== '...'">
+                <button class="page-link" (click)="setPage(+p)">{{ p }}</button>
+              </li>
+            </ng-container>
+            <li class="page-item" [class.disabled]="page >= totalPages">
+              <button class="page-link" (click)="setPage(page + 1)">Next</button>
             </li>
-          </ng-container>
-          <li class="page-item" [class.disabled]="page >= totalPages">
-            <button class="page-link" (click)="setPage(page + 1)">Next</button>
-          </li>
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      </ng-container>
     </section>
   </div>
 </div>

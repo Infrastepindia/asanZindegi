@@ -36,7 +36,10 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
-  constructor(private route: ActivatedRoute,private cd: ChangeDetectorRef) {}
+  constructor(
+    private route: ActivatedRoute,
+    private cd: ChangeDetectorRef,
+  ) {}
 
   private readonly http = inject(HttpClient);
   private readonly meta = inject(Meta);
@@ -116,51 +119,53 @@ export class ListingsComponent implements OnInit {
     const category = this.route.snapshot.queryParamMap.get('category') || undefined;
     const location = this.route.snapshot.queryParamMap.get('location') || undefined;
 
-    this.api.getListings(this.apiPage, this.apiPerPage, {
-      superCategory,
-      category,
-      location,
-    }).subscribe({
-      next: (res) => {
-        if (res?.data?.items) {
-          const apiListings = res.data.items.map(
-            (item) =>
-              ({
-                id: item.id,
-                title: item.title,
-                category: item.category || 'Service',
-                type: (item.type as ListingItem['type']) || 'Service',
-                location: item.location,
-                price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
-                unit: item.unit || '',
-                cover:environment.base_path +item.cover || '',
-                date: item.date,
-                views: item.views,
-                rating: item.rating,
-                verified: item.verified,
-                verifiedType:
-                  item.verifiedType === 'Company'
-                    ? 'Company'
-                    : item.verifiedType === 'Individual'
-                      ? 'KYC'
-                      : undefined,
-                serviceType: (item.title || '').split(' - ')[0].trim() || item.title,
-              }) as ListingItem,
-          );
+    this.api
+      .getListings(this.apiPage, this.apiPerPage, {
+        superCategory,
+        category,
+        location,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res?.data?.items) {
+            const apiListings = res.data.items.map(
+              (item) =>
+                ({
+                  id: item.id,
+                  title: item.title,
+                  category: item.category || 'Service',
+                  type: (item.type as ListingItem['type']) || 'Service',
+                  location: item.location,
+                  price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
+                  unit: item.unit || '',
+                  cover: environment.base_path + item.cover || '',
+                  date: item.date,
+                  views: item.views,
+                  rating: item.rating,
+                  verified: item.verified,
+                  verifiedType:
+                    item.verifiedType === 'Company'
+                      ? 'Company'
+                      : item.verifiedType === 'Individual'
+                        ? 'KYC'
+                        : undefined,
+                  serviceType: (item.title || '').split(' - ')[0].trim() || item.title,
+                }) as ListingItem,
+            );
 
-          // Combine API listings with posted ads
-          this.all = [...apiListings];
-          this.apiTotal = res.data.total;
-        }
-        this.cd.detectChanges();
-        this.isLoadingListings = false;
-      },
-      error: () => {
-        // Fallback to posted ads only
-        this.all = [];
-        this.isLoadingListings = false;
-      },
-    });
+            // Combine API listings with posted ads
+            this.all = [...apiListings];
+            this.apiTotal = res.data.total;
+          }
+          this.cd.detectChanges();
+          this.isLoadingListings = false;
+        },
+        error: () => {
+          // Fallback to posted ads only
+          this.all = [];
+          this.isLoadingListings = false;
+        },
+      });
   }
   locationResults: Array<{ display_name: string; lat: string; lon: string }> = [];
   locationLoading = false;

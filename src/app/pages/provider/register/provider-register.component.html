@@ -263,14 +263,14 @@
                         </button>
                       </span>
                     </div>
-                    <input
+                    <!-- <input
                       #serviceTypeInput
                       class="form-control"
                       (keydown.enter)="
                         $event.preventDefault(); addServiceType(c.id, serviceTypeInput)
                       "
                       placeholder="Type and press Enter to add (e.g., Installation, Repair)"
-                    />
+                    /> -->
                   </div>
 
                   <!-- Advertisement Details -->
@@ -307,8 +307,9 @@
                       ></textarea>
                     </div>
                     <div class="col-md-6">
-                      <label class="form-label">Area Covered (Polygon)</label>
+                      <label class="form-label">Area Covered (in km)</label>
                       <input
+                        type="number"
                         class="form-control"
                         [(ngModel)]="getAdvertisement(c.id, c.name).areaCoveredPolygon"
                         [name]="'areaCovered-' + c.id"

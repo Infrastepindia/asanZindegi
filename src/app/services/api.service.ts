@@ -101,8 +101,25 @@ export class ApiService {
     return this.http.get<{ data: ApiSuperCategory[] }>(url);
   }
 
-  getListings(page: number = 1, perPage: number = 10): Observable<ApiListingResponse> {
-    const url = `${this.resolveBase()}/api/Listing?page=${page}&perPage=${perPage}`;
+  getListings(
+    page: number = 1,
+    perPage: number = 10,
+    options?: {
+      superCategory?: string;
+      category?: string;
+      location?: string;
+    },
+  ): Observable<ApiListingResponse> {
+    let url = `${this.resolveBase()}/api/Listing?page=${page}&perPage=${perPage}`;
+    if (options?.superCategory) {
+      url += `&superCategory=${encodeURIComponent(options.superCategory)}`;
+    }
+    if (options?.category) {
+      url += `&category=${encodeURIComponent(options.category)}`;
+    }
+    if (options?.location) {
+      url += `&location=${encodeURIComponent(options.location)}`;
+    }
     return this.http.get<ApiListingResponse>(url);
   }
 

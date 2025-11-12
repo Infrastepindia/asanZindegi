@@ -105,6 +105,7 @@ export class ListingsComponent implements OnInit {
       const l = map.get('location') || '';
       this.filters.selectedCategories = c ? [c] : [];
       if (l) this.filters.location = l;
+      this.loadListings();
       this.setPage(1);
     });
   }

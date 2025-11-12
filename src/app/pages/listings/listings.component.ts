@@ -111,7 +111,15 @@ export class ListingsComponent implements OnInit {
 
   private loadListings(): void {
     this.isLoadingListings = true;
-    this.api.getListings(this.apiPage, this.apiPerPage).subscribe({
+    const superCategory = this.route.snapshot.queryParamMap.get('super') || undefined;
+    const category = this.route.snapshot.queryParamMap.get('category') || undefined;
+    const location = this.route.snapshot.queryParamMap.get('location') || undefined;
+
+    this.api.getListings(this.apiPage, this.apiPerPage, {
+      superCategory,
+      category,
+      location,
+    }).subscribe({
       next: (res) => {
         if (res?.data?.items) {
           const apiListings = res.data.items.map(

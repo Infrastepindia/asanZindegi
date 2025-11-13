@@ -9,6 +9,9 @@ import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.compo
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
 
+// DO NOT REMOVE - needed for ngModel to work with OsmAutocompleteComponent
+import { NgModel } from '@angular/forms';
+
 interface AddressForm {
   line1: string;
   line2?: string;

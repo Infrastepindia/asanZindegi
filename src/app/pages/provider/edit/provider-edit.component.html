@@ -1,0 +1,449 @@
+<div class="provider-edit-container">
+  <div class="provider-edit-wrapper">
+    <h1 class="edit-title">Edit Provider Details</h1>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your provider details...</p>
+    </div>
+
+    <!-- Main Form -->
+    <div *ngIf="!loading" class="edit-form">
+      <!-- Step Navigation -->
+      <div class="steps-navigation">
+        <div class="steps-list">
+          <button
+            *ngFor="let s of steps; let i = index"
+            [class.active]="step === i + 1"
+            [class.completed]="step > i + 1"
+            (click)="goTo(i + 1)"
+            type="button"
+            class="step-button"
+          >
+            <span class="step-number">{{ i + 1 }}</span>
+            <span class="step-label">{{ s }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 1: Account Information -->
+      <div *ngIf="step === 1" class="step-content">
+        <h2>Account Information</h2>
+        <form class="form-group">
+          <div class="form-row">
+            <div class="form-field">
+              <label>First Name *</label>
+              <input
+                type="text"
+                [(ngModel)]="account.firstName"
+                name="firstName"
+                placeholder="Enter first name"
+                required
+              />
+            </div>
+            <div class="form-field">
+              <label>Last Name *</label>
+              <input
+                type="text"
+                [(ngModel)]="account.lastName"
+                name="lastName"
+                placeholder="Enter last name"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Email *</label>
+              <input
+                type="email"
+                [(ngModel)]="account.email"
+                name="email"
+                placeholder="Enter email"
+                required
+              />
+            </div>
+            <div class="form-field">
+              <label>Phone *</label>
+              <input
+                type="tel"
+                [(ngModel)]="account.phone"
+                name="phone"
+                placeholder="Enter phone number"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>New Password (leave blank to keep current)</label>
+              <input
+                type="password"
+                [(ngModel)]="account.password"
+                name="password"
+                placeholder="Enter new password"
+              />
+            </div>
+            <div class="form-field">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                [(ngModel)]="account.confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirm new password"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Profile Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onProfileImage($event)"
+              class="file-input"
+            />
+            <div *ngIf="account.profileImage" class="preview">
+              <img [src]="account.profileImage" alt="Profile preview" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Address Details -->
+      <div *ngIf="step === 2" class="step-content">
+        <h2>Address Details</h2>
+        <form class="form-group">
+          <div class="form-field">
+            <label>Address Line 1 *</label>
+            <input
+              type="text"
+              [(ngModel)]="address.line1"
+              name="line1"
+              placeholder="Enter street address"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Address Line 2</label>
+            <input
+              type="text"
+              [(ngModel)]="address.line2"
+              name="line2"
+              placeholder="Enter apartment, suite, etc. (optional)"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>City *</label>
+              <app-osm-autocomplete
+                [(ngModel)]="address.city"
+                name="city"
+                [addressLine]="address.line1"
+              ></app-osm-autocomplete>
+            </div>
+            <div class="form-field">
+              <label>State/Province *</label>
+              <input
+                type="text"
+                [(ngModel)]="address.state"
+                name="state"
+                placeholder="Enter state"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Pin Code *</label>
+            <input
+              type="text"
+              [(ngModel)]="address.pin"
+              name="pin"
+              placeholder="Enter pin code"
+              required
+            />
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 3: Provider Profile -->
+      <div *ngIf="step === 3" class="step-content">
+        <h2>Provider Profile</h2>
+        <form class="form-group">
+          <div class="form-field">
+            <label>Provider/Business Name *</label>
+            <input
+              type="text"
+              [(ngModel)]="provider.name"
+              name="name"
+              placeholder="Enter provider or business name"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Profile Title (Tagline)</label>
+            <input
+              type="text"
+              [(ngModel)]="provider.title"
+              name="title"
+              placeholder="e.g., Premium Home Services"
+            />
+          </div>
+
+          <div class="form-field checkbox-field">
+            <label>
+              <input type="checkbox" [(ngModel)]="provider.isCompany" name="isCompany" />
+              This is a company account
+            </label>
+          </div>
+
+          <div class="form-field">
+            <label>Business Logo</label>
+            <input type="file" accept="image/*" (change)="onLogo($event)" class="file-input" />
+            <div *ngIf="provider.logo" class="preview">
+              <img [src]="provider.logo" alt="Logo preview" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 4: Categories -->
+      <div *ngIf="step === 4" class="step-content">
+        <h2>Select Categories</h2>
+        <div class="categories-list">
+          <div *ngFor="let superCat of superCategories" class="super-category">
+            <button
+              type="button"
+              (click)="
+                expandedSuperIds.has(superCat.id)
+                  ? expandedSuperIds.delete(superCat.id)
+                  : expandedSuperIds.add(superCat.id)
+              "
+              class="super-category-header"
+            >
+              <span class="expand-icon">
+                {{ expandedSuperIds.has(superCat.id) ? '▼' : '▶' }}
+              </span>
+              <span class="super-category-name">{{ superCat.title }}</span>
+            </button>
+
+            <div *ngIf="expandedSuperIds.has(superCat.id)" class="categories-grid">
+              <label *ngFor="let cat of superCat.categories" class="category-checkbox">
+                <input
+                  type="checkbox"
+                  [checked]="isCategorySelected(cat.id)"
+                  (change)="toggleCategory({ id: cat.id, name: cat.name })"
+                />
+                <span>{{ cat.name }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Service Types -->
+      <div *ngIf="step === 5" class="step-content">
+        <h2>Service Types by Category</h2>
+        <div *ngIf="selection.categories.length === 0" class="no-categories-message">
+          <p>Please select at least one category first.</p>
+        </div>
+
+        <div *ngFor="let cat of selection.categories" class="service-category">
+          <h3>{{ cat.name }}</h3>
+          <div class="service-types-list">
+            <div *ngFor="let service of serviceTypesFor(cat.id)" class="service-tag">
+              <span>{{ service }}</span>
+              <button type="button" (click)="removeServiceType(cat.id, service)" class="remove-btn">
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <div class="service-input-group">
+            <input
+              type="text"
+              #serviceInput
+              placeholder="Add service type"
+              (keyup.enter)="addServiceType(cat.id, serviceInput)"
+              class="service-input"
+            />
+            <button type="button" (click)="addServiceType(cat.id, serviceInput)" class="add-btn">
+              Add Service Type
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6: Documents -->
+      <div *ngIf="step === 6" class="step-content">
+        <h2>Upload Documents</h2>
+
+        <div class="documents-section">
+          <h3>Registration Certificate</h3>
+          <input
+            type="file"
+            multiple
+            (change)="onFiles('reg', $event)"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            class="file-input"
+          />
+          <div *ngIf="regFiles.length > 0" class="files-list">
+            <div *ngFor="let f of regFiles" class="file-item">{{ f.name }}</div>
+          </div>
+        </div>
+
+        <div class="documents-section">
+          <h3>License/Permits</h3>
+          <input
+            type="file"
+            multiple
+            (change)="onFiles('lic', $event)"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            class="file-input"
+          />
+          <div *ngIf="licenseFiles.length > 0" class="files-list">
+            <div *ngFor="let f of licenseFiles" class="file-item">{{ f.name }}</div>
+          </div>
+        </div>
+
+        <div class="documents-section">
+          <h3>Portfolio/Work Samples</h3>
+          <input
+            type="file"
+            multiple
+            (change)="onFiles('port', $event)"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            class="file-input"
+          />
+          <div *ngIf="portfolioFiles.length > 0" class="files-list">
+            <div *ngFor="let f of portfolioFiles" class="file-item">{{ f.name }}</div>
+          </div>
+        </div>
+
+        <h3 class="ads-header">Advertisement Images by Category</h3>
+        <div *ngFor="let cat of selection.categories" class="ad-images-section">
+          <h4>{{ cat.name }} Advertisement</h4>
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onAdvertisementImage(cat.id, $event)"
+            class="file-input"
+          />
+          <div *ngIf="getAdvertisement(cat.id, cat.name).advertisementImage" class="preview">
+            <img [src]="getAdvertisement(cat.id, cat.name).advertisementImage" alt="Ad preview" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 7: Review & Submit -->
+      <div *ngIf="step === 7" class="step-content">
+        <h2>Review & Submit</h2>
+
+        <div class="review-section">
+          <h3>Account Information</h3>
+          <div class="review-row">
+            <span class="label">Full Name:</span>
+            <span class="value">{{ fullName }}</span>
+          </div>
+          <div class="review-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ account.email }}</span>
+          </div>
+          <div class="review-row">
+            <span class="label">Phone:</span>
+            <span class="value">{{ account.phone }}</span>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h3>Address</h3>
+          <div class="review-row">
+            <span class="label">Address:</span>
+            <span class="value">
+              {{ address.line1 }}
+              <span *ngIf="address.line2">, {{ address.line2 }}</span>
+              <br />
+              {{ address.city }}, {{ address.state }} {{ address.pin }}
+            </span>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h3>Provider Profile</h3>
+          <div class="review-row">
+            <span class="label">Provider Name:</span>
+            <span class="value">{{ provider.name }}</span>
+          </div>
+          <div class="review-row">
+            <span class="label">Type:</span>
+            <span class="value">{{ provider.isCompany ? 'Company' : 'Individual' }}</span>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h3>Categories & Services</h3>
+          <div *ngFor="let cat of selection.categories" class="review-row">
+            <span class="label">{{ cat.name }}:</span>
+            <span class="value">
+              {{ serviceTypesFor(cat.id).join(', ') || 'No specific services' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <h3>Advertisements</h3>
+          <div *ngIf="selection.categories.length > 0">
+            <div *ngFor="let cat of selection.categories" class="review-advertisement">
+              <h4>{{ cat.name }}</h4>
+              <div *ngIf="getAdvertisement(cat.id, cat.name) as ad" class="ad-details">
+                <p><strong>Overview:</strong> {{ ad.serviceOverview }}</p>
+                <p><strong>Price:</strong> {{ ad.priceStartForm }} {{ ad.priceType }}</p>
+                <p><strong>Description:</strong> {{ ad.detailDescription }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="form-actions">
+        <button
+          *ngIf="step > 1"
+          type="button"
+          (click)="back()"
+          class="btn btn-secondary"
+          [disabled]="submitting"
+        >
+          Back
+        </button>
+
+        <button
+          *ngIf="step < steps.length"
+          type="button"
+          (click)="next()"
+          class="btn btn-primary"
+          [disabled]="submitting"
+        >
+          Next
+        </button>
+
+        <button
+          *ngIf="step === steps.length"
+          type="button"
+          (click)="submit()"
+          class="btn btn-success"
+          [disabled]="submitting"
+        >
+          {{ submitting ? 'Updating...' : 'Update Provider Details' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

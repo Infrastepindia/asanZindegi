@@ -222,6 +222,79 @@ export class ApiService {
     return this.http.post(url, formData);
   }
 
+  updateProviderDetails(
+    payload: any,
+    files?: {
+      profileImage?: File;
+      logo?: File;
+      registrationCertificates?: File[];
+      licenses?: File[];
+      portfolio?: File[];
+    },
+  ): Observable<any> {
+    const formData = new FormData();
+
+    // Extract advertisement images from original payload BEFORE JSON serialization
+    const advertisementImages: File[] = [];
+    if (payload.advertisements && Array.isArray(payload.advertisements)) {
+      payload.advertisements.forEach((ad: any) => {
+        if (ad.images && Array.isArray(ad.images)) {
+          ad.images.forEach((img: File) => {
+            advertisementImages.push(img);
+          });
+        }
+      });
+    }
+
+    // Serialize payload, removing advertisement images (they'll be sent as FormData)
+    const payloadForSubmit = JSON.parse(JSON.stringify(payload));
+    if (payloadForSubmit.advertisements && Array.isArray(payloadForSubmit.advertisements)) {
+      payloadForSubmit.advertisements = payloadForSubmit.advertisements.map((ad: any) => {
+        delete ad.images;
+        return ad;
+      });
+    }
+
+    formData.append('providerDetailsPayload', JSON.stringify(payloadForSubmit));
+    console.log(JSON.stringify(payloadForSubmit));
+
+    if (files) {
+      if (files.profileImage) {
+        formData.append('profileImage', files.profileImage);
+      }
+      if (files.logo) {
+        formData.append('logo', files.logo);
+      }
+      if (files.registrationCertificates && files.registrationCertificates.length > 0) {
+        files.registrationCertificates.forEach((f) => {
+          formData.append(`registrationCertificates`, f);
+        });
+      }
+      if (files.licenses && files.licenses.length > 0) {
+        files.licenses.forEach((f) => {
+          formData.append(`licenses`, f);
+        });
+      }
+      if (files.portfolio && files.portfolio.length > 0) {
+        files.portfolio.forEach((f) => {
+          formData.append(`portfolio`, f);
+        });
+      }
+    }
+
+    // Attach advertisement images to FormData
+    if (advertisementImages.length > 0) {
+      advertisementImages.forEach((f) => {
+        formData.append(`advertisementImages`, f);
+      });
+    }
+
+    console.log(formData);
+    const url = `${this.resolveBase()}/api/Provider/updateProviderDetails`;
+
+    return this.http.post(url, formData);
+  }
+
   extractError(err: any): { message: string; status_code?: number; status_message?: string } {
     const body = err?.error ?? err;
     if (body && typeof body === 'object') {

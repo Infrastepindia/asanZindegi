@@ -449,9 +449,12 @@ export class ProviderEditComponent implements OnInit {
 
       const categoryImages = this.advertisementImageFiles[ad.categoryId];
       if (categoryImages && categoryImages.length > 0) {
-        const imageFiles = categoryImages
-          .filter((img): img is FileWithUrl => 'file' in img && !!img.file)
-          .map((img) => img.file);
+        const imageFiles: File[] = [];
+        categoryImages.forEach((img) => {
+          if ('file' in img && img.file) {
+            imageFiles.push(img.file);
+          }
+        });
         if (imageFiles.length > 0) {
           adPayload.images = imageFiles;
         }
@@ -482,23 +485,48 @@ export class ProviderEditComponent implements OnInit {
       advertisements: advertisements.length > 0 ? advertisements : undefined,
     };
 
-    const regFilesArray = this.regFiles
-      .filter((f): f is FileWithUrl => 'file' in f && !!f.file)
-      .map((f) => f.file);
-    const licFilesArray = this.licenseFiles
-      .filter((f): f is FileWithUrl => 'file' in f && !!f.file)
-      .map((f) => f.file);
-    const portFilesArray = this.portfolioFiles
-      .filter((f): f is FileWithUrl => 'file' in f && !!f.file)
-      .map((f) => f.file);
+    const regFilesArray: File[] = [];
+    const licFilesArray: File[] = [];
+    const portFilesArray: File[] = [];
 
-    const files = {
+    this.regFiles.forEach((f) => {
+      if ('file' in f && f.file) {
+        regFilesArray.push(f.file);
+      }
+    });
+
+    this.licenseFiles.forEach((f) => {
+      if ('file' in f && f.file) {
+        licFilesArray.push(f.file);
+      }
+    });
+
+    this.portfolioFiles.forEach((f) => {
+      if ('file' in f && f.file) {
+        portFilesArray.push(f.file);
+      }
+    });
+
+    const files: {
+      profileImage?: File;
+      logo?: File;
+      registrationCertificates?: File[];
+      licenses?: File[];
+      portfolio?: File[];
+    } = {
       profileImage: this.profileImageFile,
       logo: this.logoFile,
-      registrationCertificates: regFilesArray.length > 0 ? regFilesArray : undefined,
-      licenses: licFilesArray.length > 0 ? licFilesArray : undefined,
-      portfolio: portFilesArray.length > 0 ? portFilesArray : undefined,
     };
+
+    if (regFilesArray.length > 0) {
+      files.registrationCertificates = regFilesArray;
+    }
+    if (licFilesArray.length > 0) {
+      files.licenses = licFilesArray;
+    }
+    if (portFilesArray.length > 0) {
+      files.portfolio = portFilesArray;
+    }
 
     this.api.updateProviderDetails(payload, files).subscribe({
       next: (response) => {

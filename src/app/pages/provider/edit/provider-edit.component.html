@@ -199,23 +199,14 @@
 
           <div class="form-field checkbox-field">
             <label>
-              <input
-                type="checkbox"
-                [(ngModel)]="provider.isCompany"
-                name="isCompany"
-              />
+              <input type="checkbox" [(ngModel)]="provider.isCompany" name="isCompany" />
               This is a company account
             </label>
           </div>
 
           <div class="form-field">
             <label>Business Logo</label>
-            <input
-              type="file"
-              accept="image/*"
-              (change)="onLogo($event)"
-              class="file-input"
-            />
+            <input type="file" accept="image/*" (change)="onLogo($event)" class="file-input" />
             <div *ngIf="provider.logo" class="preview">
               <img [src]="provider.logo" alt="Logo preview" />
             </div>
@@ -230,7 +221,11 @@
           <div *ngFor="let superCat of superCategories" class="super-category">
             <button
               type="button"
-              (click)="expandedSuperIds.has(superCat.id) ? expandedSuperIds.delete(superCat.id) : expandedSuperIds.add(superCat.id)"
+              (click)="
+                expandedSuperIds.has(superCat.id)
+                  ? expandedSuperIds.delete(superCat.id)
+                  : expandedSuperIds.add(superCat.id)
+              "
               class="super-category-header"
             >
               <span class="expand-icon">
@@ -239,14 +234,8 @@
               <span class="super-category-name">{{ superCat.title }}</span>
             </button>
 
-            <div
-              *ngIf="expandedSuperIds.has(superCat.id)"
-              class="categories-grid"
-            >
-              <label
-                *ngFor="let cat of superCat.categories"
-                class="category-checkbox"
-              >
+            <div *ngIf="expandedSuperIds.has(superCat.id)" class="categories-grid">
+              <label *ngFor="let cat of superCat.categories" class="category-checkbox">
                 <input
                   type="checkbox"
                   [checked]="isCategorySelected(cat.id)"
@@ -271,11 +260,7 @@
           <div class="service-types-list">
             <div *ngFor="let service of serviceTypesFor(cat.id)" class="service-tag">
               <span>{{ service }}</span>
-              <button
-                type="button"
-                (click)="removeServiceType(cat.id, service)"
-                class="remove-btn"
-              >
+              <button type="button" (click)="removeServiceType(cat.id, service)" class="remove-btn">
                 ✕
               </button>
             </div>
@@ -289,11 +274,7 @@
               (keyup.enter)="addServiceType(cat.id, serviceInput)"
               class="service-input"
             />
-            <button
-              type="button"
-              (click)="addServiceType(cat.id, serviceInput)"
-              class="add-btn"
-            >
+            <button type="button" (click)="addServiceType(cat.id, serviceInput)" class="add-btn">
               Add Service Type
             </button>
           </div>
@@ -356,10 +337,7 @@
             class="file-input"
           />
           <div *ngIf="getAdvertisement(cat.id, cat.name).advertisementImage" class="preview">
-            <img
-              [src]="getAdvertisement(cat.id, cat.name).advertisementImage"
-              alt="Ad preview"
-            />
+            <img [src]="getAdvertisement(cat.id, cat.name).advertisementImage" alt="Ad preview" />
           </div>
         </div>
       </div>
@@ -422,15 +400,9 @@
         <div class="review-section">
           <h3>Advertisements</h3>
           <div *ngIf="selection.categories.length > 0">
-            <div
-              *ngFor="let cat of selection.categories"
-              class="review-advertisement"
-            >
+            <div *ngFor="let cat of selection.categories" class="review-advertisement">
               <h4>{{ cat.name }}</h4>
-              <div
-                *ngIf="getAdvertisement(cat.id, cat.name) as ad"
-                class="ad-details"
-              >
+              <div *ngIf="getAdvertisement(cat.id, cat.name) as ad" class="ad-details">
                 <p><strong>Overview:</strong> {{ ad.serviceOverview }}</p>
                 <p><strong>Price:</strong> {{ ad.priceStartForm }} {{ ad.priceType }}</p>
                 <p><strong>Description:</strong> {{ ad.detailDescription }}</p>

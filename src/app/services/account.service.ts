@@ -220,8 +220,7 @@ export class AccountService {
    * Check if the current account is a company
    */
   isCompanyAccount(): boolean {
-    debugger
     const acc = this.getAccount();
-    return acc?.type === 'Company';
+    return acc?.type === 'Company' || acc?.type === 'Provider' ;
   }
 }

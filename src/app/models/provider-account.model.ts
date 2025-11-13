@@ -1,4 +1,4 @@
-export type AccountType = 'Individual' | 'Company';
+export type AccountType = 'Individual' | 'Company' | 'Provider';
 
 export interface Personnel {
   id: number;
@@ -28,7 +28,7 @@ export interface IndividualAccount extends ProviderAccountBase {
 }
 
 export interface CompanyAccount extends ProviderAccountBase {
-  type: 'Company';
+  type: 'Company' | 'Provider';  
   companyName: string;
   contactName: string;
   personnel: Personnel[];

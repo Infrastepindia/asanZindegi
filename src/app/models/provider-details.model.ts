@@ -12,12 +12,15 @@ export interface AdvertisementPayload {
 }
 
 export interface ProviderDetailsPayload {
+  // Optional for edit mode
+  providerId?: number;
+
   // Account Information
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  password: string;
+  password?: string; // Optional for edit mode (only send if changing)
 
   // Address Information
   addressLine1: string;

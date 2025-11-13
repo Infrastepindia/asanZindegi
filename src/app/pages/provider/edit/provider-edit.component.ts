@@ -211,10 +211,12 @@ export class ProviderEditComponent implements OnInit {
     if (data.advertisements && Array.isArray(data.advertisements)) {
       data.advertisements.forEach((ad: any) => {
         if (ad.advertisementImages && Array.isArray(ad.advertisementImages)) {
-          this.advertisementImageFiles[ad.categoryId] = ad.advertisementImages.map((url: string) => ({
-            name: this.extractFilenameFromUrl(url),
-            url: url,
-          }));
+          this.advertisementImageFiles[ad.categoryId] = ad.advertisementImages.map(
+            (url: string) => ({
+              name: this.extractFilenameFromUrl(url),
+              url: url,
+            }),
+          );
         }
       });
     }
@@ -366,7 +368,7 @@ export class ProviderEditComponent implements OnInit {
         name: file.name,
         url: await this.readAsDataURL(file),
         file: file,
-      }))
+      })),
     );
 
     if (!this.advertisementImageFiles[catId]) {

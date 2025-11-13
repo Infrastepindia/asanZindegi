@@ -389,7 +389,7 @@
                       class="file-link"
                     >
                       <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
-                      <span class="file-name">{{ f.name | slice: 0: 20 }}</span>
+                      <span class="file-name">{{ f.name | slice: 0 : 20 }}</span>
                     </a>
                   </div>
                 </div>
@@ -406,7 +406,7 @@
                       class="file-link"
                     >
                       <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
-                      <span class="file-name">{{ f.name | slice: 0: 20 }}</span>
+                      <span class="file-name">{{ f.name | slice: 0 : 20 }}</span>
                     </a>
                   </div>
                 </div>
@@ -428,7 +428,10 @@
                   <div *ngIf="getAdvertisementImages(cat.id).length > 0">
                     <label class="form-label">{{ cat.name }} - Advertisement Images</label>
                     <div class="images-gallery d-flex flex-wrap gap-3">
-                      <div *ngFor="let img of getAdvertisementImages(cat.id)" class="portfolio-image-item">
+                      <div
+                        *ngFor="let img of getAdvertisementImages(cat.id)"
+                        class="portfolio-image-item"
+                      >
                         <a [href]="img.url" target="_blank" rel="noopener noreferrer">
                           <img [src]="img.url" [alt]="img.name" class="portfolio-image" />
                         </a>

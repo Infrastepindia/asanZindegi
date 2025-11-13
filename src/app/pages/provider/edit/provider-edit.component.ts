@@ -449,7 +449,12 @@ export class ProviderEditComponent implements OnInit {
 
       const categoryImages = this.advertisementImageFiles[ad.categoryId];
       if (categoryImages && categoryImages.length > 0) {
-        adPayload.images = categoryImages.filter((img) => img.file).map((img) => img.file);
+        const imageFiles = categoryImages
+          .filter((img): img is FileWithUrl => 'file' in img && !!img.file)
+          .map((img) => img.file);
+        if (imageFiles.length > 0) {
+          adPayload.images = imageFiles;
+        }
       }
 
       return adPayload;

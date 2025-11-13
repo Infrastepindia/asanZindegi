@@ -93,10 +93,10 @@ export class ProviderEditComponent implements OnInit {
 
   profileImageFile?: File;
   logoFile?: File;
-  regFiles: FileWithUrl[] = [];
-  licenseFiles: FileWithUrl[] = [];
-  portfolioFiles: FileWithUrl[] = [];
-  advertisementImageFiles: Record<number, FileWithUrl[]> = {};
+  regFiles: (FileWithUrl | { name: string; url: string })[] = [];
+  licenseFiles: (FileWithUrl | { name: string; url: string })[] = [];
+  portfolioFiles: (FileWithUrl | { name: string; url: string })[] = [];
+  advertisementImageFiles: Record<number, (FileWithUrl | { name: string; url: string })[]> = {};
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -350,7 +350,7 @@ export class ProviderEditComponent implements OnInit {
       name: file.name,
       url: URL.createObjectURL(file),
       file: file,
-    }));
+    })) as FileWithUrl[];
 
     if (kind === 'reg') this.regFiles = fileWithUrls;
     if (kind === 'lic') this.licenseFiles = fileWithUrls;
@@ -361,7 +361,7 @@ export class ProviderEditComponent implements OnInit {
     const files = Array.from((e.target as HTMLInputElement).files || []);
     if (files.length === 0) return;
 
-    const fileWithUrls = await Promise.all(
+    const fileWithUrls: FileWithUrl[] = await Promise.all(
       files.map(async (file) => ({
         name: file.name,
         url: await this.readAsDataURL(file),
@@ -373,7 +373,7 @@ export class ProviderEditComponent implements OnInit {
       this.advertisementImageFiles[catId] = [];
     }
     this.advertisementImageFiles[catId] = [
-      ...this.advertisementImageFiles[catId],
+      ...(this.advertisementImageFiles[catId] || []),
       ...fileWithUrls,
     ];
 
@@ -401,7 +401,7 @@ export class ProviderEditComponent implements OnInit {
     );
   }
 
-  getAdvertisementImages(catId: number): FileWithUrl[] {
+  getAdvertisementImages(catId: number) {
     return this.advertisementImageFiles[catId] || [];
   }
 
@@ -477,21 +477,22 @@ export class ProviderEditComponent implements OnInit {
       advertisements: advertisements.length > 0 ? advertisements : undefined,
     };
 
+    const regFilesArray = this.regFiles
+      .filter((f): f is FileWithUrl => 'file' in f && !!f.file)
+      .map((f) => f.file);
+    const licFilesArray = this.licenseFiles
+      .filter((f): f is FileWithUrl => 'file' in f && !!f.file)
+      .map((f) => f.file);
+    const portFilesArray = this.portfolioFiles
+      .filter((f): f is FileWithUrl => 'file' in f && !!f.file)
+      .map((f) => f.file);
+
     const files = {
       profileImage: this.profileImageFile,
       logo: this.logoFile,
-      registrationCertificates: this.regFiles
-        .filter((f) => f.file)
-        .map((f) => f.file)
-        .filter(Boolean),
-      licenses: this.licenseFiles
-        .filter((f) => f.file)
-        .map((f) => f.file)
-        .filter(Boolean),
-      portfolio: this.portfolioFiles
-        .filter((f) => f.file)
-        .map((f) => f.file)
-        .filter(Boolean),
+      registrationCertificates: regFilesArray.length > 0 ? regFilesArray : undefined,
+      licenses: licFilesArray.length > 0 ? licFilesArray : undefined,
+      portfolio: portFilesArray.length > 0 ? portFilesArray : undefined,
     };
 
     this.api.updateProviderDetails(payload, files).subscribe({

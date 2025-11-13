@@ -141,11 +141,7 @@
           <div class="form-row">
             <div class="form-field">
               <label>City *</label>
-              <app-osm-autocomplete
-                [(ngModel)]="address.city"
-                name="city"
-                [addressLine]="address.line1"
-              ></app-osm-autocomplete>
+              <az-osm-autocomplete [(ngModel)]="address.city" name="city"></az-osm-autocomplete>
             </div>
             <div class="form-field">
               <label>State/Province *</label>

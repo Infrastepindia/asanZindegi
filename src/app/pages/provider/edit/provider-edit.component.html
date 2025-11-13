@@ -22,6 +22,9 @@
                 *ngFor="let s of steps; let i = index"
                 class="wizard-step"
                 [class.active]="i + 1 <= step"
+                (click)="goTo(i + 1)"
+                role="button"
+                tabindex="0"
               >
                 <span class="idx">{{ i + 1 }}</span>
                 <span class="label">{{ s }}</span>

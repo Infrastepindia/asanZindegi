@@ -1,445 +1,518 @@
-<div class="provider-edit-container">
-  <div class="provider-edit-wrapper">
-    <h1 class="edit-title">Edit Provider Details</h1>
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h4 mb-3 heading-cta">
+              Edit <span class="text-gradient-1">Provider Details</span>
+            </h1>
 
-    <!-- Loading State -->
-    <div *ngIf="loading" class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading your provider details...</p>
-    </div>
-
-    <!-- Main Form -->
-    <div *ngIf="!loading" class="edit-form">
-      <!-- Step Navigation -->
-      <div class="steps-navigation">
-        <div class="steps-list">
-          <button
-            *ngFor="let s of steps; let i = index"
-            [class.active]="step === i + 1"
-            [class.completed]="step > i + 1"
-            (click)="goTo(i + 1)"
-            type="button"
-            class="step-button"
-          >
-            <span class="step-number">{{ i + 1 }}</span>
-            <span class="step-label">{{ s }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 1: Account Information -->
-      <div *ngIf="step === 1" class="step-content">
-        <h2>Account Information</h2>
-        <form class="form-group">
-          <div class="form-row">
-            <div class="form-field">
-              <label>First Name *</label>
-              <input
-                type="text"
-                [(ngModel)]="account.firstName"
-                name="firstName"
-                placeholder="Enter first name"
-                required
-              />
+            <!-- Loading State -->
+            <div *ngIf="loading" class="loading-spinner">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-2">Loading your provider details...</p>
             </div>
-            <div class="form-field">
-              <label>Last Name *</label>
-              <input
-                type="text"
-                [(ngModel)]="account.lastName"
-                name="lastName"
-                placeholder="Enter last name"
-                required
-              />
-            </div>
-          </div>
 
-          <div class="form-row">
-            <div class="form-field">
-              <label>Email *</label>
-              <input
-                type="email"
-                [(ngModel)]="account.email"
-                name="email"
-                placeholder="Enter email"
-                required
-              />
-            </div>
-            <div class="form-field">
-              <label>Phone *</label>
-              <input
-                type="tel"
-                [(ngModel)]="account.phone"
-                name="phone"
-                placeholder="Enter phone number"
-                required
-              />
-            </div>
-          </div>
+            <!-- Progress -->
+            <ul *ngIf="!loading" class="wizard-steps list-unstyled d-flex flex-wrap gap-2 mb-4">
+              <li
+                *ngFor="let s of steps; let i = index"
+                class="wizard-step"
+                [class.active]="i + 1 <= step"
+              >
+                <span class="idx">{{ i + 1 }}</span>
+                <span class="label">{{ s }}</span>
+              </li>
+            </ul>
 
-          <div class="form-row">
-            <div class="form-field">
-              <label>New Password (leave blank to keep current)</label>
-              <input
-                type="password"
-                [(ngModel)]="account.password"
-                name="password"
-                placeholder="Enter new password"
-              />
-            </div>
-            <div class="form-field">
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                [(ngModel)]="account.confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirm new password"
-              />
-            </div>
-          </div>
+            <!-- Step 1: Account Setup -->
+            <form *ngIf="step === 1 && !loading" (ngSubmit)="next()" class="wizard-form">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">First Name</label>
+                  <input
+                    class="form-control"
+                    [(ngModel)]="account.firstName"
+                    name="firstName"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Last Name</label>
+                  <input class="form-control" [(ngModel)]="account.lastName" name="lastName" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    [(ngModel)]="account.email"
+                    name="email"
+                    readonly
+                    required
+                  />
+                  <small class="text-muted">Email cannot be changed</small>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Phone</label>
+                  <input class="form-control" [(ngModel)]="account.phone" name="phone" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Profile Image (optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="form-control"
+                    (change)="onProfileImage($event)"
+                  />
+                </div>
+                <div class="col-md-6" *ngIf="account.profileImage">
+                  <label class="form-label">Preview</label>
+                  <img [src]="account.profileImage" alt="Profile" class="img-preview" />
+                </div>
+              </div>
+              <div class="d-flex justify-content-end gap-2 mt-3">
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+              </div>
+            </form>
 
-          <div class="form-field">
-            <label>Profile Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              (change)="onProfileImage($event)"
-              class="file-input"
-            />
-            <div *ngIf="account.profileImage" class="preview">
-              <img [src]="account.profileImage" alt="Profile preview" />
-            </div>
-          </div>
-        </form>
-      </div>
+            <!-- Step 2: Address Details -->
+            <form *ngIf="step === 2 && !loading" (ngSubmit)="next()" class="wizard-form">
+              <div class="mb-3">
+                <label class="form-label">Address Line 1</label>
+                <input class="form-control" [(ngModel)]="address.line1" name="line1" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Address Line 2</label>
+                <input class="form-control" [(ngModel)]="address.line2" name="line2" />
+              </div>
+              <div class="row g-3">
+                <div class="col-md-5">
+                  <label class="form-label">City</label>
+                  <az-osm-autocomplete
+                    [(ngModel)]="address.city"
+                    name="city"
+                    [placeholder]="'Enter location'"
+                  ></az-osm-autocomplete>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">State</label>
+                  <input class="form-control" [(ngModel)]="address.state" name="state" required />
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">PIN Code</label>
+                  <input class="form-control" [(ngModel)]="address.pin" name="pin" required />
+                </div>
+              </div>
+              <div class="d-flex justify-content-between gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+              </div>
+            </form>
 
-      <!-- Step 2: Address Details -->
-      <div *ngIf="step === 2" class="step-content">
-        <h2>Address Details</h2>
-        <form class="form-group">
-          <div class="form-field">
-            <label>Address Line 1 *</label>
-            <input
-              type="text"
-              [(ngModel)]="address.line1"
-              name="line1"
-              placeholder="Enter street address"
-              required
-            />
-          </div>
-
-          <div class="form-field">
-            <label>Address Line 2</label>
-            <input
-              type="text"
-              [(ngModel)]="address.line2"
-              name="line2"
-              placeholder="Enter apartment, suite, etc. (optional)"
-            />
-          </div>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label>City *</label>
-              <az-osm-autocomplete [(ngModel)]="address.city" name="city"></az-osm-autocomplete>
-            </div>
-            <div class="form-field">
-              <label>State/Province *</label>
-              <input
-                type="text"
-                [(ngModel)]="address.state"
-                name="state"
-                placeholder="Enter state"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-field">
-            <label>Pin Code *</label>
-            <input
-              type="text"
-              [(ngModel)]="address.pin"
-              name="pin"
-              placeholder="Enter pin code"
-              required
-            />
-          </div>
-        </form>
-      </div>
-
-      <!-- Step 3: Provider Profile -->
-      <div *ngIf="step === 3" class="step-content">
-        <h2>Provider Profile</h2>
-        <form class="form-group">
-          <div class="form-field">
-            <label>Provider/Business Name *</label>
-            <input
-              type="text"
-              [(ngModel)]="provider.name"
-              name="name"
-              placeholder="Enter provider or business name"
-              required
-            />
-          </div>
-
-          <div class="form-field">
-            <label>Profile Title (Tagline)</label>
-            <input
-              type="text"
-              [(ngModel)]="provider.title"
-              name="title"
-              placeholder="e.g., Premium Home Services"
-            />
-          </div>
-
-          <div class="form-field checkbox-field">
-            <label>
-              <input type="checkbox" [(ngModel)]="provider.isCompany" name="isCompany" />
-              This is a company account
-            </label>
-          </div>
-
-          <div class="form-field">
-            <label>Business Logo</label>
-            <input type="file" accept="image/*" (change)="onLogo($event)" class="file-input" />
-            <div *ngIf="provider.logo" class="preview">
-              <img [src]="provider.logo" alt="Logo preview" />
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Step 4: Categories -->
-      <div *ngIf="step === 4" class="step-content">
-        <h2>Select Categories</h2>
-        <div class="categories-list">
-          <div *ngFor="let superCat of superCategories" class="super-category">
-            <button
-              type="button"
-              (click)="
-                expandedSuperIds.has(superCat.id)
-                  ? expandedSuperIds.delete(superCat.id)
-                  : expandedSuperIds.add(superCat.id)
-              "
-              class="super-category-header"
-            >
-              <span class="expand-icon">
-                {{ expandedSuperIds.has(superCat.id) ? '▼' : '▶' }}
-              </span>
-              <span class="super-category-name">{{ superCat.title }}</span>
-            </button>
-
-            <div *ngIf="expandedSuperIds.has(superCat.id)" class="categories-grid">
-              <label *ngFor="let cat of superCat.categories" class="category-checkbox">
+            <!-- Step 3: Provider Profile -->
+            <form *ngIf="step === 3 && !loading" (ngSubmit)="next()" class="wizard-form">
+              <div class="mb-3">
+                <label class="form-label">Provider / Business Name</label>
                 <input
-                  type="checkbox"
-                  [checked]="isCategorySelected(cat.id)"
-                  (change)="toggleCategory({ id: cat.id, name: cat.name })"
+                  class="form-control"
+                  [(ngModel)]="provider.name"
+                  name="providerName"
+                  required
                 />
-                <span>{{ cat.name }}</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Profile Title (short tagline)</label>
+                <input class="form-control" [(ngModel)]="provider.title" name="title" />
+              </div>
+              <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                  <label class="form-label">Business Logo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="form-control"
+                    (change)="onLogo($event)"
+                  />
+                </div>
+                <div class="col-md-6" *ngIf="provider.logo">
+                  <label class="form-label">Preview</label>
+                  <img [src]="provider.logo" alt="Logo" class="img-preview" />
+                </div>
+              </div>
+              <div class="form-check mt-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isCompany"
+                  [(ngModel)]="provider.isCompany"
+                  name="isCompany"
+                />
+                <label class="form-check-label" for="isCompany">I am a company</label>
+              </div>
+              <div class="d-flex justify-content-between gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+              </div>
+            </form>
 
-      <!-- Step 5: Service Types -->
-      <div *ngIf="step === 5" class="step-content">
-        <h2>Service Types by Category</h2>
-        <div *ngIf="selection.categories.length === 0" class="no-categories-message">
-          <p>Please select at least one category first.</p>
-        </div>
+            <!-- Step 4: Categories -->
+            <form *ngIf="step === 4 && !loading" (ngSubmit)="next()" class="wizard-form">
+              <div class="row g-3">
+                <div class="col-md-6" *ngFor="let sc of superCategories">
+                  <div class="filter-card p-3 h-100">
+                    <button
+                      type="button"
+                      class="btn btn-sm w-100 d-flex align-items-center justify-content-between text-start mb-2"
+                      (click)="
+                        expandedSuperIds.has(sc.id)
+                          ? expandedSuperIds.delete(sc.id)
+                          : expandedSuperIds.add(sc.id)
+                      "
+                    >
+                      <span
+                        ><i
+                          class="bi me-2"
+                          [ngClass]="
+                            expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'
+                          "
+                        ></i
+                        >{{ sc.title }}</span
+                      >
+                      <span class="badge bg-light text-dark">{{ sc.categories.length || 0 }}</span>
+                    </button>
+                    <div class="sub-list ms-3" *ngIf="expandedSuperIds.has(sc.id)">
+                      <div class="form-check" *ngFor="let c of sc.categories">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          [id]="'pc-' + c.id"
+                          [checked]="isCategorySelected(c.id)"
+                          (change)="toggleCategory({ id: c.id, name: c.name })"
+                        />
+                        <label class="form-check-label" [for]="'pc-' + c.id">{{ c.name }}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+              </div>
+            </form>
 
-        <div *ngFor="let cat of selection.categories" class="service-category">
-          <h3>{{ cat.name }}</h3>
-          <div class="service-types-list">
-            <div *ngFor="let service of serviceTypesFor(cat.id)" class="service-tag">
-              <span>{{ service }}</span>
-              <button type="button" (click)="removeServiceType(cat.id, service)" class="remove-btn">
-                ✕
-              </button>
-            </div>
-          </div>
+            <!-- Step 5: Service Types & Advertisement Details -->
+            <form *ngIf="step === 5 && !loading" (ngSubmit)="next()" class="wizard-form">
+              <div *ngIf="!selection.categories.length" class="alert alert-warning">
+                Select at least one category first.
+              </div>
+              <div class="mb-4" *ngFor="let c of selection.categories">
+                <div class="filter-card p-4">
+                  <h5 class="mb-3">{{ c.name }}</h5>
 
-          <div class="service-input-group">
-            <input
-              type="text"
-              #serviceInput
-              placeholder="Add service type"
-              (keyup.enter)="addServiceType(cat.id, serviceInput)"
-              class="service-input"
-            />
-            <button type="button" (click)="addServiceType(cat.id, serviceInput)" class="add-btn">
-              Add Service Type
-            </button>
-          </div>
-        </div>
-      </div>
+                  <!-- Service Types -->
+                  <div class="mb-3">
+                    <label class="form-label">Service Types</label>
+                    <div class="chip-list d-flex flex-wrap gap-2 mb-2">
+                      <span
+                        class="badge pill-badge bg-light text-dark"
+                        *ngFor="let s of serviceTypesFor(c.id)"
+                      >
+                        {{ s }}
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-link p-0 ms-1"
+                          (click)="removeServiceType(c.id, s)"
+                        >
+                          <i class="bi bi-x"></i>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
 
-      <!-- Step 6: Documents -->
-      <div *ngIf="step === 6" class="step-content">
-        <h2>Upload Documents</h2>
+                  <!-- Advertisement Details -->
+                  <hr class="my-3" />
+                  <h6 class="mb-3">Advertisement Details</h6>
 
-        <div class="documents-section">
-          <h3>Registration Certificate</h3>
-          <input
-            type="file"
-            multiple
-            (change)="onFiles('reg', $event)"
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-            class="file-input"
-          />
-          <div *ngIf="regFiles.length > 0" class="files-list">
-            <div *ngFor="let f of regFiles" class="file-item">{{ f.name }}</div>
-          </div>
-        </div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Price Start From</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).priceStartForm"
+                        [name]="'priceStart-' + c.id"
+                        placeholder="e.g., 500"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Price Type</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).priceType"
+                        [name]="'priceType-' + c.id"
+                        placeholder="e.g., per hour, per visit, flat rate"
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Service Overview</label>
+                      <textarea
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).serviceOverview"
+                        [name]="'serviceOverview-' + c.id"
+                        rows="3"
+                        placeholder="Brief overview of your service"
+                      ></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Area Covered (in km)</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).areaCoveredPolygon"
+                        [name]="'areaCovered-' + c.id"
+                        placeholder="e.g., Downtown, Suburbs"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Video Link (optional)</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).videoLink"
+                        [name]="'videoLink-' + c.id"
+                        type="url"
+                        placeholder="e.g., https://youtube.com/..."
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Detailed Description</label>
+                      <textarea
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).detailDescription"
+                        [name]="'detailDescription-' + c.id"
+                        rows="3"
+                        placeholder="Detailed information about your service"
+                      ></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Availability Hours (optional)</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).availabilityHours"
+                        [name]="'availabilityHours-' + c.id"
+                        placeholder="e.g., Monday-Friday 9AM-6PM"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Advertisement Image (optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        class="form-control"
+                        (change)="onAdvertisementImage(c.id, $event)"
+                      />
+                    </div>
+                    <div class="col-md-6" *ngIf="getAdvertisement(c.id, c.name).advertisementImage">
+                      <label class="form-label">Image Preview</label>
+                      <img
+                        [src]="getAdvertisement(c.id, c.name).advertisementImage"
+                        alt="Advertisement"
+                        class="img-preview"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+              </div>
+            </form>
 
-        <div class="documents-section">
-          <h3>License/Permits</h3>
-          <input
-            type="file"
-            multiple
-            (change)="onFiles('lic', $event)"
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-            class="file-input"
-          />
-          <div *ngIf="licenseFiles.length > 0" class="files-list">
-            <div *ngFor="let f of licenseFiles" class="file-item">{{ f.name }}</div>
-          </div>
-        </div>
+            <!-- Step 6: Documents & Media -->
+            <form *ngIf="step === 6 && !loading" (ngSubmit)="next()" class="wizard-form">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Business Registration Certificate</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    multiple
+                    (change)="onFiles('reg', $event)"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">License / Permit (if applicable)</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    multiple
+                    (change)="onFiles('lic', $event)"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Portfolio Images</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/*"
+                    multiple
+                    (change)="onFiles('port', $event)"
+                  />
+                </div>
+              </div>
 
-        <div class="documents-section">
-          <h3>Portfolio/Work Samples</h3>
-          <input
-            type="file"
-            multiple
-            (change)="onFiles('port', $event)"
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-            class="file-input"
-          />
-          <div *ngIf="portfolioFiles.length > 0" class="files-list">
-            <div *ngFor="let f of portfolioFiles" class="file-item">{{ f.name }}</div>
-          </div>
-        </div>
+              <!-- Display uploaded files -->
+              <div class="mt-4" *ngIf="hasUploadedDocuments()">
+                <h6 class="mb-3">Uploaded Documents & Media</h6>
 
-        <h3 class="ads-header">Advertisement Images by Category</h3>
-        <div *ngFor="let cat of selection.categories" class="ad-images-section">
-          <h4>{{ cat.name }} Advertisement</h4>
-          <input
-            type="file"
-            accept="image/*"
-            (change)="onAdvertisementImage(cat.id, $event)"
-            class="file-input"
-          />
-          <div *ngIf="getAdvertisement(cat.id, cat.name).advertisementImage" class="preview">
-            <img [src]="getAdvertisement(cat.id, cat.name).advertisementImage" alt="Ad preview" />
-          </div>
-        </div>
-      </div>
+                <!-- Registration Certificates -->
+                <div *ngIf="regFiles.length > 0" class="mb-3">
+                  <label class="form-label">Registration Certificates</label>
+                  <div class="files-gallery d-flex flex-wrap gap-2">
+                    <a
+                      *ngFor="let f of regFiles"
+                      [href]="f.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="file-link"
+                    >
+                      <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
+                      <span class="file-name">{{ f.name | slice: 0 : 20 }}</span>
+                    </a>
+                  </div>
+                </div>
 
-      <!-- Step 7: Review & Submit -->
-      <div *ngIf="step === 7" class="step-content">
-        <h2>Review & Submit</h2>
+                <!-- Licenses -->
+                <div *ngIf="licenseFiles.length > 0" class="mb-3">
+                  <label class="form-label">Licenses / Permits</label>
+                  <div class="files-gallery d-flex flex-wrap gap-2">
+                    <a
+                      *ngFor="let f of licenseFiles"
+                      [href]="f.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="file-link"
+                    >
+                      <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
+                      <span class="file-name">{{ f.name | slice: 0 : 20 }}</span>
+                    </a>
+                  </div>
+                </div>
 
-        <div class="review-section">
-          <h3>Account Information</h3>
-          <div class="review-row">
-            <span class="label">Full Name:</span>
-            <span class="value">{{ fullName }}</span>
-          </div>
-          <div class="review-row">
-            <span class="label">Email:</span>
-            <span class="value">{{ account.email }}</span>
-          </div>
-          <div class="review-row">
-            <span class="label">Phone:</span>
-            <span class="value">{{ account.phone }}</span>
-          </div>
-        </div>
+                <!-- Portfolio Images -->
+                <div *ngIf="portfolioFiles.length > 0" class="mb-3">
+                  <label class="form-label">Portfolio Images</label>
+                  <div class="images-gallery d-flex flex-wrap gap-3">
+                    <div *ngFor="let f of portfolioFiles" class="portfolio-image-item">
+                      <a [href]="f.url" target="_blank" rel="noopener noreferrer">
+                        <img [src]="f.url" [alt]="f.name" class="portfolio-image" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
 
-        <div class="review-section">
-          <h3>Address</h3>
-          <div class="review-row">
-            <span class="label">Address:</span>
-            <span class="value">
-              {{ address.line1 }}
-              <span *ngIf="address.line2">, {{ address.line2 }}</span>
-              <br />
-              {{ address.city }}, {{ address.state }} {{ address.pin }}
-            </span>
-          </div>
-        </div>
+                <!-- Advertisement Images by Category -->
+                <div *ngFor="let cat of selection.categories" class="mb-3">
+                  <div *ngIf="getAdvertisementImages(cat.id).length > 0">
+                    <label class="form-label">{{ cat.name }} - Advertisement Images</label>
+                    <div class="images-gallery d-flex flex-wrap gap-3">
+                      <div
+                        *ngFor="let img of getAdvertisementImages(cat.id)"
+                        class="portfolio-image-item"
+                      >
+                        <a [href]="img.url" target="_blank" rel="noopener noreferrer">
+                          <img [src]="img.url" [alt]="img.name" class="portfolio-image" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-        <div class="review-section">
-          <h3>Provider Profile</h3>
-          <div class="review-row">
-            <span class="label">Provider Name:</span>
-            <span class="value">{{ provider.name }}</span>
-          </div>
-          <div class="review-row">
-            <span class="label">Type:</span>
-            <span class="value">{{ provider.isCompany ? 'Company' : 'Individual' }}</span>
-          </div>
-        </div>
+              <div class="d-flex justify-content-between gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
+                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+              </div>
+            </form>
 
-        <div class="review-section">
-          <h3>Categories & Services</h3>
-          <div *ngFor="let cat of selection.categories" class="review-row">
-            <span class="label">{{ cat.name }}:</span>
-            <span class="value">
-              {{ serviceTypesFor(cat.id).join(', ') || 'No specific services' }}
-            </span>
-          </div>
-        </div>
-
-        <div class="review-section">
-          <h3>Advertisements</h3>
-          <div *ngIf="selection.categories.length > 0">
-            <div *ngFor="let cat of selection.categories" class="review-advertisement">
-              <h4>{{ cat.name }}</h4>
-              <div *ngIf="getAdvertisement(cat.id, cat.name) as ad" class="ad-details">
-                <p><strong>Overview:</strong> {{ ad.serviceOverview }}</p>
-                <p><strong>Price:</strong> {{ ad.priceStartForm }} {{ ad.priceType }}</p>
-                <p><strong>Description:</strong> {{ ad.detailDescription }}</p>
+            <!-- Step 7: Review & Submit -->
+            <div *ngIf="step === 7 && !loading">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="filter-card p-3">
+                    <h6 class="mb-2">Account Info</h6>
+                    <div class="small text-secondary">{{ fullName }}</div>
+                    <div class="small text-secondary">
+                      {{ account.email }} • {{ account.phone }}
+                    </div>
+                    <img
+                      *ngIf="account.profileImage"
+                      [src]="account.profileImage"
+                      class="img-preview mt-2"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="filter-card p-3">
+                    <h6 class="mb-2">Address</h6>
+                    <div class="small text-secondary">{{ address.line1 }}</div>
+                    <div class="small text-secondary" *ngIf="address.line2">
+                      {{ address.line2 }}
+                    </div>
+                    <div class="small text-secondary">
+                      {{ address.city }}, {{ address.state }} – {{ address.pin }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="filter-card p-3">
+                    <h6 class="mb-2">Provider Profile</h6>
+                    <div class="small text-secondary">{{ provider.name }}</div>
+                    <div class="small text-secondary">{{ provider.title }}</div>
+                    <div class="small text-secondary">
+                      {{ provider.isCompany ? 'Company' : 'Individual' }}
+                    </div>
+                    <img *ngIf="provider.logo" [src]="provider.logo" class="img-preview mt-2" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="filter-card p-3">
+                    <h6 class="mb-2">Services</h6>
+                    <div *ngFor="let c of selection.categories" class="mb-2">
+                      <div class="fw-semibold">{{ c.name }}</div>
+                      <div class="small text-secondary">
+                        {{ serviceTypesFor(c.id).join(', ') || '—' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary" (click)="back()">
+                  Back
+                </button>
+                <button type="button" class="btn btn-join btn-lg" (click)="submit()">
+                  Update Provider Details
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Navigation Buttons -->
-      <div class="form-actions">
-        <button
-          *ngIf="step > 1"
-          type="button"
-          (click)="back()"
-          class="btn btn-secondary"
-          [disabled]="submitting"
-        >
-          Back
-        </button>
-
-        <button
-          *ngIf="step < steps.length"
-          type="button"
-          (click)="next()"
-          class="btn btn-primary"
-          [disabled]="submitting"
-        >
-          Next
-        </button>
-
-        <button
-          *ngIf="step === steps.length"
-          type="button"
-          (click)="submit()"
-          class="btn btn-success"
-          [disabled]="submitting"
-        >
-          {{ submitting ? 'Updating...' : 'Update Provider Details' }}
-        </button>
-      </div>
     </div>
   </div>
-</div>
+</section>

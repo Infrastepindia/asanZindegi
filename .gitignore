@@ -46,3 +46,4 @@ Thumbs.db
 *.md
 /.vs
 /.vscode
+/src/app/environments/environment.ts

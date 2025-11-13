@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -74,7 +74,7 @@ export class ProviderEditComponent implements OnInit {
   ];
   step = 1;
 
-  providerId: number | null = null;
+  providerId: any = null;
 
   account: AccountForm = {
     firstName: '',
@@ -98,13 +98,16 @@ export class ProviderEditComponent implements OnInit {
   licenseFiles: File[] = [];
   portfolioFiles: File[] = [];
   advertisementImageFiles: Record<number, File> = {};
-
+  constructor(private cd: ChangeDetectorRef) {}
   ngOnInit() {
+    debugger
     const user = this.authService.getUser();
-    this.providerId = user?.userData?.providerId || user?.userData?.udId || null;
-
+    //this.providerId = user?.userData?.providerId || user?.userData?.udId ||  user?.id || null;
+    this.providerId = this.authService.getUserId();
+    
     if (!this.providerId) {
       this.notification.error('Provider ID not found. Please login again.');
+      this.authService.logout();
       this.router.navigate(['/login']);
       return;
     }
@@ -124,11 +127,14 @@ export class ProviderEditComponent implements OnInit {
         if (response && response.data) {
           this.populateFormWithData(response.data);
         }
+        
         this.loading = false;
+        this.cd.detectChanges();
       },
       error: (err) => {
         const errorInfo = this.api.extractError(err);
         this.notification.error(`Failed to load provider details: ${errorInfo.message}`);
+        this.cd.detectChanges();
         this.loading = false;
       },
     });
@@ -160,8 +166,9 @@ export class ProviderEditComponent implements OnInit {
       logo: data.logoUrl || '',
     };
 
-    if (data.categoryIds && Array.isArray(data.categoryIds)) {
-      this.selection.categories = this.buildCategoriesFromIds(data.categoryIds);
+    if (data.categories && Array.isArray(data.categories)) {
+      const scIds = data.categories.map((x: any) => x.scId);
+      this.selection.categories = this.buildCategoriesFromIds(scIds);
     }
 
     if (data.serviceTypes && typeof data.serviceTypes === 'object') {

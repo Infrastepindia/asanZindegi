@@ -8,6 +8,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
+import { environment } from '../../../../environments/environment';
 
 interface AddressForm {
   line1: string;
@@ -98,7 +99,7 @@ export class ProviderEditComponent implements OnInit {
   portfolioFiles: (FileWithUrl | { name: string; url: string })[] = [];
   advertisementImageFiles: Record<number, (FileWithUrl | { name: string; url: string })[]> = {};
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     const user = this.authService.getUser();
@@ -143,26 +144,26 @@ export class ProviderEditComponent implements OnInit {
     this.account = {
       firstName: data.firstName || '',
       lastName: data.lastName || '',
-      email: data.email || '',
-      phone: data.phone || '',
+      email: data.contactInfo.emailId || '',
+      phone: data.contactInfo.phone || '',
       password: '',
       confirmPassword: '',
-      profileImage: data.profileImageUrl || '',
+      profileImage: environment.base_path + "/" + data.profileImageUrl || '',
     };
 
     this.address = {
-      line1: data.addressLine1 || '',
-      line2: data.addressLine2 || '',
-      city: data.city || '',
-      state: data.state || '',
-      pin: data.pinCode || '',
+      line1: data.addressInfo.addressLine1 || '',
+      line2: data.addressInfo.addressLine2 || '',
+      city: data.addressInfo.city || '',
+      state: data.addressInfo.state || '',
+      pin: data.addressInfo.pin || '',
     };
 
     this.provider = {
       name: data.providerName || '',
       title: data.profileTitle || '',
       isCompany: data.isCompany || false,
-      logo: data.logoUrl || '',
+      logo: environment.base_path + "/" + data.logo.url || '',
     };
 
     if (data.categories && Array.isArray(data.categories)) {
@@ -184,26 +185,26 @@ export class ProviderEditComponent implements OnInit {
 
   private loadDocumentFiles(data: any) {
     // Load registration certificates
-    if (data.registrationCertificates && Array.isArray(data.registrationCertificates)) {
-      this.regFiles = data.registrationCertificates.map((url: string) => ({
-        name: this.extractFilenameFromUrl(url),
-        url: url,
+    if (data.providerFilesByFolder.RegistrationCertificates && Array.isArray(data.providerFilesByFolder.RegistrationCertificates)) {
+      this.regFiles = data.providerFilesByFolder.RegistrationCertificates.map((data: any) => ({
+        name: data.filename,
+        url: environment.base_path+"/"+data.url,
       }));
     }
 
     // Load licenses
-    if (data.licenses && Array.isArray(data.licenses)) {
-      this.licenseFiles = data.licenses.map((url: string) => ({
-        name: this.extractFilenameFromUrl(url),
-        url: url,
+    if (data.providerFilesByFolder.Licenses && Array.isArray(data.providerFilesByFolder.Licenses)) {
+      this.licenseFiles = data.providerFilesByFolder.Licenses.map((data: any) => ({
+        name: data.fileName,
+        url: environment.base_path+"/"+data.url,
       }));
     }
 
     // Load portfolio images
-    if (data.portfolio && Array.isArray(data.portfolio)) {
-      this.portfolioFiles = data.portfolio.map((url: string) => ({
-        name: this.extractFilenameFromUrl(url),
-        url: url,
+    if (data.providerFilesByFolder.Portfolio && Array.isArray(data.providerFilesByFolder.Portfolio)) {
+      this.portfolioFiles = data.providerFilesByFolder.Portfolio.map((data: any) => ({
+        name: data.fileName,
+        url: environment.base_path+"/"+ data.url,
       }));
     }
 
@@ -214,7 +215,7 @@ export class ProviderEditComponent implements OnInit {
           this.advertisementImageFiles[ad.categoryId] = ad.advertisementImages.map(
             (url: string) => ({
               name: this.extractFilenameFromUrl(url),
-              url: url,
+              url: environment.base_path+"/"+url,
             }),
           );
         }
@@ -254,7 +255,7 @@ export class ProviderEditComponent implements OnInit {
         videoLink: ad.videoLink || '',
         detailDescription: ad.detailDescription || '',
         availabilityHours: ad.availabilityHours || '',
-        advertisementImage: ad.advertisementImageUrl || '',
+        advertisementImage:environment.base_path + "/" + ad.mainImage.url || '',
       };
     });
   }

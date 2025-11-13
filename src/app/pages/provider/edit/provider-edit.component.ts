@@ -40,11 +40,10 @@ interface ServiceSelection {
   advertisements: Record<number, Advertisement>;
 }
 
-interface DocumentsForm {
-  registrationCert?: string[];
-  licenses?: string[];
-  portfolio?: string[];
-  advertisementImages?: Record<number, string>;
+interface FileWithUrl {
+  name: string;
+  url: string;
+  file?: File;
 }
 
 @Component({
@@ -64,7 +63,7 @@ export class ProviderEditComponent implements OnInit {
   submitting = false;
 
   steps = [
-    'Account Information',
+    'Account Setup',
     'Address Details',
     'Provider Profile',
     'Categories',
@@ -94,17 +93,17 @@ export class ProviderEditComponent implements OnInit {
 
   profileImageFile?: File;
   logoFile?: File;
-  regFiles: File[] = [];
-  licenseFiles: File[] = [];
-  portfolioFiles: File[] = [];
-  advertisementImageFiles: Record<number, File> = {};
+  regFiles: FileWithUrl[] = [];
+  licenseFiles: FileWithUrl[] = [];
+  portfolioFiles: FileWithUrl[] = [];
+  advertisementImageFiles: Record<number, FileWithUrl[]> = {};
+
   constructor(private cd: ChangeDetectorRef) {}
+
   ngOnInit() {
-    debugger
     const user = this.authService.getUser();
-    //this.providerId = user?.userData?.providerId || user?.userData?.udId ||  user?.id || null;
     this.providerId = this.authService.getUserId();
-    
+
     if (!this.providerId) {
       this.notification.error('Provider ID not found. Please login again.');
       this.authService.logout();
@@ -127,7 +126,7 @@ export class ProviderEditComponent implements OnInit {
         if (response && response.data) {
           this.populateFormWithData(response.data);
         }
-        
+
         this.loading = false;
         this.cd.detectChanges();
       },
@@ -178,6 +177,54 @@ export class ProviderEditComponent implements OnInit {
     if (data.advertisements && Array.isArray(data.advertisements)) {
       this.buildAdvertisementsFromData(data.advertisements);
     }
+
+    // Load document files from API
+    this.loadDocumentFiles(data);
+  }
+
+  private loadDocumentFiles(data: any) {
+    // Load registration certificates
+    if (data.registrationCertificates && Array.isArray(data.registrationCertificates)) {
+      this.regFiles = data.registrationCertificates.map((url: string) => ({
+        name: this.extractFilenameFromUrl(url),
+        url: url,
+      }));
+    }
+
+    // Load licenses
+    if (data.licenses && Array.isArray(data.licenses)) {
+      this.licenseFiles = data.licenses.map((url: string) => ({
+        name: this.extractFilenameFromUrl(url),
+        url: url,
+      }));
+    }
+
+    // Load portfolio images
+    if (data.portfolio && Array.isArray(data.portfolio)) {
+      this.portfolioFiles = data.portfolio.map((url: string) => ({
+        name: this.extractFilenameFromUrl(url),
+        url: url,
+      }));
+    }
+
+    // Load advertisement images
+    if (data.advertisements && Array.isArray(data.advertisements)) {
+      data.advertisements.forEach((ad: any) => {
+        if (ad.advertisementImages && Array.isArray(ad.advertisementImages)) {
+          this.advertisementImageFiles[ad.categoryId] = ad.advertisementImages.map((url: string) => ({
+            name: this.extractFilenameFromUrl(url),
+            url: url,
+          }));
+        }
+      });
+    }
+  }
+
+  private extractFilenameFromUrl(url: string): string {
+    if (!url) return 'unknown';
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+    return filename || 'unknown';
   }
 
   private buildCategoriesFromIds(ids: number[]): Array<{ id: number; name: string }> {
@@ -299,18 +346,40 @@ export class ProviderEditComponent implements OnInit {
 
   onFiles(kind: 'reg' | 'lic' | 'port', e: Event) {
     const files = Array.from((e.target as HTMLInputElement).files || []);
-    if (kind === 'reg') this.regFiles = files;
-    if (kind === 'lic') this.licenseFiles = files;
-    if (kind === 'port') this.portfolioFiles = files;
+    const fileWithUrls = files.map((file) => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      file: file,
+    }));
+
+    if (kind === 'reg') this.regFiles = fileWithUrls;
+    if (kind === 'lic') this.licenseFiles = fileWithUrls;
+    if (kind === 'port') this.portfolioFiles = fileWithUrls;
   }
 
   async onAdvertisementImage(catId: number, e: Event) {
-    const f = (e.target as HTMLInputElement).files?.[0];
-    if (!f) return;
-    this.advertisementImageFiles[catId] = f;
+    const files = Array.from((e.target as HTMLInputElement).files || []);
+    if (files.length === 0) return;
+
+    const fileWithUrls = await Promise.all(
+      files.map(async (file) => ({
+        name: file.name,
+        url: await this.readAsDataURL(file),
+        file: file,
+      }))
+    );
+
+    if (!this.advertisementImageFiles[catId]) {
+      this.advertisementImageFiles[catId] = [];
+    }
+    this.advertisementImageFiles[catId] = [
+      ...this.advertisementImageFiles[catId],
+      ...fileWithUrls,
+    ];
+
     const ad = this.selection.advertisements[catId];
-    if (ad) {
-      ad.advertisementImage = await this.readAsDataURL(f);
+    if (ad && fileWithUrls.length > 0) {
+      ad.advertisementImage = fileWithUrls[0].url;
     }
   }
 
@@ -321,6 +390,40 @@ export class ProviderEditComponent implements OnInit {
       reader.onerror = rej;
       reader.readAsDataURL(f);
     });
+  }
+
+  hasUploadedDocuments(): boolean {
+    return (
+      this.regFiles.length > 0 ||
+      this.licenseFiles.length > 0 ||
+      this.portfolioFiles.length > 0 ||
+      Object.values(this.advertisementImageFiles).some((imgs) => imgs.length > 0)
+    );
+  }
+
+  getAdvertisementImages(catId: number): FileWithUrl[] {
+    return this.advertisementImageFiles[catId] || [];
+  }
+
+  getFileIcon(filename: string): string {
+    const ext = filename.split('.').pop()?.toLowerCase() || '';
+    switch (ext) {
+      case 'pdf':
+        return 'bi-file-pdf';
+      case 'doc':
+      case 'docx':
+        return 'bi-file-word';
+      case 'xls':
+      case 'xlsx':
+        return 'bi-file-spreadsheet';
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+        return 'bi-file-image';
+      default:
+        return 'bi-file';
+    }
   }
 
   submit() {
@@ -345,8 +448,8 @@ export class ProviderEditComponent implements OnInit {
       };
 
       const categoryImages = this.advertisementImageFiles[ad.categoryId];
-      if (categoryImages) {
-        adPayload.images = [categoryImages];
+      if (categoryImages && categoryImages.length > 0) {
+        adPayload.images = categoryImages.filter((img) => img.file).map((img) => img.file);
       }
 
       return adPayload;
@@ -377,9 +480,18 @@ export class ProviderEditComponent implements OnInit {
     const files = {
       profileImage: this.profileImageFile,
       logo: this.logoFile,
-      registrationCertificates: this.regFiles.length > 0 ? this.regFiles : undefined,
-      licenses: this.licenseFiles.length > 0 ? this.licenseFiles : undefined,
-      portfolio: this.portfolioFiles.length > 0 ? this.portfolioFiles : undefined,
+      registrationCertificates: this.regFiles
+        .filter((f) => f.file)
+        .map((f) => f.file)
+        .filter(Boolean),
+      licenses: this.licenseFiles
+        .filter((f) => f.file)
+        .map((f) => f.file)
+        .filter(Boolean),
+      portfolio: this.portfolioFiles
+        .filter((f) => f.file)
+        .map((f) => f.file)
+        .filter(Boolean),
     };
 
     this.api.updateProviderDetails(payload, files).subscribe({

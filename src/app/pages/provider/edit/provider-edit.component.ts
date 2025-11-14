@@ -9,6 +9,7 @@ import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.compo
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
 import { environment } from '../../../../environments/environment';
+import { connect } from 'node:http2';
 
 interface AddressForm {
   line1: string;
@@ -112,9 +113,16 @@ export class ProviderEditComponent implements OnInit {
       return;
     }
 
-    this.loadProviderData();
+    
     this.api.getCategories().subscribe({
-      next: (res) => (this.superCategories = res?.data || []),
+      next: (res) =>
+        {
+          (this.superCategories = res?.data || [])
+          if(this.superCategories.length > 0)
+          {
+             this.loadProviderData();
+          }
+        },
       error: () => (this.superCategories = []),
     });
   }
@@ -145,7 +153,7 @@ export class ProviderEditComponent implements OnInit {
       firstName: data.firstName || '',
       lastName: data.lastName || '',
       email: data.contactInfo.emailId || '',
-      phone: data.contactInfo.phone || '',
+      phone: data.contactInfo.phoneNumber || '',
       password: '',
       confirmPassword: '',
       profileImage: environment.base_path + "/" + data.profileImageUrl || '',
@@ -186,25 +194,25 @@ export class ProviderEditComponent implements OnInit {
   private loadDocumentFiles(data: any) {
     // Load registration certificates
     if (data.providerFilesByFolder.RegistrationCertificates && Array.isArray(data.providerFilesByFolder.RegistrationCertificates)) {
-      this.regFiles = data.providerFilesByFolder.RegistrationCertificates.map((data: any) => ({
-        name: data.filename,
-        url: environment.base_path+"/"+data.url,
+      this.regFiles = data.providerFilesByFolder.RegistrationCertificates.map((f: any) => ({
+        name: f.filename,
+        url: environment.base_path+"/"+f.url,
       }));
     }
 
     // Load licenses
     if (data.providerFilesByFolder.Licenses && Array.isArray(data.providerFilesByFolder.Licenses)) {
-      this.licenseFiles = data.providerFilesByFolder.Licenses.map((data: any) => ({
-        name: data.fileName,
-        url: environment.base_path+"/"+data.url,
+      this.licenseFiles = data.providerFilesByFolder.Licenses.map((l: any) => ({
+        name: l.fileName,
+        url: environment.base_path+"/"+l.url,
       }));
     }
 
     // Load portfolio images
     if (data.providerFilesByFolder.Portfolio && Array.isArray(data.providerFilesByFolder.Portfolio)) {
-      this.portfolioFiles = data.providerFilesByFolder.Portfolio.map((data: any) => ({
-        name: data.fileName,
-        url: environment.base_path+"/"+ data.url,
+      this.portfolioFiles = data.providerFilesByFolder.Portfolio.map((p: any) => ({
+        name: p.fileName,
+        url: environment.base_path+"/"+ p.url,
       }));
     }
 
@@ -225,7 +233,7 @@ export class ProviderEditComponent implements OnInit {
 
   private extractFilenameFromUrl(url: string): string {
     if (!url) return 'unknown';
-    const parts = url.split('/');
+    const parts = url?.split('/');
     const filename = parts[parts.length - 1];
     return filename || 'unknown';
   }
@@ -255,7 +263,7 @@ export class ProviderEditComponent implements OnInit {
         videoLink: ad.videoLink || '',
         detailDescription: ad.detailDescription || '',
         availabilityHours: ad.availabilityHours || '',
-        advertisementImage:environment.base_path + "/" + ad.mainImage.url || '',
+        advertisementImage:environment.base_path + "/" + ad.mainImage?.url || '',
       };
     });
   }
@@ -409,7 +417,7 @@ export class ProviderEditComponent implements OnInit {
   }
 
   getFileIcon(filename: string): string {
-    const ext = filename.split('.').pop()?.toLowerCase() || '';
+    const ext = filename?.split('.').pop()?.toLowerCase() || '';
     switch (ext) {
       case 'pdf':
         return 'bi-file-pdf';
@@ -533,8 +541,11 @@ export class ProviderEditComponent implements OnInit {
 
     this.api.updateProviderDetails(payload, files).subscribe({
       next: (response) => {
+        console.log(response)
         this.submitting = false;
-        this.notification.success('Provider details updated successfully!');
+        window.alert(response.message)
+        //response.status_code == 200? this.notification.success(response.message) :this.notification.error(`Update failed: ${response.message}`); ;
+        //this.notification.success('Provider details updated successfully!');
         this.router.navigate(['/provider/dashboard']);
       },
       error: (err) => {

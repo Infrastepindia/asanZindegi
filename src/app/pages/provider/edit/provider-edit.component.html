@@ -392,7 +392,8 @@
                       class="file-link"
                     >
                       <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
-                      <span class="file-name">{{ f.name | slice: 0 : 20 }}</span>
+                      <!-- <span class="file-name">{{ f.name | slice: 0 : 20 }}</span> -->
+                    <span class="file-name">View</span>
                     </a>
                   </div>
                 </div>
@@ -409,7 +410,8 @@
                       class="file-link"
                     >
                       <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
-                      <span class="file-name">{{ f.name | slice: 0 : 20 }}</span>
+                      <!-- <span class="file-name">{{ f.name | slice: 0 : 20 }}</span> -->
+                       <span class="file-name">View</span>
                     </a>
                   </div>
                 </div>
@@ -419,8 +421,9 @@
                   <label class="form-label">Portfolio Images</label>
                   <div class="images-gallery d-flex flex-wrap gap-3">
                     <div *ngFor="let f of portfolioFiles" class="portfolio-image-item">
-                      <a [href]="f.url" target="_blank" rel="noopener noreferrer">
-                        <img [src]="f.url" [alt]="f.name" class="portfolio-image" />
+                      <a [href]="f.url" target="_blank" rel="noopener noreferrer" class="file-link">
+                        <!-- <img [src]="f.url" [alt]="f.name" class="portfolio-image" /> -->
+                         <span class="file-name">View</span>
                       </a>
                     </div>
                   </div>

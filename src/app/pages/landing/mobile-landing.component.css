@@ -140,78 +140,71 @@
   align-items: center;
   text-decoration: none;
   color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .mobile-category-icon {
   width: 56px;
   height: 56px;
-  border-radius: 12px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   margin-bottom: 8px;
   color: #fff;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-household {
-  background: #fff8ec;
-  color: #d97706;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-office {
-  background: #eef6ff;
-  color: #0d6efd;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-transport {
-  background: #f0fff4;
-  color: #059669;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-csr {
-  background: #fff0f6;
-  color: #ec4899;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-financial {
-  background: #f7f7ff;
-  color: #6366f1;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-it {
-  background: #f3f7ff;
-  color: #0d6efd;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-personal {
-  background: #fff7f0;
-  color: #f97316;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-education {
-  background: #f3fff6;
-  color: #10b981;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-food {
-  background: #fff4e6;
-  color: #d97706;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-events {
-  background: #f5f0ff;
-  color: #8b5cf6;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-tech {
-  background: #eef4ff;
-  color: #0d6efd;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-icon.supercat-healthcare {
-  background: #eefdfc;
-  color: #14b8a6;
+  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
 }
 
 .mobile-category-name {

@@ -75,7 +75,7 @@
 .search-field .form-select {
   padding-left: 40px;
   border-radius: 12px;
-  border: 1px solid #e7e9f3;
+  border: none;
 }
 .search-field .form-control:focus,
 .search-field .form-select:focus {

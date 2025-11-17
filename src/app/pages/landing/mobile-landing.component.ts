@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { CategorySelectionModalComponent } from '../../shared/category-selection-modal/category-selection-modal.component';
 
 interface CategoryItem {
   name: string;
@@ -43,7 +44,7 @@ interface BlogItem {
 @Component({
   selector: 'app-mobile-landing',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, CategorySelectionModalComponent],
   templateUrl: './mobile-landing.component.html',
   styleUrl: './mobile-landing.component.css',
 })
@@ -105,6 +106,10 @@ export class MobileLandingComponent implements OnInit {
     icon: string;
     items: CategoryItem[];
   }> = [];
+
+  // Modal state
+  showCategoryModal = false;
+  selectedSupercategoryForModal: ApiSuperCategory | null = null;
 
   featuredAds: FeaturedAd[] = [
     {
@@ -319,5 +324,35 @@ export class MobileLandingComponent implements OnInit {
     if (icon.startsWith('fa-')) return ['fa-solid', icon];
     if (icon.startsWith('bi-')) return ['bi', icon];
     return [icon];
+  }
+
+  apiSuperCategoryFromVisibleData(key: string | number): ApiSuperCategory | null {
+    return this.apiSuperCategories.find((s) => String(s.id) === String(key)) || null;
+  }
+
+  openCategoryModal(supercategory: ApiSuperCategory | null): void {
+    if (!supercategory) return;
+    this.selectedSupercategoryForModal = supercategory;
+    this.showCategoryModal = true;
+  }
+
+  closeCategoryModal(): void {
+    this.showCategoryModal = false;
+    this.selectedSupercategoryForModal = null;
+  }
+
+  onCategoryModalSubmit(result: any): void {
+    const queryParams: any = {
+      supercategory: result.supercategoryId,
+      category: result.categoryName,
+      location: result.location,
+      lat: result.lat,
+      lon: result.lon,
+    };
+
+    this.showCategoryModal = false;
+    this.selectedSupercategoryForModal = null;
+
+    this.router.navigate(['/listings'], { queryParams });
   }
 }

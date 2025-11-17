@@ -37,16 +37,17 @@
     <h2 class="mobile-section-title">Categories</h2>
     <div class="mobile-categories-grid">
       <div class="mobile-category-item" *ngFor="let sc of visibleSuperCategories">
-        <a
-          [routerLink]="'/listings'"
-          [queryParams]="{ super: sc.key }"
+        <button
+          type="button"
           class="mobile-category-link"
+          (click)="openCategoryModal(apiSuperCategoryFromVisibleData(sc.key))"
+          aria-label="Select {{ sc.title }} category"
         >
           <div class="mobile-category-icon" [ngClass]="sc.colorClass">
             <i [ngClass]="iconClass(sc.icon)"></i>
           </div>
           <div class="mobile-category-name">{{ sc.title }}</div>
-        </a>
+        </button>
       </div>
     </div>
   </section>
@@ -85,3 +86,11 @@
     <span>Provider</span>
   </a>
 </div>
+
+<!-- Category Selection Modal -->
+<app-category-selection-modal
+  *ngIf="showCategoryModal && selectedSupercategoryForModal"
+  [supercategory]="selectedSupercategoryForModal"
+  (closed)="closeCategoryModal()"
+  (submitted)="onCategoryModalSubmit($event)"
+></app-category-selection-modal>

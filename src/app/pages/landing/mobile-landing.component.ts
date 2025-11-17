@@ -44,7 +44,7 @@ interface BlogItem {
 @Component({
   selector: 'app-mobile-landing',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, CategorySelectionModalComponent],
   templateUrl: './mobile-landing.component.html',
   styleUrl: './mobile-landing.component.css',
 })

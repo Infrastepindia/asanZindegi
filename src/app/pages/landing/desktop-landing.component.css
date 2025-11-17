@@ -179,23 +179,23 @@
 
 .popular-tags {
   color: #d1d5db;
-  margin-top: 12px;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 11px;
 }
 
 .tag-badge {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   background: transparent;
   color: #e5e7eb;
   border: none;
   border-radius: 6px;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 11px;
   transition: all 0.2s ease;
 }
 

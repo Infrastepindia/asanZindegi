@@ -9,38 +9,37 @@
           <div class="search-panel">
             <form class="search-form" (submit)="onSearch($event)">
               <div class="search-row">
-                <div class="search-field">
-                  <i class="bi bi-collection input-icon" aria-hidden="true"></i>
-                  <select
-                    class="form-select form-select-lg"
-                    [(ngModel)]="search.superCategory"
-                    (ngModelChange)="onSuperChange($event)"
-                    name="superCategory"
-                    aria-label="Select super category"
-                  >
-                    <option value="">Category</option>
-                    <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
-                      {{ sc.title }}
-                    </option>
-                  </select>
+                <div class="search-fields-group">
+                  <div class="search-field">
+                    <select
+                      class="form-select"
+                      [(ngModel)]="search.superCategory"
+                      (ngModelChange)="onSuperChange($event)"
+                      name="superCategory"
+                      aria-label="Select category"
+                    >
+                      <option value="">All categories</option>
+                      <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
+                        {{ sc.title }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="search-field" *ngIf="search.superCategory">
+                    <select
+                      class="form-select"
+                      [(ngModel)]="search.category"
+                      name="category"
+                      aria-label="Select subcategory"
+                      [disabled]="!categoryOptions.length"
+                    >
+                      <option value="">Select service</option>
+                      <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="search-field">
-                  <i class="bi bi-grid input-icon" aria-hidden="true"></i>
-                  <select
-                    class="form-select form-select-lg"
-                    [(ngModel)]="search.category"
-                    name="category"
-                    aria-label="Select subcategory"
-                    [disabled]="search.superCategory && !categoryOptions.length"
-                  >
-                    <option value="">Subcategory</option>
-                    <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
-                  </select>
-                </div>
-                <div class="search-field search-location">
-                  <i class="bi bi-geo-alt input-icon" aria-hidden="true"></i>
+                <div class="search-field search-location flex-grow-1">
                   <input
-                    class="form-control form-control-lg"
+                    class="form-control"
                     placeholder="Enter Location"
                     [(ngModel)]="search.location"
                     (keyup)="onLocationChange($event)"
@@ -59,13 +58,11 @@
                     </button>
                   </div>
                 </div>
-                <div class="search-btn-wrapper">
-                  <button class="btn btn-search btn-lg" type="submit" aria-label="Search">
-                    <i class="bi bi-arrow-right"></i>
-                  </button>
-                </div>
+                <button class="btn btn-search" type="submit" aria-label="Search">
+                  Search
+                </button>
               </div>
-              <div class="mt-3 small popular-tags">
+              <div class="mt-2 small popular-tags">
                 Popular Searches:
                 <a
                   href="#"

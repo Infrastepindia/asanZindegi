@@ -208,10 +208,10 @@
   left: 0;
   right: 0;
   top: calc(100% + 6px);
-  background: #2a2a2a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #ffffff;
+  border: 1px solid #e7e9f3;
   border-radius: 10px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
   max-height: 260px;
   overflow: auto;
 }
@@ -224,13 +224,13 @@
   border: 0;
   padding: 10px 12px;
   font-size: 14px;
-  color: #e5e7eb;
+  color: #0b1220;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .suggest-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #f6f8fc;
 }
 
 /* Category grid */

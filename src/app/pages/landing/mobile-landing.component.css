@@ -140,6 +140,10 @@
   align-items: center;
   text-decoration: none;
   color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .mobile-category-icon {

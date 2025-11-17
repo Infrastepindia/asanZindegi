@@ -1,7 +1,7 @@
 <!-- Global Toast Container -->
 <app-toast-container></app-toast-container>
 
-<!-- Global Header -->
+<!-- Global Header - Hidden on Mobile -->
 <div class="top-strip py-1 small bg-light border-bottom d-none d-md-block">
   <div class="container d-flex justify-content-between">
     <div class="text-secondary">Connect with nearby top-rated professionals</div>
@@ -29,7 +29,8 @@
   </div>
 </div>
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+<!-- Global Navbar - Hidden on Mobile -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top d-none d-md-flex">
   <div class="container">
     <a class="navbar-brand topbar-brand heading-cta" [routerLink]="'/'">
       <img

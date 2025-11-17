@@ -414,18 +414,19 @@
     gap: 10px;
   }
 
+  .search-location {
+    grid-column: auto;
+  }
+
+  .btn-search {
+    grid-column: auto;
+    width: 100%;
+  }
+
   .search-field .form-control,
   .search-field .form-select {
     height: 44px;
     font-size: 14px;
-  }
-
-  .search-btn-wrapper {
-    height: 44px;
-  }
-
-  .btn-search {
-    padding: 0 16px;
   }
 
   .popular-tags {

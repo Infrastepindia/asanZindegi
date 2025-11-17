@@ -128,9 +128,9 @@
 .search-field .form-control,
 .search-field .form-select {
   border-radius: 8px;
-  border: 1px solid #e7e9f3;
-  background: #ffffff;
-  color: #0b1220;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
   font-size: 12px;
   height: 40px;
   padding: 6px 10px;
@@ -140,20 +140,20 @@
 }
 
 .search-field .form-control::placeholder {
-  color: #98a2b3;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .search-field .form-control:focus,
 .search-field .form-select:focus {
-  background: #ffffff;
-  border-color: #b9bdfc;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
-  color: #0b1220;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .search-field .form-select option {
-  background: #ffffff;
-  color: #0b1220;
+  background: #2a2a2a;
+  color: #ffffff;
 }
 
 /* Layout utilities */

@@ -141,4 +141,11 @@ export class CategorySelectionModalComponent implements OnInit {
       return false;
     });
   }
+
+  iconClass(icon?: string): string[] {
+    if (!icon) return [];
+    if (icon.startsWith('fa-')) return ['fa-solid', icon];
+    if (icon.startsWith('bi-')) return ['bi', icon];
+    return [icon];
+  }
 }

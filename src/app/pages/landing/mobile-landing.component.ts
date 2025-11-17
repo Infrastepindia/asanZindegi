@@ -326,7 +326,12 @@ export class MobileLandingComponent implements OnInit {
     return [icon];
   }
 
-  openCategoryModal(supercategory: ApiSuperCategory): void {
+  apiSuperCategoryFromVisibleData(key: string | number): ApiSuperCategory | null {
+    return this.apiSuperCategories.find((s) => String(s.id) === String(key)) || null;
+  }
+
+  openCategoryModal(supercategory: ApiSuperCategory | null): void {
+    if (!supercategory) return;
     this.selectedSupercategoryForModal = supercategory;
     this.showCategoryModal = true;
   }

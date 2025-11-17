@@ -28,4 +28,8 @@ export class App {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
+  }
 }

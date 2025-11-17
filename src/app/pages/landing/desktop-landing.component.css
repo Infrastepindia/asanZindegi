@@ -95,9 +95,10 @@
 
 .search-row {
   display: grid;
-  grid-template-columns: 1.2fr 1.2fr 1.5fr auto;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr 1.2fr auto;
+  gap: 10px;
   align-items: center;
+  white-space: nowrap;
 }
 
 .search-field {

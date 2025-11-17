@@ -159,33 +159,6 @@
   object-fit: contain;
 }
 
-/* Listings */
-.listing-card {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  overflow: hidden;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-  background: #fff;
-}
-.listing-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-.listing-cover {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-}
-.badge-b2b {
-  background: #e8f5e9;
-  color: #1b5e20;
-}
-.badge-b2c {
-  background: #e3f2fd;
-  color: #0d47a1;
-}
 
 /* Works band */
 .works-band {
@@ -214,34 +187,6 @@
   color: #ffffff;
   font-weight: 800;
   letter-spacing: 0.2px;
-}
-.big-cta {
-  position: relative;
-  background: #0b0f19;
-  border-radius: 16px;
-  overflow: hidden;
-}
-.big-cta::before,
-.big-cta::after {
-  content: '';
-  position: absolute;
-  top: -20%;
-  bottom: -20%;
-  width: 140px;
-  filter: blur(0.3px);
-  opacity: 0.9;
-}
-.big-cta::before {
-  right: 48px;
-  background: linear-gradient(180deg, #ff4dd2 0%, #7b61ff 50%, #2db8ff 100%);
-  transform: rotate(12deg);
-  border-radius: 16px;
-}
-.big-cta::after {
-  right: 0;
-  background: linear-gradient(180deg, #ff8a4d 0%, #ff4dd2 50%, #7b61ff 100%);
-  transform: rotate(-12deg);
-  border-radius: 16px;
 }
 .text-gradient-1 {
   background: linear-gradient(90deg, #ff4dd2 0%, #7b61ff 50%, #2db8ff 100%);

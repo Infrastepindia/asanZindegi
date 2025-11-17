@@ -1,5 +1,16 @@
-<!-- Mobile Search Header (Fixed) -->
-<div class="mobile-search-header">
+<!-- Mobile Header with Logo and Search (Fixed) -->
+<div class="mobile-header-wrapper">
+  <div class="mobile-header-bar">
+    <a [routerLink]="'/'" class="mobile-logo-link">
+      <img
+        src="https://cdn.builder.io/api/v1/image/assets%2Fdd43504024f74b92af375c4b68e25284%2Fcbffa1ecfd3745769579db885da907f2?format=webp&width=800"
+        alt="AsanZindegi logo"
+        class="mobile-logo"
+        loading="lazy"
+      />
+    </a>
+  </div>
+  <div class="mobile-search-header">
   <form class="mobile-search-form" (submit)="onSearch($event)">
     <div class="mobile-search-field">
       <i class="bi bi-search mobile-search-icon"></i>

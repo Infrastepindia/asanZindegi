@@ -484,24 +484,21 @@
   }
 
   .search-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .search-location {
-    grid-column: auto;
-  }
-
-  .btn-search {
-    grid-column: auto;
-    width: 100%;
+    grid-template-columns: 0.7fr 0.7fr 0.9fr auto;
+    gap: 6px;
   }
 
   .search-field .form-control,
   .search-field .form-select {
-    height: 44px;
-    font-size: 13px;
-    padding: 8px 10px;
+    height: 40px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .btn-search {
+    font-size: 11px;
+    padding: 4px 12px;
+    height: 40px;
   }
 
   .popular-tags {

@@ -101,6 +101,7 @@
   border-radius: 12px;
   overflow: visible;
   background: #f8f9fb;
+  position: relative;
 }
 
 .category-card-header {
@@ -134,6 +135,7 @@
   overflow: visible;
   position: relative;
   z-index: 2;
+  overflow-x: hidden;
 }
 
 /* Location Card Styles */

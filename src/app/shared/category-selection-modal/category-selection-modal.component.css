@@ -95,7 +95,7 @@
 .category-card {
   border: 1px solid #e7e9f3;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   background: #f8f9fb;
 }
 
@@ -106,6 +106,8 @@
   align-items: flex-start;
   gap: 12px;
   background: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 .card-icon {
@@ -125,6 +127,9 @@
 
 .category-card-content {
   padding: 16px;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
 }
 
 /* Location Card Styles */
@@ -175,7 +180,7 @@
   border-top: none;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  z-index: 1050;
+  z-index: 10000;
   max-height: 240px;
   overflow-y: auto;
 }

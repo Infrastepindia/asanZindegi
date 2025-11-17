@@ -444,16 +444,8 @@
 
 @media screen and (max-width: 1024px) {
   .search-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .search-location {
-    grid-column: 1 / -1;
-  }
-
-  .btn-search {
-    grid-column: 1 / -1;
+    grid-template-columns: 0.8fr 0.8fr 1fr auto;
+    gap: 8px;
   }
 
   .hero-text-section {

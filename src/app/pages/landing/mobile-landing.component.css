@@ -2,17 +2,41 @@
   display: block;
 }
 
-/* Mobile Search Header - Fixed */
-.mobile-search-header {
+/* Mobile Header Wrapper */
+.mobile-header-wrapper {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   background: #fff;
-  border-bottom: 1px solid #e7e9f3;
   z-index: 1000;
-  padding: 12px 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Mobile Header Bar with Logo */
+.mobile-header-bar {
+  padding: 10px 16px;
+  border-bottom: 1px solid #e7e9f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-logo-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-logo {
+  height: 32px;
+  object-fit: contain;
+}
+
+/* Mobile Search Header - Fixed */
+.mobile-search-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e7e9f3;
 }
 
 .mobile-search-form {

@@ -431,6 +431,10 @@
 
 /* Responsive */
 @media screen and (max-width: 1200px) {
+  .search-section {
+    margin-top: -50px;
+  }
+
   .search-row {
     grid-template-columns: 0.9fr 0.9fr 1fr auto;
     gap: 8px;

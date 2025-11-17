@@ -152,11 +152,11 @@
 }
 
 .btn-search {
-  background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
   border: none;
   color: #fff;
   border-radius: 8px;
-  box-shadow: 0 6px 16px rgba(123, 97, 255, 0.35);
+  box-shadow: 0 6px 16px rgba(37, 117, 252, 0.35);
   padding: 6px 18px;
   font-weight: 600;
   font-size: 12px;
@@ -166,8 +166,8 @@
 }
 
 .btn-search:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 8px 20px rgba(123, 97, 255, 0.4);
+  filter: brightness(0.98);
+  box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
 }
 
 .btn-search:active {

@@ -27,10 +27,10 @@
 .hero-wrap {
   position: relative;
   height: auto;
-  min-height: 600px;
+  min-height: auto;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-banner {
@@ -53,24 +53,25 @@
 
 .hero-content {
   position: relative;
-  padding: 60px 0;
+  padding: 40px 0 60px;
   z-index: 2;
+  width: 100%;
 }
 
 .hero-title {
   font-weight: 800;
   line-height: 1.2;
   color: #ffffff;
-  font-size: clamp(28px, 4vw, 44px);
-  margin: 0 0 16px 0;
+  font-size: clamp(28px, 3.5vw, 42px);
+  margin: 0 0 12px 0;
 }
 
 .hero-subtitle {
   color: rgba(255, 255, 255, 0.9);
   max-width: 640px;
-  font-size: 16px;
-  line-height: 1.6;
-  margin: 0 0 24px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
 }
 
 .search-panel-wrapper {

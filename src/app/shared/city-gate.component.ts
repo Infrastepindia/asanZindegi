@@ -37,9 +37,11 @@ import { CityService } from './city.service';
         border: 1px solid #e7e9f3;
         border-radius: 12px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        padding: 16px;
+        padding: 24px;
         max-width: 640px;
         width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
       }
       .city-card {
         background: #fff;

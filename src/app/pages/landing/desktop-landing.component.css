@@ -434,7 +434,8 @@
 /* Responsive */
 @media screen and (max-width: 1200px) {
   .search-section {
-    margin-top: -50px;
+    margin-top: -140px;
+    padding-top: 110px;
   }
 
   .search-row {

@@ -176,7 +176,7 @@
   border-top: none;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  z-index: 1050;
+  z-index: 10000;
   max-height: 240px;
   overflow-y: auto;
 }

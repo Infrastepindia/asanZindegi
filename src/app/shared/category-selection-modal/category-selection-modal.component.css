@@ -106,6 +106,8 @@
   align-items: flex-start;
   gap: 12px;
   background: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 .card-icon {

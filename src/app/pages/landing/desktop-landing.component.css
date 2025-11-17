@@ -389,10 +389,19 @@
 /* Responsive */
 @media screen and (max-width: 1024px) {
   .search-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 
-  .search-btn-wrapper {
+  .search-fields-group {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .search-field {
+    width: 100%;
+  }
+
+  .search-location {
     width: 100%;
   }
 

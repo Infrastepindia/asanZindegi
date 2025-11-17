@@ -125,6 +125,7 @@
 
 .category-card-content {
   padding: 16px;
+  overflow: visible;
 }
 
 /* Location Card Styles */

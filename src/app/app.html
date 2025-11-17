@@ -76,19 +76,21 @@
   </div>
 </nav>
 
-<!-- Global City Gate -->
-<az-city-gate></az-city-gate>
+<!-- Global City Gate - Hidden on Mobile -->
+<div class="d-none d-md-block">
+  <az-city-gate></az-city-gate>
+</div>
 
 <!-- Page Content -->
 <router-outlet />
 
-<!-- Bottom Ad Slot -->
-<div class="container my-4">
+<!-- Bottom Ad Slot - Hidden on Mobile -->
+<div class="container my-4 d-none d-md-block">
   <div class="ad-slot">Advertisement</div>
 </div>
 
-<!-- Global Footer -->
-<footer class="site-footer pt-5">
+<!-- Global Footer - Hidden on Mobile -->
+<footer class="site-footer pt-5 d-none d-md-block">
   <div class="container">
     <div class="row g-4">
       <div class="col-md-3">

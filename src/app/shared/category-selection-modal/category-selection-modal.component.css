@@ -95,7 +95,7 @@
 .category-card {
   border: 1px solid #e7e9f3;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   background: #f8f9fb;
 }
 

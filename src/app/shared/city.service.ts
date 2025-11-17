@@ -19,7 +19,7 @@ export interface Bounds {
 @Injectable({ providedIn: 'root' })
 export class CityService {
   private readonly key = 'az_city_pref';
-  private readonly citySig = signal<string | null>(null);
+  readonly citySig = signal<string | null>(null);
 
   // Approximate bounding boxes for cities
   private readonly boxes: Record<CityName, Bounds> = {
@@ -44,7 +44,9 @@ export class CityService {
   }
 
   setCity(name: CityName | string) {
+    console.log('setCity called with:', name);
     this.citySig.set(name);
+    console.log('signal set, current value:', this.citySig());
     if (typeof window !== 'undefined') window.localStorage.setItem(this.key, name);
   }
 

@@ -57,6 +57,22 @@
   z-index: 2;
 }
 
+.hero-title {
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+  font-size: clamp(28px, 4vw, 44px);
+  margin: 0 0 16px 0;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 640px;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
 .search-panel-wrapper {
   width: 100%;
 }

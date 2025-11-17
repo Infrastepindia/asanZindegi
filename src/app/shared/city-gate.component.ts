@@ -70,9 +70,15 @@ import { CityService } from './city.service';
 export class CityGateComponent {
   private city = inject(CityService);
   cities = this.city.knownCities();
-  hasCity = computed(() => !!this.city.city());
+  hasCity = computed(() => {
+    const cityValue = this.city.city();
+    console.log('hasCity computed:', { cityValue, result: !!cityValue });
+    return !!cityValue;
+  });
 
   choose(name: string) {
+    console.log('choose called with:', name);
     this.city.setCity(name);
+    console.log('city set, current city:', this.city.city());
   }
 }

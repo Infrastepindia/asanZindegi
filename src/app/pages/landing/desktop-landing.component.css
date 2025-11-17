@@ -76,6 +76,7 @@
 
 .search-panel-wrapper {
   width: 100%;
+  min-width: 0;
 }
 
 .search-panel {

@@ -383,24 +383,16 @@
 /* Responsive */
 @media screen and (max-width: 1024px) {
   .search-row {
-    flex-direction: column;
-  }
-
-  .search-fields-group {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .search-field {
-    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
 
   .search-location {
-    width: 100%;
+    grid-column: 1 / -1;
   }
 
   .btn-search {
-    width: 100%;
+    grid-column: 1 / -1;
   }
 }
 

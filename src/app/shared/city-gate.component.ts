@@ -31,6 +31,7 @@ import { CityService } from './city.service';
         align-items: center;
         justify-content: center;
         z-index: 1200;
+        pointer-events: auto;
       }
       .city-modal {
         background: #fff;
@@ -42,6 +43,7 @@ import { CityService } from './city.service';
         width: 100%;
         max-height: 90vh;
         overflow-y: auto;
+        pointer-events: auto;
       }
       .city-card {
         background: #fff;

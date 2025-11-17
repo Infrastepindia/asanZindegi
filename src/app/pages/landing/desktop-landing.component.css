@@ -28,9 +28,10 @@
   position: relative;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: center;
+  padding-bottom: 80px;
 }
 
 .hero-banner {
@@ -81,8 +82,17 @@
 
 /* Search Section with Dark Background */
 .search-section {
-  background: #1a1a1a;
-  padding: 32px 0;
+  background: transparent;
+  padding: 0;
+  position: relative;
+  margin-top: -140px;
+  padding-top: 120px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.search-section > .container {
+  pointer-events: auto;
 }
 
 .search-panel-wrapper {
@@ -91,11 +101,11 @@
 }
 
 .search-panel {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
-  padding: 0;
+  padding: 16px;
   border: none;
-  box-shadow: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .search-form {
@@ -423,6 +433,11 @@
 
 /* Responsive */
 @media screen and (max-width: 1200px) {
+  .search-section {
+    margin-top: -140px;
+    padding-top: 110px;
+  }
+
   .search-row {
     grid-template-columns: 0.9fr 0.9fr 1fr auto;
     gap: 8px;
@@ -443,17 +458,14 @@
 }
 
 @media screen and (max-width: 1024px) {
+  .search-section {
+    margin-top: -140px;
+    padding-top: 100px;
+  }
+
   .search-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .search-location {
-    grid-column: 1 / -1;
-  }
-
-  .btn-search {
-    grid-column: 1 / -1;
+    grid-template-columns: 0.8fr 0.8fr 1fr auto;
+    gap: 8px;
   }
 
   .hero-text-section {
@@ -470,6 +482,10 @@
     height: auto;
   }
 
+  .hero-banner-wrap {
+    padding-bottom: 70px;
+  }
+
   .hero-text-section {
     padding: 20px 0 16px;
   }
@@ -484,32 +500,30 @@
   }
 
   .search-section {
-    padding: 0 0 30px;
+    margin-top: -120px;
+    padding-top: 90px;
   }
 
   .search-panel {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .search-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .search-location {
-    grid-column: auto;
-  }
-
-  .btn-search {
-    grid-column: auto;
-    width: 100%;
+    grid-template-columns: 0.7fr 0.7fr 0.9fr auto;
+    gap: 6px;
   }
 
   .search-field .form-control,
   .search-field .form-select {
-    height: 44px;
-    font-size: 13px;
-    padding: 8px 10px;
+    height: 40px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .btn-search {
+    font-size: 11px;
+    padding: 4px 12px;
+    height: 40px;
   }
 
   .popular-tags {

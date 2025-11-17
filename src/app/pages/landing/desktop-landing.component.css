@@ -455,6 +455,10 @@
 }
 
 @media screen and (max-width: 1024px) {
+  .search-section {
+    margin-top: -45px;
+  }
+
   .search-row {
     grid-template-columns: 0.8fr 0.8fr 1fr auto;
     gap: 8px;

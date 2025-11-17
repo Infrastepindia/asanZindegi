@@ -28,9 +28,10 @@
   position: relative;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: center;
+  padding-bottom: 80px;
 }
 
 .hero-banner {

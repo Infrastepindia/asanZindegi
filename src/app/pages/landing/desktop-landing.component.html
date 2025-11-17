@@ -275,60 +275,6 @@
   </div>
 </section>
 
-<!-- Popular Providers -->
-<section class="py-5">
-  <div class="container">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-1 heading-cta">Popular <span class="text-gradient-1">Providers</span></h2>
-      <a href="#" class="text-decoration-none">View more</a>
-    </div>
-    <div class="row g-3">
-      <div class="col-6 col-md-3" *ngFor="let p of providers">
-        <div class="card h-100 text-center border-0 shadow-sm">
-          <div class="pt-4">
-            <img [src]="p.avatar" [alt]="p.name" class="rounded-circle avatar-md" />
-          </div>
-          <div class="card-body">
-            <div class="fw-semibold">{{ p.name }}</div>
-            <small class="text-secondary">{{ p.role }}</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Reviews -->
-<section class="py-5 bg-light">
-  <div class="container">
-    <h2 class="h3 mb-1 heading-cta">
-      Genuine reviews from <span class="text-gradient-1">Customers</span>
-    </h2>
-    <div class="row g-3">
-      <div class="col-md-6 col-lg-4" *ngFor="let r of reviews">
-        <div class="card h-100 border-0 shadow-sm">
-          <div class="card-body">
-            <div class="mb-2 text-warning">
-              <i
-                class="bi bi-star-fill"
-                *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
-                [ngClass]="{ 'text-muted': i >= r.rating }"
-              ></i>
-            </div>
-            <p class="mb-3">{{ r.text }}</p>
-            <div class="d-flex align-items-center">
-              <img [src]="r.avatar" class="rounded-circle me-2 avatar-sm" [alt]="r.author" />
-              <div>
-                <div class="small fw-semibold">{{ r.author }}</div>
-                <small class="text-secondary">{{ r.service }}</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- CTA: Post Your Service -->
 <section class="cta-dark text-light py-5">
@@ -343,31 +289,6 @@
     <a class="btn btn-join btn-lg ms-2" [routerLink]="'/provider/register'"
       >Become a Service Provider</a
     >
-  </div>
-</section>
-
-<!-- Blogs -->
-<section class="py-5">
-  <div class="container">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h3 mb-1 heading-cta">
-        Checkout our Recent <span class="text-gradient-1">Blogs</span>
-      </h2>
-      <a href="#" class="text-decoration-none">View more</a>
-    </div>
-    <div class="row g-3">
-      <div class="col-md-6 col-lg-3" *ngFor="let b of blogs">
-        <div class="card h-100 border-0 shadow-sm">
-          <img [src]="b.cover" class="card-img-top" [alt]="b.title" />
-          <div class="card-body">
-            <a href="#" class="text-decoration-none"
-              ><h3 class="h6">{{ b.title }}</h3></a
-            >
-            <small class="text-secondary">{{ b.date }}</small>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 

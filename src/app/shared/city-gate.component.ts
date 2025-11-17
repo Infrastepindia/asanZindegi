@@ -52,6 +52,7 @@ import { CityService } from './city.service';
         padding: 8px;
         cursor: pointer;
         transition: all 0.2s ease;
+        pointer-events: auto;
       }
       .city-card:hover {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);

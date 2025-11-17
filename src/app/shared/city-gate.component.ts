@@ -74,7 +74,7 @@ export class CityGateComponent {
   private city = inject(CityService);
   cities = this.city.knownCities();
   hasCity = computed(() => {
-    const cityValue = this.city.city();
+    const cityValue = this.city.citySig();
     console.log('hasCity computed:', { cityValue, result: !!cityValue });
     return !!cityValue;
   });
@@ -82,6 +82,6 @@ export class CityGateComponent {
   choose(name: string) {
     console.log('choose called with:', name);
     this.city.setCity(name);
-    console.log('city set, current city:', this.city.city());
+    console.log('city set, current city:', this.city.citySig());
   }
 }

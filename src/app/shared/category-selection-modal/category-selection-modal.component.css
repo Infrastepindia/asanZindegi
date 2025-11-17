@@ -21,7 +21,9 @@
   width: 90%;
   max-width: 900px;
   max-height: 85vh;
-  overflow-y: auto;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
   animation: slideUp 0.3s ease;
 }
 
@@ -90,6 +92,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   padding: 24px;
+  overflow-y: auto;
+  max-height: calc(85vh - 140px);
 }
 
 .category-card {
@@ -141,6 +145,8 @@
 
 .location-input-group {
   position: relative;
+  overflow: visible;
+  z-index: 1050;
 }
 
 .location-input {
@@ -180,9 +186,11 @@
   border-top: none;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  z-index: 10000;
+  z-index: 10001;
   max-height: 240px;
   overflow-y: auto;
+  overflow-x: hidden;
+  pointer-events: auto;
 }
 
 .location-suggestion-item {

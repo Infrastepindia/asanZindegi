@@ -51,33 +51,6 @@
     </div>
   </section>
 
-  <!-- Featured Services -->
-  <section class="mobile-featured">
-    <div class="mobile-section-header">
-      <h2 class="mobile-section-title">Featured Services</h2>
-      <a [routerLink]="'/listings'" class="mobile-view-all">View all</a>
-    </div>
-    <div class="mobile-services-list">
-      <div class="mobile-service-card" *ngFor="let ad of featuredAds">
-        <img class="mobile-service-image" [src]="ad.cover" [alt]="ad.title" />
-        <div class="mobile-service-info">
-          <h3 class="mobile-service-title">{{ ad.title }}</h3>
-          <div class="mobile-service-meta">
-            <span class="mobile-location">
-              <i class="bi bi-geo-alt"></i>{{ ad.location }}
-            </span>
-            <span class="mobile-badge" [ngClass]="ad.type === 'B2B' ? 'badge-b2b' : 'badge-b2c'">
-              {{ ad.type }}
-            </span>
-          </div>
-          <div class="mobile-service-footer">
-            <span class="mobile-price">{{ ad.price }}</span>
-            <a [routerLink]="'/listings'" class="mobile-service-btn">View</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
 
   <!-- CTA Section -->

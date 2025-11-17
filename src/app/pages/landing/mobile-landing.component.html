@@ -11,22 +11,22 @@
     </a>
   </div>
   <div class="mobile-search-header">
-  <form class="mobile-search-form" (submit)="onSearch($event)">
-    <div class="mobile-search-field">
-      <i class="bi bi-search mobile-search-icon"></i>
-      <input
-        type="text"
-        class="mobile-search-input"
-        placeholder="Search services..."
-        [(ngModel)]="search.keyword"
-        name="keyword"
-        aria-label="Search services"
-      />
-    </div>
-    <button type="submit" class="mobile-search-btn" aria-label="Search">
-      <i class="bi bi-arrow-right"></i>
-    </button>
-  </form>
+    <form class="mobile-search-form" (submit)="onSearch($event)">
+      <div class="mobile-search-field">
+        <i class="bi bi-search mobile-search-icon"></i>
+        <input
+          type="text"
+          class="mobile-search-input"
+          placeholder="Search services..."
+          [(ngModel)]="search.keyword"
+          name="keyword"
+          aria-label="Search services"
+        />
+      </div>
+      <button type="submit" class="mobile-search-btn" aria-label="Search">
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </form>
   </div>
 </div>
 
@@ -50,8 +50,6 @@
       </div>
     </div>
   </section>
-
-
 
   <!-- CTA Section -->
   <section class="mobile-cta">

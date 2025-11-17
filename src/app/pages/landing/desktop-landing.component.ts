@@ -315,7 +315,7 @@ export class DesktopLandingComponent implements OnInit {
     const left = 85.8201,
       right = 89.8859,
       bottom = 21.5219,
-      top = 27.2230;
+      top = 27.223;
 
     const params = new URLSearchParams({
       format: 'jsonv2',
@@ -346,11 +346,11 @@ export class DesktopLandingComponent implements OnInit {
         ]);
 
         const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in'
+          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
         );
 
         const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
-          allowed.has((r.type || '').toLowerCase())
+          allowed.has((r.type || '').toLowerCase()),
         );
 
         this.locationResults = cleaned.slice(0, 8);

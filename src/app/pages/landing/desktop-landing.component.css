@@ -482,6 +482,10 @@
     height: auto;
   }
 
+  .hero-banner-wrap {
+    padding-bottom: 70px;
+  }
+
   .hero-text-section {
     padding: 20px 0 16px;
   }
@@ -496,7 +500,8 @@
   }
 
   .search-section {
-    margin-top: -40px;
+    margin-top: -120px;
+    padding-top: 90px;
   }
 
   .search-panel {

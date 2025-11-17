@@ -81,7 +81,7 @@
 
 /* Search Section with Dark Background */
 .search-section {
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.3);
   padding: 32px 0;
 }
 

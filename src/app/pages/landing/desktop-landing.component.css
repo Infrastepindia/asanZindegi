@@ -26,11 +26,11 @@
 /* Hero */
 .hero-wrap {
   position: relative;
-  height: auto;
-  min-height: auto;
   display: flex;
   align-items: center;
-  overflow: visible;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
 }
 
 .hero-banner {

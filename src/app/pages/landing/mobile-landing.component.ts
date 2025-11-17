@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { CategorySelectionModalComponent } from '../../shared/category-selection-modal/category-selection-modal.component';
 
 interface CategoryItem {
   name: string;

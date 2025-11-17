@@ -128,6 +128,8 @@
 .category-card-content {
   padding: 16px;
   overflow: visible;
+  position: relative;
+  z-index: 2;
 }
 
 /* Location Card Styles */

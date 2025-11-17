@@ -125,9 +125,12 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  font-size: 13px;
-  height: 42px;
-  padding: 8px 12px;
+  font-size: 12px;
+  height: 40px;
+  padding: 6px 10px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .search-field .form-control::placeholder {

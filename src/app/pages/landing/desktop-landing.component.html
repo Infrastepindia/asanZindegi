@@ -1,13 +1,19 @@
 <!-- Hero Banner with Overlay Text -->
 <section class="hero-banner-wrap">
-  <img class="hero-banner" src="https://cdn.builder.io/api/v1/image/assets%2Fa0f51ef05292403b9fb3ae2167903450%2Fb297be81df65408fb18eef580456b192?format=webp&width=800" alt="Professional services banner" />
+  <img
+    class="hero-banner"
+    src="https://cdn.builder.io/api/v1/image/assets%2Fa0f51ef05292403b9fb3ae2167903450%2Fb297be81df65408fb18eef580456b192?format=webp&width=800"
+    alt="Professional services banner"
+  />
   <div class="hero-overlay"></div>
   <div class="hero-text-overlay">
     <div class="container">
       <div class="row">
         <div class="col-lg-8">
           <h1 class="hero-title">Connect with Nearby Top-rated Professional</h1>
-          <p class="hero-subtitle">We can connect you to the right Service, first time and every time.</p>
+          <p class="hero-subtitle">
+            We can connect you to the right Service, first time and every time.
+          </p>
         </div>
       </div>
     </div>
@@ -16,80 +22,78 @@
 
 <!-- Search Section with Dark Background -->
 <section class="search-section">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-10">
-          <div class="search-panel-wrapper">
-            <div class="search-panel">
-              <form class="search-form" (submit)="onSearch($event)">
-                <div class="search-row">
-                  <div class="search-field">
-                    <select
-                      class="form-select"
-                      [(ngModel)]="search.superCategory"
-                      (ngModelChange)="onSuperChange($event)"
-                      name="superCategory"
-                      aria-label="Select category"
-                    >
-                      <option value="">All categories</option>
-                      <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
-                        {{ sc.title }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="search-field">
-                    <select
-                      class="form-select"
-                      [(ngModel)]="search.category"
-                      name="category"
-                      aria-label="Select subcategory"
-                      [disabled]="search.superCategory && !categoryOptions.length"
-                    >
-                      <option value="">Subcategory</option>
-                      <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
-                    </select>
-                  </div>
-                  <div class="search-field search-location flex-grow-1">
-                    <input
-                      class="form-control"
-                      placeholder="Enter Location"
-                      [(ngModel)]="search.location"
-                      (keyup)="onLocationChange($event)"
-                      name="location"
-                      aria-label="Enter Location"
-                      autocomplete="off"
-                    />
-                    <div class="suggest-list" *ngIf="locationResults.length">
-                      <button
-                        type="button"
-                        class="suggest-item"
-                        *ngFor="let r of locationResults"
-                        (click)="selectLocation(r)"
-                      >
-                        <i class="bi bi-geo-alt me-2"></i>{{ r.display_name }}
-                      </button>
-                    </div>
-                  </div>
-                  <button class="btn btn-search" type="submit" aria-label="Search">
-                    Search
-                  </button>
-                </div>
-                <div class="mt-2 small popular-tags">
-                  Popular Searches:
-                  <a
-                    href="#"
-                    class="tag-badge"
-                    *ngFor="let k of popularKeywords"
-                    (click)="$event.preventDefault(); search.keyword = k"
-                    >{{ k }}</a
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="search-panel-wrapper">
+          <div class="search-panel">
+            <form class="search-form" (submit)="onSearch($event)">
+              <div class="search-row">
+                <div class="search-field">
+                  <select
+                    class="form-select"
+                    [(ngModel)]="search.superCategory"
+                    (ngModelChange)="onSuperChange($event)"
+                    name="superCategory"
+                    aria-label="Select category"
                   >
+                    <option value="">All categories</option>
+                    <option *ngFor="let sc of superCategoryOptions" [value]="sc.key">
+                      {{ sc.title }}
+                    </option>
+                  </select>
                 </div>
-              </form>
-            </div>
+                <div class="search-field">
+                  <select
+                    class="form-select"
+                    [(ngModel)]="search.category"
+                    name="category"
+                    aria-label="Select subcategory"
+                    [disabled]="search.superCategory && !categoryOptions.length"
+                  >
+                    <option value="">Subcategory</option>
+                    <option *ngFor="let c of categoryOptions" [value]="c.name">{{ c.name }}</option>
+                  </select>
+                </div>
+                <div class="search-field search-location flex-grow-1">
+                  <input
+                    class="form-control"
+                    placeholder="Enter Location"
+                    [(ngModel)]="search.location"
+                    (keyup)="onLocationChange($event)"
+                    name="location"
+                    aria-label="Enter Location"
+                    autocomplete="off"
+                  />
+                  <div class="suggest-list" *ngIf="locationResults.length">
+                    <button
+                      type="button"
+                      class="suggest-item"
+                      *ngFor="let r of locationResults"
+                      (click)="selectLocation(r)"
+                    >
+                      <i class="bi bi-geo-alt me-2"></i>{{ r.display_name }}
+                    </button>
+                  </div>
+                </div>
+                <button class="btn btn-search" type="submit" aria-label="Search">Search</button>
+              </div>
+              <div class="mt-2 small popular-tags">
+                Popular Searches:
+                <a
+                  href="#"
+                  class="tag-badge"
+                  *ngFor="let k of popularKeywords"
+                  (click)="$event.preventDefault(); search.keyword = k"
+                  >{{ k }}</a
+                >
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </section>
 
 <!-- Home Ad under Hero -->

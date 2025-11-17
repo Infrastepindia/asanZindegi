@@ -107,6 +107,10 @@ export class MobileLandingComponent implements OnInit {
     items: CategoryItem[];
   }> = [];
 
+  // Modal state
+  showCategoryModal = false;
+  selectedSupercategoryForModal: ApiSuperCategory | null = null;
+
   featuredAds: FeaturedAd[] = [
     {
       title: 'Electric Panel Repairing Service',

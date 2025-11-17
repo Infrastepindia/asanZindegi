@@ -325,4 +325,29 @@ export class MobileLandingComponent implements OnInit {
     if (icon.startsWith('bi-')) return ['bi', icon];
     return [icon];
   }
+
+  openCategoryModal(supercategory: ApiSuperCategory): void {
+    this.selectedSupercategoryForModal = supercategory;
+    this.showCategoryModal = true;
+  }
+
+  closeCategoryModal(): void {
+    this.showCategoryModal = false;
+    this.selectedSupercategoryForModal = null;
+  }
+
+  onCategoryModalSubmit(result: any): void {
+    const queryParams: any = {
+      supercategory: result.supercategoryId,
+      category: result.categoryName,
+      location: result.location,
+      lat: result.lat,
+      lon: result.lon,
+    };
+
+    this.showCategoryModal = false;
+    this.selectedSupercategoryForModal = null;
+
+    this.router.navigate(['/listings'], { queryParams });
+  }
 }

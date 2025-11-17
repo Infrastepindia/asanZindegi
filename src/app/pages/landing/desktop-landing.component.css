@@ -175,7 +175,7 @@
 }
 
 .popular-tags {
-  color: #d1d5db;
+  color: #667085;
   margin-top: 8px;
   display: flex;
   align-items: center;
@@ -187,9 +187,9 @@
 .tag-badge {
   display: inline-block;
   padding: 3px 8px;
-  background: transparent;
-  color: #e5e7eb;
-  border: none;
+  background: #f2f4f7;
+  color: #475467;
+  border: 1px solid #eaecf0;
   border-radius: 6px;
   text-decoration: none;
   font-size: 11px;
@@ -197,8 +197,8 @@
 }
 
 .tag-badge:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: #eaecf0;
+  color: #0b1220;
 }
 
 /* Location suggestions */

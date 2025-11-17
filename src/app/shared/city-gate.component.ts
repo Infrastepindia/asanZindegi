@@ -46,9 +46,15 @@ import { CityService } from './city.service';
         border: 1px solid #e7e9f3;
         border-radius: 10px;
         padding: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
       }
       .city-card:hover {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+      .city-card:active {
+        transform: translateY(0);
       }
       .city-thumb {
         width: 100%;

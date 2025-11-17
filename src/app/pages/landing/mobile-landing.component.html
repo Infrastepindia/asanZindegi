@@ -1,0 +1,163 @@
+<!-- Mobile Search Header (Fixed) -->
+<div class="mobile-search-header">
+  <form class="mobile-search-form" (submit)="onSearch($event)">
+    <div class="mobile-search-field">
+      <i class="bi bi-search mobile-search-icon"></i>
+      <input
+        type="text"
+        class="mobile-search-input"
+        placeholder="Search services..."
+        [(ngModel)]="search.keyword"
+        name="keyword"
+        aria-label="Search services"
+      />
+    </div>
+    <button type="submit" class="mobile-search-btn" aria-label="Search">
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </form>
+</div>
+
+<!-- Mobile Main Content -->
+<div class="mobile-content-wrapper">
+  <!-- Quick Categories Grid -->
+  <section class="mobile-quick-categories">
+    <h2 class="mobile-section-title">Categories</h2>
+    <div class="mobile-categories-grid">
+      <div class="mobile-category-item" *ngFor="let sc of visibleSuperCategories">
+        <a
+          [routerLink]="'/listings'"
+          [queryParams]="{ super: sc.key }"
+          class="mobile-category-link"
+        >
+          <div class="mobile-category-icon" [ngClass]="sc.colorClass">
+            <i [ngClass]="iconClass(sc.icon)"></i>
+          </div>
+          <div class="mobile-category-name">{{ sc.title }}</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Services -->
+  <section class="mobile-featured">
+    <div class="mobile-section-header">
+      <h2 class="mobile-section-title">Featured Services</h2>
+      <a [routerLink]="'/listings'" class="mobile-view-all">View all</a>
+    </div>
+    <div class="mobile-services-list">
+      <div class="mobile-service-card" *ngFor="let ad of featuredAds">
+        <img class="mobile-service-image" [src]="ad.cover" [alt]="ad.title" />
+        <div class="mobile-service-info">
+          <h3 class="mobile-service-title">{{ ad.title }}</h3>
+          <div class="mobile-service-meta">
+            <span class="mobile-location">
+              <i class="bi bi-geo-alt"></i>{{ ad.location }}
+            </span>
+            <span class="mobile-badge" [ngClass]="ad.type === 'B2B' ? 'badge-b2b' : 'badge-b2c'">
+              {{ ad.type }}
+            </span>
+          </div>
+          <div class="mobile-service-footer">
+            <span class="mobile-price">{{ ad.price }}</span>
+            <a [routerLink]="'/listings'" class="mobile-service-btn">View</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Providers -->
+  <section class="mobile-providers">
+    <div class="mobile-section-header">
+      <h2 class="mobile-section-title">Popular Providers</h2>
+      <a href="#" class="mobile-view-all">View all</a>
+    </div>
+    <div class="mobile-providers-grid">
+      <div class="mobile-provider-card" *ngFor="let p of providers">
+        <img [src]="p.avatar" [alt]="p.name" class="mobile-provider-avatar" />
+        <div class="mobile-provider-name">{{ p.name }}</div>
+        <div class="mobile-provider-role">{{ p.role }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Reviews -->
+  <section class="mobile-reviews">
+    <div class="mobile-section-header">
+      <h2 class="mobile-section-title">Customer Reviews</h2>
+      <a href="#" class="mobile-view-all">View all</a>
+    </div>
+    <div class="mobile-reviews-list">
+      <div class="mobile-review-card" *ngFor="let r of reviews">
+        <div class="mobile-review-rating">
+          <i
+            class="bi bi-star-fill"
+            *ngFor="let s of [1, 2, 3, 4, 5]; let i = index"
+            [ngClass]="{ 'text-muted': i >= r.rating }"
+          ></i>
+        </div>
+        <p class="mobile-review-text">{{ r.text }}</p>
+        <div class="mobile-review-author">
+          <img [src]="r.avatar" [alt]="r.author" class="mobile-review-avatar" />
+          <div>
+            <div class="mobile-review-name">{{ r.author }}</div>
+            <div class="mobile-review-service">{{ r.service }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blogs -->
+  <section class="mobile-blogs">
+    <div class="mobile-section-header">
+      <h2 class="mobile-section-title">Latest Blogs</h2>
+      <a href="#" class="mobile-view-all">View all</a>
+    </div>
+    <div class="mobile-blogs-list">
+      <div class="mobile-blog-card" *ngFor="let b of blogs">
+        <img [src]="b.cover" [alt]="b.title" class="mobile-blog-image" />
+        <div class="mobile-blog-info">
+          <h3 class="mobile-blog-title">{{ b.title }}</h3>
+          <small class="mobile-blog-date">{{ b.date }}</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="mobile-cta">
+    <h2 class="mobile-cta-title">Post your service</h2>
+    <p class="mobile-cta-subtitle">Reach thousands of customers today</p>
+    <div class="mobile-cta-buttons">
+      <a [routerLink]="'/post-ad'" class="mobile-cta-btn primary">Post Service</a>
+      <a [routerLink]="'/provider/register'" class="mobile-cta-btn secondary"
+        >Become Provider</a
+      >
+    </div>
+  </section>
+
+  <!-- Spacer for fixed footer -->
+  <div class="mobile-footer-spacer"></div>
+</div>
+
+<!-- Mobile Fixed Footer -->
+<div class="mobile-fixed-footer">
+  <a [routerLink]="'/'" class="mobile-footer-item active">
+    <i class="bi bi-house-fill"></i>
+    <span>Home</span>
+  </a>
+  <a [routerLink]="'/listings'" class="mobile-footer-item">
+    <i class="bi bi-search"></i>
+    <span>Search</span>
+  </a>
+  <a [routerLink]="'/post-ad'" class="mobile-footer-item">
+    <i class="bi bi-plus-circle-fill"></i>
+    <span>Post</span>
+  </a>
+  <a [routerLink]="'/provider/register'" class="mobile-footer-item">
+    <i class="bi bi-person-fill"></i>
+    <span>Provider</span>
+  </a>
+</div>

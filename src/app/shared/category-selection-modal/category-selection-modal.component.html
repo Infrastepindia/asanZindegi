@@ -51,7 +51,9 @@
               >
                 <i class="bi bi-geo-alt suggestion-icon"></i>
                 <div class="suggestion-content">
-                  <div class="suggestion-name">{{ suggestion.address?.['city'] || suggestion.address?.['town'] || 'Location' }}</div>
+                  <div class="suggestion-name">
+                    {{ suggestion.address?.['city'] || suggestion.address?.['town'] || 'Location' }}
+                  </div>
                   <div class="suggestion-full">{{ suggestion.display_name }}</div>
                 </div>
               </button>

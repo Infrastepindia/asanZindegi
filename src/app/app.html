@@ -29,18 +29,43 @@
         <li class="nav-item"><a class="nav-link" href="#featured">Featured</a></li>
         <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
-        <ng-container *ngIf="isCompanyUser()">
-          <li class="nav-item">
+        <ng-container *ngIf="authService.isLoggedIn()">
+          <li class="nav-item" *ngIf="isCompanyUser()">
             <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/dashboard'"
               >View Dashboard</a
             >
           </li>
-        </ng-container>
-        <ng-container *ngIf="!isCompanyUser()">
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="!isCompanyUser()">
             <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/register'"
               >Become a Service Provider
             </a>
+          </li>
+          <li class="nav-item">
+            <span class="ms-lg-3 text-secondary me-lg-2"
+              ><i class="bi bi-person-circle me-2"></i>{{ authService.getUserFullName() }}</span
+            >
+          </li>
+          <li class="nav-item">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              (click)="logout()"
+              aria-label="Logout"
+            >
+              <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
+          </li>
+        </ng-container>
+        <ng-container *ngIf="!authService.isLoggedIn()">
+          <li class="nav-item">
+            <button
+              type="button"
+              class="btn btn-primary-gradient btn-lg ms-lg-2"
+              (click)="navigateToLogin()"
+              aria-label="Visitor Login"
+            >
+              <i class="bi bi-box-arrow-in-right me-1"></i>Visitor Login
+            </button>
           </li>
         </ng-container>
       </ul>

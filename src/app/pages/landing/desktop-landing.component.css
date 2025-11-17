@@ -119,9 +119,9 @@
 .search-field .form-control,
 .search-field .form-select {
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  border: 1px solid #e7e9f3;
+  background: #ffffff;
+  color: #0b1220;
   font-size: 12px;
   height: 40px;
   padding: 6px 10px;
@@ -131,20 +131,20 @@
 }
 
 .search-field .form-control::placeholder {
-  color: #9ca3af;
+  color: #98a2b3;
 }
 
 .search-field .form-control:focus,
 .search-field .form-select:focus {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 0 2px rgba(123, 97, 255, 0.15);
-  color: #fff;
+  background: #ffffff;
+  border-color: #b9bdfc;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  color: #0b1220;
 }
 
 .search-field .form-select option {
-  background: #1a1a1a;
-  color: #fff;
+  background: #ffffff;
+  color: #0b1220;
 }
 
 .flex-grow-1 {

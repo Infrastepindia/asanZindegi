@@ -147,8 +147,14 @@
   color: #0b1220;
 }
 
+/* Layout utilities */
 .flex-grow-1 {
   flex-grow: 1;
+}
+
+/* Ensure search location field grows properly */
+.search-location {
+  min-width: 200px;
 }
 
 .btn-search {

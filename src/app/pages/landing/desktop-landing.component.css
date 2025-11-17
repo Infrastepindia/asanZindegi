@@ -77,14 +77,8 @@
 }
 
 .search-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.search-fields-group {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1.5fr auto;
   gap: 12px;
   align-items: center;
 }

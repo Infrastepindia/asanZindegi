@@ -492,11 +492,11 @@
   }
 
   .search-section {
-    padding: 0 0 30px;
+    margin-top: -40px;
   }
 
   .search-panel {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .search-row {

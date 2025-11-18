@@ -113,16 +113,14 @@ export class ProviderEditComponent implements OnInit {
       return;
     }
 
-    
+
     this.api.getCategories().subscribe({
-      next: (res) =>
-        {
-          (this.superCategories = res?.data || [])
-          if(this.superCategories.length > 0)
-          {
-             this.loadProviderData();
-          }
-        },
+      next: (res) => {
+        (this.superCategories = res?.data || [])
+        if (this.superCategories.length > 0) {
+          this.loadProviderData();
+        }
+      },
       error: () => (this.superCategories = []),
     });
   }
@@ -156,7 +154,7 @@ export class ProviderEditComponent implements OnInit {
       phone: data.contactInfo.phoneNumber || '',
       password: '',
       confirmPassword: '',
-      profileImage: environment.base_path + "/" + data.profileImageUrl || '',
+      profileImage: environment.file_path + "/" + data.profileImageUrl || '',
     };
 
     this.address = {
@@ -171,7 +169,7 @@ export class ProviderEditComponent implements OnInit {
       name: data.providerName || '',
       title: data.profileTitle || '',
       isCompany: data.isCompany || false,
-      logo: environment.base_path + "/" + data.logo.url || '',
+      logo: environment.file_path + "/" + data.logo.url || '',
     };
 
     if (data.categories && Array.isArray(data.categories)) {
@@ -193,42 +191,64 @@ export class ProviderEditComponent implements OnInit {
 
   private loadDocumentFiles(data: any) {
     // Load registration certificates
-    if (data.providerFilesByFolder.RegistrationCertificates && Array.isArray(data.providerFilesByFolder.RegistrationCertificates)) {
-      this.regFiles = data.providerFilesByFolder.RegistrationCertificates.map((f: any) => ({
+    if (data.registrationFile) {
+      let regFiles = [data.registrationFile]
+      this.regFiles = regFiles.map((f: any) => ({
         name: f.filename,
-        url: environment.base_path+"/"+f.url,
+        url: environment.file_path + "/" + f.url,
       }));
     }
 
     // Load licenses
-    if (data.providerFilesByFolder.Licenses && Array.isArray(data.providerFilesByFolder.Licenses)) {
-      this.licenseFiles = data.providerFilesByFolder.Licenses.map((l: any) => ({
+    if (data.licenseFile) {
+      let licenseFiles = [data.licenseFile]
+      this.licenseFiles = licenseFiles.map((l: any) => ({
         name: l.fileName,
-        url: environment.base_path+"/"+l.url,
+        url: environment.file_path + "/" + l.url,
       }));
     }
 
     // Load portfolio images
-    if (data.providerFilesByFolder.Portfolio && Array.isArray(data.providerFilesByFolder.Portfolio)) {
-      this.portfolioFiles = data.providerFilesByFolder.Portfolio.map((p: any) => ({
-        name: p.fileName,
-        url: environment.base_path+"/"+ p.url,
+
+    if (data.portfolioFile) {
+      let portfolioFiles = [data.portfolioFile]
+      this.portfolioFiles = portfolioFiles.map((l: any) => ({
+        name: l.fileName,
+        url: environment.file_path + "/" + l.url,
       }));
     }
 
     // Load advertisement images
+    // if (data.advertisements && Array.isArray(data.advertisements)) {
+    //   data.advertisements.forEach((ad: any) => {
+    //     if (ad.advertisementImages && Array.isArray(ad.advertisementImages)) {
+    //       this.advertisementImageFiles[ad.categoryId] = ad.advertisementImages.map(
+    //         (url: string) => ({
+    //           name: this.extractFilenameFromUrl(url),
+    //           url: environment.file_path+"/"+url,
+    //         }),
+    //       );
+    //     }
+    //   });
+    // }
+
     if (data.advertisements && Array.isArray(data.advertisements)) {
       data.advertisements.forEach((ad: any) => {
-        if (ad.advertisementImages && Array.isArray(ad.advertisementImages)) {
-          this.advertisementImageFiles[ad.categoryId] = ad.advertisementImages.map(
-            (url: string) => ({
-              name: this.extractFilenameFromUrl(url),
-              url: environment.base_path+"/"+url,
-            }),
-          );
+
+        // Ensure object exists
+        this.advertisementImageFiles[ad.categoryId] = [];
+
+        // Main image object exists?
+        if (ad.mainImage && ad.mainImage.url) {
+          this.advertisementImageFiles[ad.categoryId].push({
+            name: ad.mainImage.fileName ?? this.extractFilenameFromUrl(ad.mainImage.url),
+            url: environment.file_path + "/" + ad.mainImage.url
+          });
         }
+
       });
     }
+
   }
 
   private extractFilenameFromUrl(url: string): string {
@@ -263,7 +283,7 @@ export class ProviderEditComponent implements OnInit {
         videoLink: ad.videoLink || '',
         detailDescription: ad.detailDescription || '',
         availabilityHours: ad.availabilityHours || '',
-        advertisementImage:environment.base_path + "/" + ad.mainImage?.url || '',
+        advertisementImage: environment.file_path + "/" + ad.mainImage?.url || '',
       };
     });
   }

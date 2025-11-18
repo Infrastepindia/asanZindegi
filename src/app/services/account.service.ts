@@ -221,6 +221,6 @@ export class AccountService {
    */
   isCompanyAccount(): boolean {
     const acc = this.getAccount();
-    return acc?.type === 'Company' || acc?.type === 'Provider' ;
+    return acc?.type.toLowerCase() === 'company' || acc?.type.toLowerCase() === 'provider' ;
   }
 }

@@ -138,7 +138,7 @@ export class ListingsComponent implements OnInit {
                   location: item.location,
                   price: typeof item.price === 'string' ? parseInt(item.price, 10) : item.price,
                   unit: item.unit || '',
-                  cover: environment.base_path + item.cover || '',
+                  cover: environment.file_path + item.cover || '',
                   date: item.date,
                   views: item.views,
                   rating: item.rating,

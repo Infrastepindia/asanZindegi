@@ -120,7 +120,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
                   location: ad.areaCoveredPolygon ? `${ad.areaCoveredPolygon} km radius` : '',
                   price: parseFloat(ad.priceStartForm) || 0,
                   unit: ad.priceType || '',
-                  cover: ad.mainImage != null ?  environment.base_path +"/"+ ad.mainImage.url : "",
+                  cover: ad.mainImage != null ?  environment.file_path +"/"+ ad.mainImage.url : "",
                   date: new Date().toISOString().slice(0, 10),
                   views: 0,
                   rating: 5,
@@ -207,7 +207,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     fileCategory: string;
     url: string;
   }): string {
-    return environment.base_path +"/"+file.url;
+    return environment.file_path +"/"+file.url;
   }
 
   getCompanyLogo(): string | null {

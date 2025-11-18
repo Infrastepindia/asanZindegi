@@ -363,8 +363,14 @@ export class ProviderRegisterComponent {
     this.api.addProviderDetails(payload, files).subscribe({
       next: (response) => {
         this.clearDraft();
-        this.notification.success('Provider registration submitted successfully!');
-        this.router.navigate(['/login']);
+        console.log(response)
+        if (response.status_code == 200) {
+          this.notification.success(response.message);
+          this.router.navigate(['/login']);
+        }
+        else {
+          this.notification.error(`Submission failed: ${response.message}`);
+        }
       },
       error: (err) => {
         const errorInfo = this.api.extractError(err);

@@ -41,26 +41,26 @@
       loading="lazy"
     />
     <div class="mobile-hero-overlay"></div>
-  </section>
 
-  <!-- Quick Categories Grid -->
-  <section class="mobile-quick-categories">
-    <h2 class="mobile-section-title">Categories</h2>
-    <div class="mobile-categories-grid">
-      <div class="mobile-category-item" *ngFor="let sc of visibleSuperCategories">
-        <button
-          type="button"
-          class="mobile-category-link"
-          (click)="openCategoryModal(apiSuperCategoryFromVisibleData(sc.key))"
-          aria-label="Select {{ sc.title }} category"
-        >
-          <div class="mobile-category-icon" [ngClass]="sc.colorClass">
-            <i [ngClass]="iconClass(sc.icon)"></i>
-          </div>
-          <div class="mobile-category-name">{{ sc.title }}</div>
-        </button>
+    <!-- Quick Categories Grid (Overlay) -->
+    <section class="mobile-quick-categories-overlay">
+      <h2 class="mobile-section-title">Categories</h2>
+      <div class="mobile-categories-grid">
+        <div class="mobile-category-item" *ngFor="let sc of visibleSuperCategories">
+          <button
+            type="button"
+            class="mobile-category-link"
+            (click)="openCategoryModal(apiSuperCategoryFromVisibleData(sc.key))"
+            aria-label="Select {{ sc.title }} category"
+          >
+            <div class="mobile-category-icon" [ngClass]="sc.colorClass">
+              <i [ngClass]="iconClass(sc.icon)"></i>
+            </div>
+            <div class="mobile-category-name">{{ sc.title }}</div>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   </section>
 
   <!-- CTA Section -->

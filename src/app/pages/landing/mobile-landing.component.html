@@ -32,24 +32,35 @@
 
 <!-- Mobile Main Content -->
 <div class="mobile-content-wrapper">
-  <!-- Quick Categories Grid -->
-  <section class="mobile-quick-categories">
-    <h2 class="mobile-section-title">Categories</h2>
-    <div class="mobile-categories-grid">
-      <div class="mobile-category-item" *ngFor="let sc of visibleSuperCategories">
-        <button
-          type="button"
-          class="mobile-category-link"
-          (click)="openCategoryModal(apiSuperCategoryFromVisibleData(sc.key))"
-          aria-label="Select {{ sc.title }} category"
-        >
-          <div class="mobile-category-icon" [ngClass]="sc.colorClass">
-            <i [ngClass]="iconClass(sc.icon)"></i>
-          </div>
-          <div class="mobile-category-name">{{ sc.title }}</div>
-        </button>
+  <!-- Hero Banner Section -->
+  <section class="mobile-hero-banner">
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets%2F89024f4abe0b4e7d9ae689ddeddf5b00%2F7399d2ab3d134dad8c618f13ee048427?format=webp&width=800"
+      alt="Professional services banner"
+      class="mobile-hero-image"
+      loading="lazy"
+    />
+    <div class="mobile-hero-overlay"></div>
+
+    <!-- Quick Categories Grid (Overlay) -->
+    <section class="mobile-quick-categories-overlay">
+      <h2 class="mobile-section-title">Categories</h2>
+      <div class="mobile-categories-grid">
+        <div class="mobile-category-item" *ngFor="let sc of visibleSuperCategories">
+          <button
+            type="button"
+            class="mobile-category-link"
+            (click)="openCategoryModal(apiSuperCategoryFromVisibleData(sc.key))"
+            aria-label="Select {{ sc.title }} category"
+          >
+            <div class="mobile-category-icon" [ngClass]="sc.colorClass">
+              <i [ngClass]="iconClass(sc.icon)"></i>
+            </div>
+            <div class="mobile-category-name">{{ sc.title }}</div>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   </section>
 
   <!-- CTA Section -->

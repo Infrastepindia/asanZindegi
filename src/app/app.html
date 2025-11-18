@@ -1,35 +1,8 @@
 <!-- Global Toast Container -->
 <app-toast-container></app-toast-container>
 
-<!-- Global Header -->
-<div class="top-strip py-1 small bg-light border-bottom d-none d-md-block">
-  <div class="container d-flex justify-content-between">
-    <div class="text-secondary">Connect with nearby top-rated professionals</div>
-    <div>
-      <ng-container *ngIf="!authService.isLoggedIn(); else userMenuTpl">
-        <a routerLink="/login" class="me-3 text-secondary text-decoration-none"
-          ><i class="bi bi-box-arrow-in-right me-1"></i>Login</a
-        >
-        <a routerLink="/signup" class="btn btn-join btn-lg">Join</a>
-      </ng-container>
-      <ng-template #userMenuTpl>
-        <span class="me-3 text-secondary"
-          ><i class="bi bi-person-circle me-2"></i>{{ authService.getUserFullName() }}</span
-        >
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-danger"
-          (click)="logout()"
-          aria-label="Logout"
-        >
-          <i class="bi bi-box-arrow-right me-1"></i>Logout
-        </button>
-      </ng-template>
-    </div>
-  </div>
-</div>
-
-<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+<!-- Global Navbar - Hidden on Mobile -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top d-none d-md-flex">
   <div class="container">
     <a class="navbar-brand topbar-brand heading-cta" [routerLink]="'/'">
       <img
@@ -56,18 +29,43 @@
         <li class="nav-item"><a class="nav-link" href="#featured">Featured</a></li>
         <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/listings">Listings</a></li>
-        <ng-container *ngIf="isCompanyUser()">
-          <li class="nav-item">
+        <li class="nav-item">
+          <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/register'"
+            >Become a Service Provider
+          </a>
+        </li>
+        <ng-container *ngIf="authService.isLoggedIn()">
+          <li class="nav-item" *ngIf="isCompanyUser()">
             <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/dashboard'"
               >View Dashboard</a
             >
           </li>
-        </ng-container>
-        <ng-container *ngIf="!isCompanyUser()">
           <li class="nav-item">
-            <a class="btn btn-join btn-lg ms-lg-2" [routerLink]="'/provider/register'"
-              >Become a Service Provider
-            </a>
+            <span class="ms-lg-3 text-secondary me-lg-2"
+              ><i class="bi bi-person-circle me-2"></i>{{ authService.getUserFullName() }}</span
+            >
+          </li>
+          <li class="nav-item">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              (click)="logout()"
+              aria-label="Logout"
+            >
+              <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
+          </li>
+        </ng-container>
+        <ng-container *ngIf="!authService.isLoggedIn()">
+          <li class="nav-item">
+            <button
+              type="button"
+              class="btn btn-primary-gradient btn-lg ms-lg-2"
+              (click)="navigateToLogin()"
+              aria-label="Visitor Login"
+            >
+              <i class="bi bi-box-arrow-in-right me-1"></i>Visitor Login
+            </button>
           </li>
         </ng-container>
       </ul>
@@ -75,19 +73,21 @@
   </div>
 </nav>
 
-<!-- Global City Gate -->
-<az-city-gate></az-city-gate>
+<!-- Global City Gate - Hidden on Mobile -->
+<div class="d-none d-md-block">
+  <az-city-gate></az-city-gate>
+</div>
 
 <!-- Page Content -->
 <router-outlet />
 
-<!-- Bottom Ad Slot -->
-<div class="container my-4">
+<!-- Bottom Ad Slot - Hidden on Mobile -->
+<div class="container my-4 d-none d-md-block">
   <div class="ad-slot">Advertisement</div>
 </div>
 
-<!-- Global Footer -->
-<footer class="site-footer pt-5">
+<!-- Global Footer - Hidden on Mobile -->
+<footer class="site-footer pt-5 d-none d-md-block">
   <div class="container">
     <div class="row g-4">
       <div class="col-md-3">

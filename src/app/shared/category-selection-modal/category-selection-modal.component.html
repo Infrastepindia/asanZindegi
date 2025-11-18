@@ -1,0 +1,120 @@
+<!-- Modal Backdrop -->
+<div class="category-modal-backdrop" (click)="closed.emit()"></div>
+
+<!-- Modal Container -->
+<div class="category-modal-container">
+  <!-- Close Button -->
+  <button class="category-modal-close" (click)="closed.emit()" aria-label="Close">
+    <i class="bi bi-x"></i>
+  </button>
+
+  <!-- Modal Header -->
+  <div class="category-modal-header">
+    <h2 class="category-modal-title">
+      <i class="me-2" [ngClass]="iconClass(supercategory.icon)"></i>
+      {{ supercategory.title }}
+    </h2>
+    <p class="category-modal-subtitle">Complete the information to find services</p>
+  </div>
+
+  <!-- Two-Step Cards Container -->
+  <div class="category-modal-cards">
+    <!-- Left Card: Location -->
+    <div class="category-card location-card">
+      <div class="category-card-header">
+        <i class="bi bi-geo-alt card-icon"></i>
+        <h3 class="category-card-title">Where is your current location?</h3>
+      </div>
+
+      <div class="category-card-content">
+        <div class="location-search-wrapper">
+          <div class="location-input-group position-relative">
+            <input
+              type="text"
+              class="form-control location-input"
+              placeholder="Search your city..."
+              [(ngModel)]="locationInput"
+              (input)="onLocationInput($event)"
+              (focus)="locationOpen = true"
+              (blur)="onLocationBlur()"
+              aria-label="Search location"
+            />
+            <i class="bi bi-search location-search-icon"></i>
+
+            <!-- Location Suggestions -->
+            <div *ngIf="locationOpen && locationSuggestions.length" class="location-suggestions">
+              <button
+                type="button"
+                class="location-suggestion-item"
+                *ngFor="let suggestion of locationSuggestions"
+                (mousedown)="selectLocation(suggestion)"
+              >
+                <i class="bi bi-geo-alt suggestion-icon"></i>
+                <div class="suggestion-content">
+                  <div class="suggestion-name">
+                    {{ suggestion.address?.['city'] || suggestion.address?.['town'] || 'Location' }}
+                  </div>
+                  <div class="suggestion-full">{{ suggestion.display_name }}</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Selected Location Display -->
+          <div *ngIf="selectedLocation" class="selected-location">
+            <div class="selected-location-badge">
+              <i class="bi bi-check-circle-fill"></i>
+              {{ selectedLocation.display_name }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Card: Category -->
+    <div class="category-card service-card">
+      <div class="category-card-header">
+        <i class="bi bi-grid card-icon"></i>
+        <h3 class="category-card-title">What exact service do you need?</h3>
+      </div>
+
+      <div class="category-card-content">
+        <div class="category-dropdown-wrapper">
+          <select
+            class="form-select category-select"
+            [(ngModel)]="selectedCategory"
+            aria-label="Select service"
+          >
+            <option [ngValue]="null">Choose a service...</option>
+            <option *ngFor="let category of supercategory.categories" [ngValue]="category">
+              {{ category.name }}
+            </option>
+          </select>
+
+          <!-- Selected Category Display -->
+          <div *ngIf="selectedCategory" class="selected-category">
+            <div class="selected-category-badge">
+              <i class="bi bi-check-circle-fill"></i>
+              {{ selectedCategory.name }}
+              <span class="category-count">({{ selectedCategory.count }} listings)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="category-modal-footer">
+    <button class="btn btn-secondary" (click)="closed.emit()">Cancel</button>
+    <button
+      class="btn btn-primary-gradient"
+      (click)="onSubmit()"
+      [disabled]="!isFormValid()"
+      aria-label="Continue with selection"
+    >
+      Continue
+      <i class="bi bi-arrow-right ms-2"></i>
+    </button>
+  </div>
+</div>

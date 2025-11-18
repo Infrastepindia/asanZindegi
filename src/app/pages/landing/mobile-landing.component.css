@@ -256,6 +256,10 @@
   word-break: break-word;
 }
 
+.mobile-quick-categories-overlay .mobile-category-name {
+  color: #fff;
+}
+
 /* CTA Section */
 .mobile-cta {
   padding: 24px 16px;

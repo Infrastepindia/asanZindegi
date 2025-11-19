@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiSuperCategory, ApiCategory } from '../../services/api.service';
 import { PhotonService, LocationResult } from '../../services/photon.service';
+import { CityService } from '../city.service';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 
@@ -52,6 +53,7 @@ export class CategorySelectionModalComponent implements OnInit {
   private locationDebounceSubscription: any;
   private photon = inject(PhotonService);
   private cdr = inject(ChangeDetectorRef);
+  private cityService = inject(CityService);
 
   ngOnInit(): void {
     if (!this.supercategory) {
@@ -117,7 +119,18 @@ export class CategorySelectionModalComponent implements OnInit {
   }
 
   private searchLocation(q: string) {
-    return this.photon.searchLocation(q, 'IN', 8);
+    const currentCity = this.cityService.city();
+    const bounds = currentCity ? this.cityService.getBoundsForCity(currentCity) : null;
+
+    let lat: number | undefined;
+    let lon: number | undefined;
+
+    if (bounds) {
+      lat = (bounds.bottom + bounds.top) / 2;
+      lon = (bounds.left + bounds.right) / 2;
+    }
+
+    return this.photon.searchLocation(q, 'IN', 8, lat, lon);
   }
 
   iconClass(icon?: string): string[] {

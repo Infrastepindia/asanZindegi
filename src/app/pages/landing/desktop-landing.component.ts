@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { PhotonService } from '../../services/photon.service';
+import { CityService } from '../../shared/city.service';
 
 interface CategoryItem {
   name: string;
@@ -79,6 +80,7 @@ export class DesktopLandingComponent implements OnInit {
   private readonly photon = inject(PhotonService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly doc = inject(DOCUMENT);
+  private readonly cityService = inject(CityService);
 
   readonly year = new Date().getFullYear();
 
@@ -312,7 +314,18 @@ export class DesktopLandingComponent implements OnInit {
 
     this.locationLoading = true;
 
-    this.photon.searchLocation(q, 'IN', 8).subscribe({
+    const currentCity = this.cityService.city();
+    const bounds = currentCity ? this.cityService.getBoundsForCity(currentCity) : null;
+
+    let lat: number | undefined;
+    let lon: number | undefined;
+
+    if (bounds) {
+      lat = (bounds.bottom + bounds.top) / 2;
+      lon = (bounds.left + bounds.right) / 2;
+    }
+
+    this.photon.searchLocation(q, 'IN', 10, lat, lon).subscribe({
       next: (results) => {
         this.locationResults = results;
         this.locationLoading = false;

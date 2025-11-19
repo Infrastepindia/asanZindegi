@@ -52,6 +52,8 @@ export class PhotonService {
     query: string,
     countryCode: string = 'IN',
     limit: number = 8,
+    lat?: number,
+    lon?: number,
   ): Observable<LocationResult[]> {
     if (!query || !query.trim()) {
       return new Observable((observer) => {
@@ -60,10 +62,14 @@ export class PhotonService {
       });
     }
 
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('q', query.trim())
       .set('limit', limit.toString())
       .set('lang', 'en');
+
+    if (lat !== undefined && lon !== undefined) {
+      params = params.set('lat', lat.toString()).set('lon', lon.toString());
+    }
 
     return this.http.get<PhotonResponse>(`${this.PHOTON_API}/`, { params }).pipe(
       map((response) => {
@@ -91,21 +97,9 @@ export class PhotonService {
     const props = feature.properties;
     const osm_value = (props.osm_value || '').toLowerCase();
 
-    const validOsmTypes = [
-      'city',
-      'town',
-      'village',
-      'hamlet',
-      'suburb',
-      'neighbourhood',
-      'state',
-      'district',
-      'county',
-      'locality',
-      'administrative',
-    ];
+    const invalidOsmTypes = ['house', 'building', 'way', 'railway', 'landuse'];
 
-    return validOsmTypes.includes(osm_value);
+    return !invalidOsmTypes.includes(osm_value);
   }
 
   private convertToLocationResult(feature: PhotonFeature): LocationResult {

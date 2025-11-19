@@ -29,13 +29,13 @@ interface ListingItem {
 }
 
 @Component({
-  selector: 'app-listings',
+  selector: 'app-desktop-listings',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, OsmAutocompleteComponent],
-  templateUrl: './listings.component.html',
+  templateUrl: './desktop-listings.component.html',
   styleUrl: './listings.component.css',
 })
-export class ListingsComponent implements OnInit {
+export class DesktopListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
   private photon = inject(PhotonService);
@@ -50,7 +50,6 @@ export class ListingsComponent implements OnInit {
   private readonly meta = inject(Meta);
   private readonly doc = inject(DOCUMENT);
 
-  // First-time city chooser
   showCityPicker = false;
   private cityPrefKey = 'az_city_pref';
   cityOptions: Array<{ name: string; img: string }> = [
@@ -95,10 +94,8 @@ export class ListingsComponent implements OnInit {
     else this.showCityPicker = true;
     if (cat || loc || saved) this.setPage(1);
 
-    // Load listings from API
     this.loadListings();
 
-    // Load super categories for treeview
     this.api.getCategories().subscribe({
       next: (res) => {
         this.superCategories.set(res?.data || []);
@@ -158,7 +155,6 @@ export class ListingsComponent implements OnInit {
                 }) as ListingItem,
             );
 
-            // Combine API listings with posted ads
             this.all = [...apiListings];
             this.apiTotal = res.data.total;
           }
@@ -166,12 +162,12 @@ export class ListingsComponent implements OnInit {
           this.isLoadingListings = false;
         },
         error: () => {
-          // Fallback to posted ads only
           this.all = [];
           this.isLoadingListings = false;
         },
       });
   }
+
   locationResults: Array<{ display_name: string; lat: string; lon: string }> = [];
   locationLoading = false;
   private locDebounce?: any;
@@ -186,7 +182,6 @@ export class ListingsComponent implements OnInit {
     type: '' as '' | ListingItem['type'],
   };
 
-  // Super category → subcategory treeview data
   superCategories = signal<ApiSuperCategory[]>([]);
   expandedSuperIds = new Set<number>();
 
@@ -211,199 +206,12 @@ export class ListingsComponent implements OnInit {
     this.setPage(1);
   }
 
-  categories = [
-    // Household
-    'Plumbing',
-    'Electrical Repair',
-    'Carpentry',
-    'Painting & Whitewashing',
-    'Home Cleaning',
-    'Appliance Repair',
-    'Pest Control',
-    'RO/Water Purifier Service',
-    'CCTV Installation & Repair',
-    'Interior Design',
-    'Modular Kitchen Setup',
-    'Home Automation',
-    'Curtain & Blind Installation',
-    'Glass & Aluminum Work',
-    'Masonry/Construction',
-    'Gardening & Landscaping',
-    'Flooring',
-    'POP & False Ceiling',
-    'Door & Window Repair',
-    'Locksmith Services',
-    // Office
-    'Electrical Maintenance',
-    'HVAC',
-    'Office Cleaning & Sanitization',
-    'Furniture Installation/Repair',
-    'Security Systems',
-    'Computer & Printer Repair',
-    'Networking & Cabling',
-    'Pest Control for Offices',
-    'Office Boy/Helper Services',
-    'Pantry & Catering Support',
-    'Lift/Elevator Maintenance',
-    'Fire Safety Installation',
-    'IT Support',
-    'Co-working Space Setup',
-    'Office Interior & Design',
-    'Partition & False Ceiling',
-    'Office Moving/Relocation',
-    'Printing & Stationery Supply',
-    'UPS/Inverter Services',
-    'Glass Cleaning (Facade)',
-    // Transport
-    'House Shifting',
-    'Office Relocation',
-    'Local Tempo/Truck Rental',
-    'Intercity Transport',
-    'Bike/Car Transport',
-    'Packers & Movers',
-    'Courier & Parcel Delivery',
-    'Furniture Shifting',
-    'Heavy Equipment Transport',
-    'Mini Truck Services',
-    'Storage & Warehousing',
-    'Loading/Unloading Labor',
-    'Pet Relocation',
-    'Event Equipment Transport',
-    'Cold Storage Transport',
-    'School Van Services',
-    'Ambulance Services',
-    'Water Tanker Supply',
-    'E-commerce Delivery Partner',
-    'Vehicle Rental',
-    // Personal Care
-    'Salon at Home',
-    'Spa & Massage',
-    'Bridal Makeup',
-    'Mehendi Artists',
-    'Fitness Trainer',
-    'Yoga Instructor',
-    'Diet & Nutrition',
-    'Physiotherapy at Home',
-    'Nursing/Attendant Services',
-    'Elder Care',
-    'Baby Care/Nanny Services',
-    'Counseling & Therapy',
-    'Tattoo Artists',
-    'Skin Care & Dermatology',
-    'Weight Loss Programs',
-    'Zumba/Dance Instructor',
-    'Speech Therapy',
-    'Grooming Workshops',
-    'Medical Tests at Home',
-    'Homeopathy/Ayurveda',
-    // Education & CSR
-    'School Tutoring',
-    'Competitive Exam Coaching',
-    'Spoken English & Communication',
-    'Computer Classes',
-    'Coding for Kids',
-    'Arts & Crafts Classes',
-    'Dance & Music Classes',
-    'Personality Development',
-    'Public Speaking Training',
-    'Career Counseling',
-    'Corporate Training',
-    'Soft Skills Training',
-    'CSR – Free Community Tutoring',
-    'CSR – Vocational Training',
-    'CSR �� Literacy Campaigns',
-    'CSR – Health Awareness Workshops',
-    'CSR – Environment Education',
-    'CSR – Women Empowerment Programs',
-    'CSR – Digital Literacy',
-    'CSR – Skill Training for Differently Abled',
-    // Food & Catering
-    'Home Tiffin Service',
-    'Event Catering',
-    'Birthday Party Catering',
-    'Corporate Catering',
-    'Wedding Catering',
-    'Sweet & Snacks Delivery',
-    'Bakeries & Cake Order',
-    'Regional Food Specialists',
-    'Packed Lunch Supply',
-    'Diet Meals',
-    'Baby Food Delivery',
-    'Personal Chef at Home',
-    'Outdoor Catering',
-    'Festival Special Food Service',
-    'Organic Food Supply',
-    'Catering Staff Rental',
-    'Beverages & Juice Corner',
-    'Food Truck Rental',
-    'Health Food & Smoothies',
-    'Bulk Meal Supply',
-    // Events & Entertainment
-    'Wedding Planner',
-    'Birthday Party Planner',
-    'DJ & Music Bands',
-    'Photographers & Videographers',
-    'Venue Booking',
-    'Decoration & Balloon Art',
-    'Sound & Lighting',
-    'Stage Setup',
-    'Makeup & Styling for Events',
-    'Anchors & Hosts',
-    'Corporate Event Planner',
-    'Festival Event Organizer',
-    'Magicians & Artists',
-    'Catering Services',
-    'Invitation Card Printing',
-    'Event Security',
-    'Dance Performers',
-    'Flower Decoration',
-    'Exhibition/Event Stalls',
-    'Party Supplies',
-    // Tech & Digital Services
-    'Website Development',
-    'Mobile App Development',
-    'SEO & Digital Marketing',
-    'Graphic Design',
-    'Video Editing',
-    'Social Media Management',
-    'Logo & Branding',
-    'Software Development',
-    'Data Entry',
-    'Online Ads',
-    'Content Writing',
-    'Cloud Services',
-    'Domain & Hosting',
-    'E-commerce Setup',
-    'UI/UX Design',
-    'Cybersecurity Solutions',
-    'ERP/CRM Setup',
-    'Freelance Developers',
-    'Virtual Assistant Services',
-    'IT Consulting',
-    // Healthcare
-    'Doctor Consultation',
-    'Specialist Doctors',
-    'Diagnostic Tests',
-    'Nursing Services',
-    'Physiotherapy',
-    'Ambulance Service',
-    'Emergency Medicine Delivery',
-    'Telemedicine',
-    'Health Check-up Packages',
-    'Dietician & Nutritionist',
-    'Mental Health Counselor',
-    'Elderly Care',
-    'Baby & Child Specialist',
-    'Dental Care',
-    'Eye Specialist',
-    'Home Sample Collection',
-    'Medical Equipment Rental',
-    'Homeopathy / Ayurveda',
-    'Vaccination Services',
-    'Blood Donation / CSR Health Camps',
-  ];
+  private serviceTypeMap: Record<string, string[]> = {};
 
-  types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
+  get serviceTypesForSelected(): string[] {
+    const cat = this.filters.category;
+    return cat && (this.serviceTypeMap as any)[cat] ? this.serviceTypeMap[cat] : [];
+  }
 
   private prng(seed: number) {
     return function () {
@@ -415,48 +223,7 @@ export class ListingsComponent implements OnInit {
     };
   }
 
-  private coverByCategory: Record<string, string[]> = {
-    Plumbing: [
-      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1621905251180-97f6f10c8d1b?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1605652866327-96ae58c6ba86?q=80&w=1200&auto=format&fit=crop',
-    ],
-    Electrical: [
-      'https://images.unsplash.com/photo-1581094794329-c8112a89f11d?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop',
-    ],
-    Cleaning: [
-      'https://images.unsplash.com/photo-1581578733145-b93f9678f53b?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1581578017426-cf34aaf1ffd1?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1584622781365-6761f7d64240?q=80&w=1200&auto=format&fit=crop',
-    ],
-    Tutoring: [
-      'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1529078155058-5d716f45d604?q=80&w=1200&auto=format&fit=crop',
-    ],
-    Carpentry: [
-      'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1519710164239-8d0a3d6a0eef?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1616628182501-3b3f34f184d5?q=80&w=1200&auto=format&fit=crop',
-    ],
-    Painting: [
-      'https://images.unsplash.com/photo-1480796927426-f609979314bd?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1585842378054-6bb0fd52ff7b?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1484704849700-f032a568e944?q=80&w=1200&auto=format&fit+crop',
-    ],
-    Moving: [
-      'https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1585432959449-b1c11f3cba9a?q=80&w=1200&auto=format&fit=crop',
-    ],
-    'Appliance Repair': [
-      'https://images.unsplash.com/photo-1581093588401-16c9e6d0147b?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1603715749720-3bd0e8020f82?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1555617117-08fda9c09b69?q=80&w=1200&auto=format&fit=crop',
-    ],
-  };
+  private coverByCategory: Record<string, string[]> = {};
 
   private cities = [
     'Delhi, India',
@@ -471,111 +238,7 @@ export class ListingsComponent implements OnInit {
     'Surat, India',
   ];
 
-  private createTitle(category: string, type: ListingItem['type'], index: number) {
-    const base = {
-      Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings', 'Kitchen Plumbing'],
-      Electrical: ['Wiring Service', 'Appliance Install', 'Lighting Setup', 'Panel Repair'],
-      Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning', 'Sofa Shampoo'],
-      Tutoring: ['Math Tuition', 'English Coaching', 'Science Tutor', 'Exam Prep'],
-      Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Fix', 'Wardrobe Build'],
-      Painting: ['Interior Paint', 'Exterior Paint', 'Texture Work', 'Ceiling Paint'],
-      Moving: ['House Shifting', 'Office Relocation', 'Packing Service', 'Local Transport'],
-      'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washer Repair', 'Microwave Fix'],
-    } as Record<string, string[]>;
-    const arr = base[category] || ['Service'];
-    const name = arr[index % arr.length];
-    return `${name} - ${category}` + (type !== 'Service' ? ` (${type})` : '');
-  }
-
-  private priceFor(category: string, type: ListingItem['type'], rnd: () => number) {
-    const base = {
-      Plumbing: [299, 1499],
-      Electrical: [249, 1799],
-      Cleaning: [399, 2499],
-      Tutoring: [199, 999],
-      Carpentry: [349, 1999],
-      Painting: [499, 3999],
-      Moving: [999, 9999],
-      'Appliance Repair': [299, 2499],
-    } as Record<string, [number, number]>;
-    const [min, max] = base[category] || [199, 1999];
-    let price = Math.round(min + rnd() * (max - min));
-    if (type === 'Rent') price = Math.round(price * 0.8);
-    if (type === 'Exchange') price = Math.round(price * 0.6);
-    return price;
-  }
-
-  private unitFor(type: ListingItem['type']): string | undefined {
-    if (type === 'Rent') return 'per day';
-    if (type === 'Service') return 'per visit';
-    return undefined;
-  }
-
-  private generateListings(): ListingItem[] {
-    const rnd = this.prng(42);
-    const out: ListingItem[] = [];
-    let id = 1;
-    const now = Date.now();
-    for (const cat of this.categories) {
-      for (const typ of this.types) {
-        for (let i = 0; i < 10; i++) {
-          const covers = this.coverByCategory[cat] || [];
-          const cover = covers.length
-            ? covers[i % covers.length]
-            : 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop';
-          const daysAgo = Math.floor(rnd() * 120);
-          const date = new Date(now - daysAgo * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-          const location = this.cities[Math.floor(rnd() * this.cities.length)];
-          const price = this.priceFor(cat, typ, rnd);
-          const views = Math.floor(50 + rnd() * 2000);
-          const rating = 3 + Math.floor(rnd() * 3);
-          const verified = rnd() < 0.6;
-          const verifiedType = verified ? (rnd() < 0.5 ? 'Company' : 'KYC') : undefined;
-          const title = this.createTitle(cat, typ, i);
-          const serviceType = title.split(' - ')[0];
-          out.push({
-            id: id++,
-            title,
-            category: cat,
-            type: typ,
-            location,
-            price,
-            unit: this.unitFor(typ),
-            cover,
-            date,
-            views,
-            rating,
-            verified,
-            verifiedType,
-            serviceType,
-          });
-        }
-      }
-    }
-    return out;
-  }
-
-  private posted(): ListingItem[] {
-    return this.ads.getAll().map((ad) => {
-      const st = (ad.title || '').split(' - ')[0].trim() || ad.title;
-      return {
-        id: ad.id,
-        title: ad.title,
-        category: ad.category,
-        type: ad.type,
-        location: ad.location,
-        price: ad.price,
-        unit: ad.unit,
-        cover: ad.cover,
-        date: ad.date,
-        views: ad.views,
-        rating: ad.rating,
-        verified: ad.verified,
-        verifiedType: ad.verifiedType,
-        serviceType: st,
-      } as ListingItem;
-    });
-  }
+  types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
   all: ListingItem[] = [];
   apiTotal = 0;
@@ -590,10 +253,6 @@ export class ListingsComponent implements OnInit {
     let out = this.all.slice();
     if (this.filters.selectedCategories.length)
       out = out.filter((i) => this.filters.selectedCategories.includes(i.category));
-    // if (this.filters.location)
-    //   out = out.filter((i) =>
-    //     i.location.toLowerCase().includes(this.filters.location.toLowerCase()),
-    //   );
 
     const minR = Number(this.filters.minRating) || 0;
     if (minR > 0) out = out.filter((i) => i.rating >= minR);
@@ -652,12 +311,10 @@ export class ListingsComponent implements OnInit {
     return this.filtered.slice(start, start + this.perPage);
   }
 
-  // Availability tag (mocked deterministically)
   availabilityLabel(it: ListingItem): 'Currently Available' | 'Available for Call' {
     return it.id % 2 === 0 ? 'Currently Available' : 'Available for Call';
   }
 
-  // Geo utilities for distance
   private cityCoords: Record<string, { lat: number; lon: number }> = {
     'Delhi, India': { lat: 28.6139, lon: 77.209 },
     'Mumbai, India': { lat: 19.076, lon: 72.8777 },
@@ -784,45 +441,6 @@ export class ListingsComponent implements OnInit {
 
   private getOrigin(): string {
     return (globalThis as any).location?.origin || '';
-  }
-
-  private applySlug(slug: string | null) {
-    if (!slug) return;
-    const s = slug.toLowerCase();
-
-    const typeMap: Record<string, ListingItem['type']> = {
-      sell: 'Sell',
-      rent: 'Rent',
-      exchange: 'Exchange',
-      service: 'Service',
-    };
-
-    const catBySlug: Record<string, string> = this.categories.reduce(
-      (acc, c) => {
-        acc[this.slugify(c)] = c;
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
-
-    const tokens = s.split('-').filter(Boolean);
-    for (const tk of tokens) {
-      if (typeMap[tk]) this.filters.type = typeMap[tk];
-    }
-
-    let assignedCat = '';
-    for (const [slugCat, original] of Object.entries(catBySlug)) {
-      if (
-        s === slugCat ||
-        s.endsWith('-' + slugCat) ||
-        s.startsWith(slugCat + '-') ||
-        s.includes('-' + slugCat + '-')
-      ) {
-        assignedCat = original;
-        break;
-      }
-    }
-    if (assignedCat) this.filters.category = assignedCat;
   }
 
   private slugify(input: string): string {

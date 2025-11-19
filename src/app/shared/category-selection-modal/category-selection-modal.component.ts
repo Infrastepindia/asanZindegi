@@ -116,27 +116,7 @@ export class CategorySelectionModalComponent implements OnInit {
   }
 
   private searchLocation(q: string) {
-    const params = new HttpParams()
-      .set('q', q)
-      .set('format', 'jsonv2')
-      .set('addressdetails', '1')
-      .set('countrycodes', 'in')
-      .set('limit', '8');
-
-    return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
-      params,
-      headers: { 'Accept-Language': 'en' } as any,
-    });
-  }
-
-  private filterLocationResults(list: NominatimResult[]): NominatimResult[] {
-    return list.filter((r) => {
-      if (r.class === 'place') {
-        return ['city', 'town', 'village', 'hamlet', 'suburb', 'neighbourhood'].includes(r.type);
-      }
-      if (r.class === 'boundary' && r.type === 'administrative') return true;
-      return false;
-    });
+    return this.photon.searchLocation(q, 'IN', 8);
   }
 
   iconClass(icon?: string): string[] {

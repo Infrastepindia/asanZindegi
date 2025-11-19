@@ -1,0 +1,137 @@
+.details-wrap {
+  background: #f8f9fb;
+}
+
+.details-card {
+  background: #fff;
+  border: 1px solid #e7e9f3;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.media-wrap img {
+  width: 100%;
+  height: auto;
+}
+
+.thumbs {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.thumb-sm {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid #e7e9f3;
+  flex-shrink: 0;
+}
+
+.meta-list li {
+  padding: 6px 0;
+  border-bottom: 1px dashed #eef1f6;
+}
+
+.meta-list li:last-child {
+  border-bottom: 0;
+}
+
+.heading-cta {
+  color: #333;
+  font-weight: 600;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e8f5e9;
+  color: #1b5e20;
+  font-size: 12px;
+}
+
+.avatar-md {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.pill-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-sell {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.badge-rent {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.badge-exchange {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.badge-service {
+  background: #ede7f6;
+  color: #4a148c;
+}
+
+.listing-card {
+  background: #fff;
+  border: 1px solid #e7e9f3;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.listing-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.listing-cover {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 991px) {
+  .thumb-sm {
+    width: 72px;
+    height: 54px;
+  }
+}
+
+@media (max-width: 575px) {
+  .details-wrap {
+    padding: 12px 0;
+  }
+
+  .details-card {
+    margin-bottom: 12px;
+  }
+
+  .thumb-sm {
+    width: 64px;
+    height: 48px;
+  }
+
+  .avatar-md {
+    width: 70px;
+    height: 70px;
+  }
+
+  h2.h6 {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,172 @@
+<section class="details-wrap py-5">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Loading service details...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !isLoading" class="alert alert-danger text-center mt-4">
+    {{ error }}
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="item != null && !isLoading" class="container">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h1 class="h4 mb-2 heading-cta d-flex align-items-center justify-content-between">
+            <span>{{ item.title }}</span>
+            <span
+              class="badge pill-badge"
+              [ngClass]="{
+                'badge-sell': item.type === 'Sell',
+                'badge-rent': item.type === 'Rent',
+                'badge-exchange': item.type === 'Exchange',
+                'badge-service': item.type === 'Service',
+              }"
+            >
+              {{ item.type }}
+            </span>
+          </h1>
+          <div class="small text-secondary mb-3">
+            <i class="bi bi-geo-alt me-1"></i>{{ item.location }}
+            &nbsp;•&nbsp;
+            <i class="bi bi-clock me-1"></i>{{ item.date | date: 'mediumDate' }}
+            &nbsp;•&nbsp;
+            <i class="bi bi-eye me-1"></i>{{ item.views }} views
+          </div>
+
+          <div class="media-wrap mb-3">
+            <img
+              [src]="getImageSource(item.cover)"
+              [alt]="item.title"
+              class="img-fluid rounded-4 shadow"
+              (error)="onImageLoadError(item.cover)"
+            />
+          </div>
+
+          <div class="thumbs d-flex gap-2 overflow-auto pb-1" *ngIf="thumbnails.length">
+            <img
+              *ngFor="let t of thumbnails"
+              [src]="getImageSource(t)"
+              [alt]="item.title"
+              class="thumb-sm rounded-3"
+              (error)="onImageLoadError(t)"
+            />
+          </div>
+        </div>
+
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-3">Service Overview</h2>
+          <p class="text-secondary mb-0">{{ overview }}</p>
+        </div>
+
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-3">What's Included</h2>
+          <ul class="list-unstyled meta-list mb-0">
+            <li *ngFor="let inc of includes">
+              <i class="bi bi-check-circle text-success me-2"></i>{{ inc }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="details-card p-3 p-md-4 mb-3">
+          <h2 class="h6 mb-3">Gallery</h2>
+          <div class="row g-2">
+            <div class="col-4 col-md-3" *ngFor="let g of thumbnails">
+              <img
+                [src]="getImageSource(g)"
+                [alt]="item.title"
+                class="img-fluid rounded-3"
+                (error)="onImageLoadError(g)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="details-card p-3 p-md-4" *ngIf="related.length">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h6 mb-0">Related Services</h2>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6 col-lg-4" *ngFor="let r of related">
+              <div class="listing-card h-100">
+                <img
+                  class="listing-cover"
+                  [src]="getImageSource(r.cover)"
+                  [alt]="r.title"
+                  (error)="onImageLoadError(r.cover)"
+                />
+                <div class="p-3">
+                  <a [routerLink]="['/ad', r.id]" class="text-decoration-none">
+                    <h3 class="h6 mb-1">{{ r.title }}</h3>
+                  </a>
+                  <div class="small text-secondary mb-2">
+                    <i class="bi bi-geo-alt me-1"></i>{{ r.location }}
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="fw-bold">₹{{ r.price }}</div>
+                    <a [routerLink]="['/ad', r.id]" class="btn btn-join btn-sm">View</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="col-lg-4">
+        <div class="details-card p-3 p-md-4 mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="small text-secondary">Starting From</div>
+              <div class="h4 mb-0">₹{{ item.price }}</div>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-join btn-lg" (click)="showPhone = true">
+              See Phone Number
+            </button>
+            <button type="button" class="btn btn-join btn-lg" (click)="showEmail = true">
+              See Email
+            </button>
+          </div>
+        </div>
+
+        <div class="details-card p-3 p-md-4">
+          <div class="text-center">
+            <img
+              [src]="getImageSource(provider.avatar)"
+              [alt]="provider.name"
+              class="rounded-circle avatar-md mb-2"
+              (error)="onImageLoadError(provider.avatar)"
+            />
+            <div class="fw-semibold">{{ provider.name }}</div>
+            <div class="text-secondary small mb-3">Service Provider</div>
+          </div>
+          <ul class="list-unstyled small text-secondary mb-0">
+            <li class="d-flex align-items-center mb-2">
+              <i class="bi bi-calendar3 me-2"></i>Member Since
+              {{ provider.memberSince | date: 'd MMM yyyy' }}
+            </li>
+            <li class="d-flex align-items-center mb-2">
+              <i class="bi bi-geo-alt me-2"></i>{{ item.location }}
+            </li>
+            <li class="d-flex align-items-center mb-2">
+              <i class="bi bi-envelope me-2"></i>
+              <ng-container *ngIf="showEmail; else emailHidden">{{ provider.email }}</ng-container>
+              <ng-template #emailHidden>Hidden</ng-template>
+            </li>
+            <li class="d-flex align-items-center">
+              <i class="bi bi-telephone me-2"></i>
+              <ng-container *ngIf="showPhone; else phoneHidden">{{ provider.phone }}</ng-container>
+              <ng-template #phoneHidden>Hidden</ng-template>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

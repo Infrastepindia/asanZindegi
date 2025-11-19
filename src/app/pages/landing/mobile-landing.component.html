@@ -50,7 +50,7 @@
           <button
             type="button"
             class="mobile-category-link"
-            (click)="openCategoryModal(apiSuperCategoryFromVisibleData(sc.key))"
+            (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key))"
             aria-label="Select {{ sc.title }} category"
           >
             <div class="mobile-category-icon" [ngClass]="sc.colorClass">
@@ -107,11 +107,3 @@
     <span>Provider</span>
   </a>
 </div>
-
-<!-- Category Selection Modal -->
-<app-category-selection-modal
-  *ngIf="showCategoryModal && selectedSupercategoryForModal"
-  [supercategory]="selectedSupercategoryForModal"
-  (closed)="closeCategoryModal()"
-  (submitted)="onCategoryModalSubmit($event)"
-></app-category-selection-modal>

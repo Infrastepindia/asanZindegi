@@ -15,10 +15,16 @@ import { ProviderProfileComponent } from './pages/provider/profile/provider-prof
 import { ProviderAdsComponent } from './pages/provider/ads/provider-ads.component';
 import { AdEditComponent } from './pages/ad-edit/ad-edit.component';
 import { ProviderEditComponent } from './pages/provider/edit/provider-edit.component';
+import { CategorySelectionPageComponent } from './pages/category-selection/category-selection-page.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },
   { path: 'home', component: HomeComponent, title: 'Home' },
+  {
+    path: 'category-selection',
+    component: CategorySelectionPageComponent,
+    title: 'Select Category',
+  },
   { path: 'listings/:slug', component: ListingsComponent, title: 'Listings' },
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },

@@ -405,7 +405,6 @@ export class ListingsComponent implements OnInit {
 
   types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
-
   private prng(seed: number) {
     return function () {
       seed |= 0;

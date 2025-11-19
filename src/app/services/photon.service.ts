@@ -97,13 +97,7 @@ export class PhotonService {
     const props = feature.properties;
     const osm_value = (props.osm_value || '').toLowerCase();
 
-    const invalidOsmTypes = [
-      'house',
-      'building',
-      'way',
-      'railway',
-      'landuse',
-    ];
+    const invalidOsmTypes = ['house', 'building', 'way', 'railway', 'landuse'];
 
     return !invalidOsmTypes.includes(osm_value);
   }

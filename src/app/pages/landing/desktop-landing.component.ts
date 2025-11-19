@@ -80,6 +80,7 @@ export class DesktopLandingComponent implements OnInit {
   private readonly photon = inject(PhotonService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly doc = inject(DOCUMENT);
+  private readonly cityService = inject(CityService);
 
   readonly year = new Date().getFullYear();
 

@@ -49,11 +49,8 @@ export class CategorySelectionModalComponent implements OnInit {
 
   private locationQuery$ = new BehaviorSubject<string>('');
   private locationDebounceSubscription: any;
-
-  constructor(
-    private http: HttpClient,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private photon = inject(PhotonService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     if (!this.supercategory) {

@@ -263,7 +263,18 @@ export class MobileLandingComponent implements OnInit {
 
     this.locationLoading = true;
 
-    this.photon.searchLocation(q, 'IN', 8).subscribe({
+    const currentCity = this.cityService.city();
+    const bounds = currentCity ? this.cityService.getBoundsForCity(currentCity) : null;
+
+    let lat: number | undefined;
+    let lon: number | undefined;
+
+    if (bounds) {
+      lat = (bounds.bottom + bounds.top) / 2;
+      lon = (bounds.left + bounds.right) / 2;
+    }
+
+    this.photon.searchLocation(q, 'IN', 10, lat, lon).subscribe({
       next: (results) => {
         this.locationResults = results;
         this.locationLoading = false;

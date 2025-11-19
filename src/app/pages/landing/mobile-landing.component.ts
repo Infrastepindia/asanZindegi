@@ -80,6 +80,7 @@ export class MobileLandingComponent implements OnInit {
   private readonly api = inject(ApiService);
   private readonly photon = inject(PhotonService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly cityService = inject(CityService);
 
   search = {
     keyword: '',

@@ -65,34 +65,26 @@ export class PhotonService {
       .set('limit', limit.toString())
       .set('lang', 'en');
 
-    return this.http
-      .get<PhotonResponse>(`${this.PHOTON_API}/`, { params })
-      .pipe(
-        map((response) => {
-          return response.features
-            .filter((feature) => this.isValidLocation(feature))
-            .map((feature) => this.convertToLocationResult(feature));
-        }),
-      );
+    return this.http.get<PhotonResponse>(`${this.PHOTON_API}/`, { params }).pipe(
+      map((response) => {
+        return response.features
+          .filter((feature) => this.isValidLocation(feature))
+          .map((feature) => this.convertToLocationResult(feature));
+      }),
+    );
   }
 
-  reverseSearch(
-    lat: number,
-    lon: number,
-    limit: number = 1,
-  ): Observable<LocationResult[]> {
+  reverseSearch(lat: number, lon: number, limit: number = 1): Observable<LocationResult[]> {
     const params = new HttpParams()
       .set('lat', lat.toString())
       .set('lon', lon.toString())
       .set('limit', limit.toString());
 
-    return this.http
-      .get<PhotonResponse>(`${this.PHOTON_API}/reverse`, { params })
-      .pipe(
-        map((response) => {
-          return response.features.map((feature) => this.convertToLocationResult(feature));
-        }),
-      );
+    return this.http.get<PhotonResponse>(`${this.PHOTON_API}/reverse`, { params }).pipe(
+      map((response) => {
+        return response.features.map((feature) => this.convertToLocationResult(feature));
+      }),
+    );
   }
 
   private isValidLocation(feature: PhotonFeature): boolean {

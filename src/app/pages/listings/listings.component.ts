@@ -37,6 +37,7 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
+  private photon = inject(PhotonService);
   private failedImages = new Set<string>();
 
   constructor(
@@ -44,7 +45,6 @@ export class ListingsComponent implements OnInit {
     private cd: ChangeDetectorRef,
   ) {}
 
-  private readonly http = inject(HttpClient);
   private readonly meta = inject(Meta);
   private readonly doc = inject(DOCUMENT);
 

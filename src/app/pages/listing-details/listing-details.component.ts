@@ -7,6 +7,7 @@ import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
 import { of, Subject } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
+import { PLACEHOLDER_IMAGE } from '../../constants';
 
 declare const L: any;
 

@@ -307,53 +307,14 @@ export class DesktopLandingComponent implements OnInit {
     this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
   }
 
-  private queryNominatim(q: string) {
+  private queryPhoton(q: string) {
     if (!q || !q.trim()) return;
 
     this.locationLoading = true;
 
-    const left = 85.8201,
-      right = 89.8859,
-      bottom = 21.5219,
-      top = 27.223;
-
-    const params = new URLSearchParams({
-      format: 'jsonv2',
-      addressdetails: '1',
-      namedetails: '1',
-      extratags: '0',
-      limit: '8',
-      countrycodes: 'in',
-      viewbox: `${left},${top},${right},${bottom}`,
-      bounded: '1',
-      'accept-language': 'en-IN,hi-IN',
-      q,
-    });
-
-    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
-
-    this.http.get<any[]>(url).subscribe({
-      next: (res) => {
-        const allowed = new Set([
-          'city',
-          'town',
-          'village',
-          'suburb',
-          'state',
-          'district',
-          'county',
-          'locality',
-        ]);
-
-        const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
-        );
-
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
-          allowed.has((r.type || '').toLowerCase()),
-        );
-
-        this.locationResults = cleaned.slice(0, 8);
+    this.photon.searchLocation(q, 'IN', 8).subscribe({
+      next: (results) => {
+        this.locationResults = results;
         this.locationLoading = false;
       },
       error: () => {

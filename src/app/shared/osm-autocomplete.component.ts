@@ -99,8 +99,7 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         catchError(() => of([] as NominatimResult[])),
       )
       .subscribe((res) => {
-        const filtered = this.filterCityResults(res);
-        this.suggestions = filtered.length ? filtered : this.localFallback(this.value);
+        this.suggestions = res.length ? res : this.localFallback(this.value);
       });
   }
 

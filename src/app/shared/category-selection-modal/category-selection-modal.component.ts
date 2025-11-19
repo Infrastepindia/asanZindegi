@@ -68,7 +68,7 @@ export class CategorySelectionModalComponent implements OnInit {
         catchError(() => of([] as NominatimResult[])),
       )
       .subscribe((res) => {
-        this.locationSuggestions = this.filterLocationResults(res);
+        this.locationSuggestions = res;
         this.cdr.detectChanges();
       });
   }

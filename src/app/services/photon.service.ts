@@ -13,6 +13,8 @@ export interface PhotonFeature {
     name: string;
     street?: string;
     city?: string;
+    town?: string;
+    village?: string;
     county?: string;
     state?: string;
     country?: string;

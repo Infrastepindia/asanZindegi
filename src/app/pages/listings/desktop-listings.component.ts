@@ -33,7 +33,7 @@ interface ListingItem {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, OsmAutocompleteComponent],
   templateUrl: './desktop-listings.component.html',
-  styleUrl: './listings.component.css',
+  styleUrl: './desktop-listings.component.css',
 })
 export class DesktopListingsComponent implements OnInit {
   private ads = inject(AdsService);

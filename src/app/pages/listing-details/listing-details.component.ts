@@ -43,6 +43,7 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   overview = '';
   isLoading = false;
   error: string | null = null;
+  private failedImages = new Set<string>();
 
   // Contact visibility flags
   showPhone = false;

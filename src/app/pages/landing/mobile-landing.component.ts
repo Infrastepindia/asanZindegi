@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { PhotonService } from '../../services/photon.service';
 import { CategorySelectionModalComponent } from '../../shared/category-selection-modal/category-selection-modal.component';
+import { CityService } from '../../shared/city.service';
 
 interface CategoryItem {
   name: string;

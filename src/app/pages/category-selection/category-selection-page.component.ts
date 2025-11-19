@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiSuperCategory, ApiCategory, ApiService } from '../../services/api.service';
 import { PhotonService, LocationResult } from '../../services/photon.service';
 import { CityService } from '../../shared/city.service';
@@ -18,7 +18,7 @@ type NominatimResult = LocationResult;
 @Component({
   selector: 'app-category-selection-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './category-selection-page.component.html',
   styleUrl: './category-selection-page.component.css',
 })

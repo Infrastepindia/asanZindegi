@@ -116,19 +116,6 @@
       </div>
 
       <div class="filter-card p-3 mb-3">
-        <h6 class="mb-3">Service Type</h6>
-        <select
-          class="form-select"
-          [(ngModel)]="filters.serviceType"
-          [disabled]="!serviceTypesForSelected.length"
-          (change)="setPage(1)"
-        >
-          <option value="">All Service Types</option>
-          <option *ngFor="let t of serviceTypesForSelected" [value]="t">{{ t }}</option>
-        </select>
-      </div>
-
-      <div class="filter-card p-3 mb-3">
         <h6 class="mb-3">Location</h6>
         <az-osm-autocomplete
           [(ngModel)]="filters.location"

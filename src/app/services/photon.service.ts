@@ -97,21 +97,15 @@ export class PhotonService {
     const props = feature.properties;
     const osm_value = (props.osm_value || '').toLowerCase();
 
-    const validOsmTypes = [
-      'city',
-      'town',
-      'village',
-      'hamlet',
-      'suburb',
-      'neighbourhood',
-      'state',
-      'district',
-      'county',
-      'locality',
-      'administrative',
+    const invalidOsmTypes = [
+      'house',
+      'building',
+      'way',
+      'railway',
+      'landuse',
     ];
 
-    return validOsmTypes.includes(osm_value);
+    return !invalidOsmTypes.includes(osm_value);
   }
 
   private convertToLocationResult(feature: PhotonFeature): LocationResult {

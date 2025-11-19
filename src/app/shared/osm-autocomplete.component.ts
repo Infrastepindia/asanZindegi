@@ -69,7 +69,7 @@ type NominatimResult = LocationResult;
   ],
 })
 export class OsmAutocompleteComponent implements ControlValueAccessor {
-  private http = inject(HttpClient);
+  private photon = inject(PhotonService);
   private cityService = inject(CityService);
 
   @Input() placeholder = 'Enter location';

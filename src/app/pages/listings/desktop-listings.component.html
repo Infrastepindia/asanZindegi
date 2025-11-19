@@ -1,0 +1,229 @@
+<div class="container py-4">
+  <div class="row g-4">
+    <!-- Sidebar -->
+    <aside class="col-lg-3">
+      <div class="filter-card p-3 mb-3">
+        <h6 class="mb-3">Verification</h6>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="v-all"
+            value="all"
+            name="verified"
+            [(ngModel)]="filters.verified"
+            (change)="setPage(1)"
+          />
+          <label class="form-check-label" for="v-all">All</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="v-yes"
+            value="verified"
+            name="verified"
+            [(ngModel)]="filters.verified"
+            (change)="setPage(1)"
+          />
+          <label class="form-check-label" for="v-yes">Verified only</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="v-no"
+            value="unverified"
+            name="verified"
+            [(ngModel)]="filters.verified"
+            (change)="setPage(1)"
+          />
+          <label class="form-check-label" for="v-no">Unverified only</label>
+        </div>
+      </div>
+
+      <div class="filter-card p-3 mb-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="mb-0">Categories</h6>
+          <button type="button" class="btn btn-sm btn-link p-0" (click)="clearSelectedCategories()">
+            Clear
+          </button>
+        </div>
+        <div class="category-tree">
+          <div class="super-group" *ngFor="let sc of superCategories()">
+            <button
+              type="button"
+              class="btn btn-sm w-100 d-flex align-items-center justify-content-between text-start mb-1"
+              (click)="toggleSuper(sc.id)"
+            >
+              <span
+                ><i
+                  class="bi me-2"
+                  [ngClass]="expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'"
+                ></i
+                >{{ sc.title }}</span
+              >
+              <span class="badge bg-light text-dark">{{ sc.categories.length || 0 }}</span>
+            </button>
+            <div class="sub-list ms-3" *ngIf="expandedSuperIds.has(sc.id)">
+              <div class="form-check" *ngFor="let c of sc.categories">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="'cat-' + c.id"
+                  [value]="c.name"
+                  [checked]="isSubSelected(c.name)"
+                  (change)="toggleSubCategory(c.name)"
+                />
+                <label class="form-check-label" [for]="'cat-' + c.id">{{ c.name }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-card p-3 mb-3">
+        <h6 class="mb-3">Location</h6>
+        <az-osm-autocomplete
+          [(ngModel)]="filters.location"
+          (placeSelected)="onPlaceSelected($event.value)"
+          [placeholder]="'Enter location'"
+        ></az-osm-autocomplete>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <section class="col-lg-9">
+      <!-- Loader -->
+      <div class="loader-container" *ngIf="isLoadingListings">
+        <div class="spinner-wrapper">
+          <div class="spinner"></div>
+          <p class="loader-text">Loading listings...</p>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <ng-container *ngIf="!isLoadingListings">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="small text-secondary">
+            Showing {{ showingStart }}–{{ showingEnd }} of {{ filtered.length }} results
+          </div>
+          <div>
+            <select class="form-select form-select-sm">
+              <option>Relevance</option>
+              <option>Newest</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="list-group-v gap-3">
+          <div class="listing-row" *ngFor="let it of paged">
+            <div class="row g-3 align-items-stretch">
+              <div class="col-md-4">
+                <a class="thumb-wrap" [routerLink]="['/ad', it.id]">
+                  <img
+                    [src]="getImageSource(it)"
+                    [alt]="it.title"
+                    class="thumb"
+                    (error)="onImageLoadError(it)"
+                  />
+                  <span class="tag badge bg-light text-dark">{{ it.category }}</span>
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="d-flex align-items-start justify-content-between">
+                  <div>
+                    <div class="d-flex align-items-center gap-2">
+                      <a [routerLink]="['/ad', it.id]" class="text-decoration-none"
+                        ><h3 class="h6 mb-1">{{ it.title }}</h3></a
+                      >
+                      <span
+                        *ngIf="it.verified"
+                        class="verified-badge"
+                        [title]="
+                          it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'
+                        "
+                      >
+                        <i
+                          class="bi"
+                          [ngClass]="
+                            it.verifiedType === 'Company'
+                              ? 'bi-patch-check-fill'
+                              : 'bi-shield-check'
+                          "
+                        ></i>
+                        <span>{{ it.verifiedType === 'Company' ? 'Company' : 'KYC' }}</span>
+                      </span>
+                    </div>
+                    <div class="small text-secondary mb-2">
+                      <i class="bi bi-geo-alt me-1"></i>{{ it.location }}
+                      &nbsp;•&nbsp;
+                      <i class="bi bi-clock me-1"></i>{{ it.date | date: 'mediumDate' }}
+                    </div>
+                    <div class="small">
+                      <a
+                        class="text-decoration-none"
+                        [routerLink]="['/listings']"
+                        [queryParams]="{ category: it.category }"
+                        >More in {{ it.category }}</a
+                      >
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    <div class="price fw-bold">
+                      ₹{{ it.price
+                      }}<small class="text-secondary" *ngIf="it.unit"> / {{ it.unit }}</small>
+                    </div>
+                    <span
+                      class="badge pill-badge"
+                      [ngClass]="{
+                        'badge-sell': it.type === 'Sell',
+                        'badge-rent': it.type === 'Rent',
+                        'badge-exchange': it.type === 'Exchange',
+                        'badge-service': it.type === 'Service',
+                      }"
+                      >{{ it.type }}</span
+                    >
+                    <div class="mt-2 d-flex flex-wrap gap-2 justify-content-end">
+                      <span class="badge pill-badge bg-light text-dark">{{
+                        availabilityLabel(it)
+                      }}</span>
+                      <span class="badge pill-badge bg-light text-dark">{{
+                        distanceBadge(it.location)
+                      }}</span>
+                    </div>
+                    <div class="mt-2">
+                      <a class="btn btn-join btn-lg" [routerLink]="['/ad', it.id]">Details</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-3 d-flex justify-content-center">
+          <ul class="pagination smart-pagination">
+            <li class="page-item" [class.disabled]="page === 1">
+              <button class="page-link" (click)="setPage(page - 1)">Previous</button>
+            </li>
+            <ng-container *ngFor="let p of visiblePages">
+              <li class="page-item ellipsis" *ngIf="p === '...'">
+                <span class="page-link">…</span>
+              </li>
+              <li class="page-item" [class.active]="page === p" *ngIf="p !== '...'">
+                <button class="page-link" (click)="setPage(+p)">{{ p }}</button>
+              </li>
+            </ng-container>
+            <li class="page-item" [class.disabled]="page >= totalPages">
+              <button class="page-link" (click)="setPage(page + 1)">Next</button>
+            </li>
+          </ul>
+        </nav>
+      </ng-container>
+    </section>
+  </div>
+</div>

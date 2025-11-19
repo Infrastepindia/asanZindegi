@@ -37,6 +37,8 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
+  private failedImages = new Set<string>();
+
   constructor(
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,

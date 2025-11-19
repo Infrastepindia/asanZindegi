@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiSuperCategory, ApiCategory } from '../../services/api.service';
 import { PhotonService, LocationResult } from '../../services/photon.service';
+import { CityService } from '../city.service';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 

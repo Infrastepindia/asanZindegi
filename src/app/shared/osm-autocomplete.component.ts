@@ -152,16 +152,7 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
   }
 
   private search(q: string) {
-    const params = new HttpParams()
-      .set('q', q)
-      .set('format', 'jsonv2')
-      .set('addressdetails', '1')
-      .set('countrycodes', 'in')
-      .set('limit', '8');
-    return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
-      params,
-      headers: { 'Accept-Language': 'en' } as any,
-    });
+    return this.photon.searchLocation(q, 'IN', 8);
   }
 
   private localFallback(q: string): NominatimResult[] {
@@ -180,15 +171,5 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         type: 'city',
         address: { city: name.replace(', India', ''), state: '', country: 'India' },
       }));
-  }
-
-  private filterCityResults(list: NominatimResult[]): NominatimResult[] {
-    return list.filter((r) => {
-      if (r.class === 'place') {
-        return ['city', 'town', 'village', 'hamlet', 'suburb', 'neighbourhood'].includes(r.type);
-      }
-      if (r.class === 'boundary' && r.type === 'administrative') return true;
-      return false;
-    });
   }
 }

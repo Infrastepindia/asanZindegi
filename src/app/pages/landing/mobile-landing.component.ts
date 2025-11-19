@@ -253,7 +253,7 @@ export class MobileLandingComponent implements OnInit {
       this.locationResults = [];
       return;
     }
-    this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
+    this.locDebounce = setTimeout(() => this.queryPhoton(value.trim()), 300);
   }
 
   private queryPhoton(q: string) {

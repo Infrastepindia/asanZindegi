@@ -300,7 +300,7 @@
           </div>
 
           <div class="media-wrap mb-3">
-            <img [src]="item.cover" [alt]="item.title" class="img-fluid rounded-4 shadow" />
+            <img [src]="getImageSource(item.cover)" [alt]="item.title" class="img-fluid rounded-4 shadow" (error)="onImageLoadError(item.cover)" />
           </div>
 
           <div class="text-secondary">

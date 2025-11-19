@@ -380,7 +380,6 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   onImageLoadError(imageUrl: string): void {
     if (imageUrl && imageUrl !== PLACEHOLDER_IMAGE) {
       this.failedImages.add(imageUrl);
-      this.cd.detectChanges();
     }
   }
 

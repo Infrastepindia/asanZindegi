@@ -184,7 +184,6 @@ export class ListingsComponent implements OnInit {
     provider: 'all' as 'all' | 'company' | 'individual',
     category: '' as string,
     type: '' as '' | ListingItem['type'],
-    serviceType: '' as string,
   };
 
   // Super category → subcategory treeview data

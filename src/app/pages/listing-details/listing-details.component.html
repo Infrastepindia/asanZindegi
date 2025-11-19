@@ -325,7 +325,7 @@
       <aside class="col-lg-4">
         <div class="details-card p-3 p-md-4">
           <div class="text-center">
-            <img [src]="provider.avatar" alt="Provider" class="rounded-circle avatar-md mb-2" />
+            <img [src]="getImageSource(provider.avatar)" alt="Provider" class="rounded-circle avatar-md mb-2" (error)="onImageLoadError(provider.avatar)" />
             <div class="fw-semibold">{{ provider.name }}</div>
             <div class="text-secondary small">Member Since {{ provider.memberSince}}</div>
           </div>

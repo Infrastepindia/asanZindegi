@@ -4,6 +4,13 @@
   border-radius: 12px;
 }
 
+.filter-card h6 {
+  margin-bottom: 1rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
 .list-group-v {
   display: grid;
   gap: 16px;
@@ -13,8 +20,13 @@
   background: #fff;
   border: 1px solid #e7e9f3;
   border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.list-group-v .listing-row:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .thumb-wrap {
@@ -29,6 +41,7 @@
   height: 160px;
   object-fit: cover;
   display: block;
+  background: #f0f0f0;
 }
 
 .tag {
@@ -43,38 +56,49 @@
 
 .pill-badge {
   display: inline-block;
-  margin-top: 6px;
+  margin-top: 8px;
+  margin-right: 6px;
+  padding: 4px 12px !important;
+  font-size: 12px !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent;
 }
 
 .badge-sell {
-  background: #e3f2fd;
-  color: #0d47a1;
+  background: #e3f2fd !important;
+  color: #0d47a1 !important;
+  border: 1px solid #bbdefb !important;
 }
 
 .badge-rent {
-  background: #e8f5e9;
-  color: #1b5e20;
+  background: #e8f5e9 !important;
+  color: #1b5e20 !important;
+  border: 1px solid #c8e6c9 !important;
 }
 
 .badge-exchange {
-  background: #fff3e0;
-  color: #e65100;
+  background: #fff3e0 !important;
+  color: #e65100 !important;
+  border: 1px solid #ffe0b2 !important;
 }
 
 .badge-service {
-  background: #ede7f6;
-  color: #4a148c;
+  background: #ede7f6 !important;
+  color: #4a148c !important;
+  border: 1px solid #d1c4e9 !important;
 }
 
 .verified-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
+  gap: 6px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: #e8f5e9;
   color: #1b5e20;
   font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #c8e6c9;
 }
 
 @media (max-width: 991px) {

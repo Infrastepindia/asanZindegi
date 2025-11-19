@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { PhotonService } from '../../services/photon.service';
 import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
-import { HttpClient } from '@angular/common/http';
 import { Meta } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { PLACEHOLDER_IMAGE } from '../../constants';
@@ -37,6 +37,7 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
+  private photon = inject(PhotonService);
   private failedImages = new Set<string>();
 
   constructor(
@@ -44,7 +45,6 @@ export class ListingsComponent implements OnInit {
     private cd: ChangeDetectorRef,
   ) {}
 
-  private readonly http = inject(HttpClient);
   private readonly meta = inject(Meta);
   private readonly doc = inject(DOCUMENT);
 
@@ -762,7 +762,7 @@ export class ListingsComponent implements OnInit {
       this.locationResults = [];
       return;
     }
-    this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
+    this.locDebounce = setTimeout(() => this.queryPhoton(value.trim()), 300);
   }
 
   selectLocation(item: { display_name: string; lat: string; lon: string }) {
@@ -771,44 +771,12 @@ export class ListingsComponent implements OnInit {
     this.setPage(1);
   }
 
-  private queryNominatim(q: string) {
+  private queryPhoton(q: string) {
     this.locationLoading = true;
-    const left = 68.176645,
-      right = 97.395561,
-      bottom = 6.554607,
-      top = 35.674545; // India bbox
-    const params = new URLSearchParams({
-      format: 'jsonv2',
-      addressdetails: '1',
-      namedetails: '1',
-      extratags: '0',
-      limit: '8',
-      countrycodes: 'in',
-      viewbox: `${left},${top},${right},${bottom}`,
-      bounded: '1',
-      'accept-language': 'en-IN,hi-IN',
-      q,
-    });
-    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
-    this.http.get<any[]>(url).subscribe({
-      next: (res) => {
-        const allowed = new Set([
-          'city',
-          'town',
-          'village',
-          'suburb',
-          'state',
-          'district',
-          'county',
-          'locality',
-        ]);
-        const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
-        );
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
-          allowed.has((r.type || '').toLowerCase()),
-        );
-        this.locationResults = cleaned.slice(0, 8);
+
+    this.photon.searchLocation(q, 'IN', 8).subscribe({
+      next: (results) => {
+        this.locationResults = results;
         this.locationLoading = false;
       },
       error: () => {

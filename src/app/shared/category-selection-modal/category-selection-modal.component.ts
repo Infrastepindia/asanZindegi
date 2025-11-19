@@ -1,19 +1,20 @@
-import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { ApiSuperCategory, ApiCategory } from '../../services/api.service';
+import { PhotonService, LocationResult } from '../../services/photon.service';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  class: string;
-  type: string;
-  address?: Record<string, string>;
-}
+type NominatimResult = LocationResult;
 
 interface CategorySelectionResult {
   supercategoryId: number;
@@ -49,11 +50,8 @@ export class CategorySelectionModalComponent implements OnInit {
 
   private locationQuery$ = new BehaviorSubject<string>('');
   private locationDebounceSubscription: any;
-
-  constructor(
-    private http: HttpClient,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private photon = inject(PhotonService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     if (!this.supercategory) {
@@ -71,7 +69,7 @@ export class CategorySelectionModalComponent implements OnInit {
         catchError(() => of([] as NominatimResult[])),
       )
       .subscribe((res) => {
-        this.locationSuggestions = this.filterLocationResults(res);
+        this.locationSuggestions = res;
         this.cdr.detectChanges();
       });
   }
@@ -119,27 +117,7 @@ export class CategorySelectionModalComponent implements OnInit {
   }
 
   private searchLocation(q: string) {
-    const params = new HttpParams()
-      .set('q', q)
-      .set('format', 'jsonv2')
-      .set('addressdetails', '1')
-      .set('countrycodes', 'in')
-      .set('limit', '8');
-
-    return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
-      params,
-      headers: { 'Accept-Language': 'en' } as any,
-    });
-  }
-
-  private filterLocationResults(list: NominatimResult[]): NominatimResult[] {
-    return list.filter((r) => {
-      if (r.class === 'place') {
-        return ['city', 'town', 'village', 'hamlet', 'suburb', 'neighbourhood'].includes(r.type);
-      }
-      if (r.class === 'boundary' && r.type === 'administrative') return true;
-      return false;
-    });
+    return this.photon.searchLocation(q, 'IN', 8);
   }
 
   iconClass(icon?: string): string[] {

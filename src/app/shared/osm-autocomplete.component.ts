@@ -2,19 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, forwardRef, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 import { CityService } from './city.service';
+import { PhotonService, LocationResult } from '../services/photon.service';
 
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  class: string;
-  type: string;
-  address?: Record<string, string>;
-}
+type NominatimResult = LocationResult;
 
 @Component({
   selector: 'az-osm-autocomplete',
@@ -76,7 +69,7 @@ interface NominatimResult {
   ],
 })
 export class OsmAutocompleteComponent implements ControlValueAccessor {
-  private http = inject(HttpClient);
+  private photon = inject(PhotonService);
   private cityService = inject(CityService);
 
   @Input() placeholder = 'Enter location';
@@ -106,8 +99,7 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         catchError(() => of([] as NominatimResult[])),
       )
       .subscribe((res) => {
-        const filtered = this.filterCityResults(res);
-        this.suggestions = filtered.length ? filtered : this.localFallback(this.value);
+        this.suggestions = res.length ? res : this.localFallback(this.value);
       });
   }
 
@@ -159,16 +151,7 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
   }
 
   private search(q: string) {
-    const params = new HttpParams()
-      .set('q', q)
-      .set('format', 'jsonv2')
-      .set('addressdetails', '1')
-      .set('countrycodes', 'in')
-      .set('limit', '8');
-    return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
-      params,
-      headers: { 'Accept-Language': 'en' } as any,
-    });
+    return this.photon.searchLocation(q, 'IN', 8);
   }
 
   private localFallback(q: string): NominatimResult[] {
@@ -187,15 +170,5 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         type: 'city',
         address: { city: name.replace(', India', ''), state: '', country: 'India' },
       }));
-  }
-
-  private filterCityResults(list: NominatimResult[]): NominatimResult[] {
-    return list.filter((r) => {
-      if (r.class === 'place') {
-        return ['city', 'town', 'village', 'hamlet', 'suburb', 'neighbourhood'].includes(r.type);
-      }
-      if (r.class === 'boundary' && r.type === 'administrative') return true;
-      return false;
-    });
   }
 }

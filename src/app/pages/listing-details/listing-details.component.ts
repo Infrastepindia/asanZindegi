@@ -367,6 +367,23 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   //     fillOpacity: 0.12,
   //   }).addTo(this.map);
   // }
+  getImageSource(imageUrl: string | undefined): string {
+    if (!imageUrl || imageUrl.trim() === '') {
+      return PLACEHOLDER_IMAGE;
+    }
+    if (this.failedImages.has(imageUrl)) {
+      return PLACEHOLDER_IMAGE;
+    }
+    return imageUrl;
+  }
+
+  onImageLoadError(imageUrl: string): void {
+    if (imageUrl && imageUrl !== PLACEHOLDER_IMAGE) {
+      this.failedImages.add(imageUrl);
+      this.cd.detectChanges();
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();

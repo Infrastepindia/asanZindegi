@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { PhotonService } from '../../services/photon.service';
+import { CityService } from '../../shared/city.service';
 
 interface CategoryItem {
   name: string;

@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdsService } from '../../services/ads.service';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { PhotonService } from '../../services/photon.service';
+import { CityService } from '../../shared/city.service';
 import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.component';
 import { Meta } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';

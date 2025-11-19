@@ -8,6 +8,7 @@ import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.componen
 import { HttpClient } from '@angular/common/http';
 import { Meta } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
+import { PLACEHOLDER_IMAGE } from '../../constants';
 
 interface ListingItem {
   id: number;

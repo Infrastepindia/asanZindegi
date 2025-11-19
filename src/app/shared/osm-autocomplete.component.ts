@@ -7,14 +7,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { CityService } from './city.service';
 import { PhotonService, LocationResult } from '../services/photon.service';
 
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  class: string;
-  type: string;
-  address?: Record<string, string>;
-}
+type NominatimResult = LocationResult;
 
 @Component({
   selector: 'az-osm-autocomplete',

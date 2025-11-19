@@ -74,9 +74,9 @@ export class DesktopLandingComponent implements OnInit {
     });
   }
 
-  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly api = inject(ApiService);
+  private readonly photon = inject(PhotonService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly doc = inject(DOCUMENT);
 

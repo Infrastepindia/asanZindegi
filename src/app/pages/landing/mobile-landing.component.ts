@@ -2,8 +2,8 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
+import { PhotonService } from '../../services/photon.service';
 import { CategorySelectionModalComponent } from '../../shared/category-selection-modal/category-selection-modal.component';
 
 interface CategoryItem {

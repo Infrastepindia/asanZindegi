@@ -1,0 +1,231 @@
+<div class="mobile-listings-container">
+  <!-- Mobile Header with Location and Filter -->
+  <div class="mobile-listings-header">
+    <div class="mobile-listings-top">
+      <div class="location-display">
+        <i class="bi bi-geo-alt"></i>
+        <span class="location-text">{{ filters.location || 'Select location' }}</span>
+      </div>
+      <button
+        type="button"
+        class="filter-toggle-btn"
+        (click)="openFilterSheet()"
+        aria-label="Open filters"
+      >
+        <i class="bi bi-funnel"></i>
+        <span class="filter-count" *ngIf="filters.selectedCategories.length">
+          {{ filters.selectedCategories.length }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Listing Content -->
+  <div class="mobile-listings-content">
+    <!-- Loader -->
+    <div class="loader-container" *ngIf="isLoadingListings">
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+        <p class="loader-text">Loading listings...</p>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <ng-container *ngIf="!isLoadingListings">
+      <div class="results-info" *ngIf="showingCount > 0">
+        <p class="results-count">{{ showingCount }} results found</p>
+      </div>
+
+      <!-- Listings Grid -->
+      <div class="mobile-listings-grid">
+        <div class="mobile-listing-card" *ngFor="let it of paged">
+          <a [routerLink]="['/ad', it.id]" class="card-image-link">
+            <img
+              [src]="getImageSource(it)"
+              [alt]="it.title"
+              class="card-image"
+              (error)="onImageLoadError(it)"
+            />
+            <span class="card-category-badge">{{ it.category }}</span>
+            <span
+              class="card-verified-badge"
+              *ngIf="it.verified"
+              [title]="it.verifiedType === 'Company' ? 'Verified Company' : 'KYC Verified'"
+            >
+              <i
+                class="bi"
+                [ngClass]="
+                  it.verifiedType === 'Company' ? 'bi-patch-check-fill' : 'bi-shield-check'
+                "
+              ></i>
+            </span>
+          </a>
+          <div class="card-content">
+            <h3 class="card-title">{{ it.title }}</h3>
+            <div class="card-location">
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ it.location }}</span>
+            </div>
+            <div class="card-price">
+              <span class="price-value">₹{{ it.price }}</span>
+              <span class="price-unit" *ngIf="it.unit">/ {{ it.unit }}</span>
+            </div>
+            <div class="card-type-badge">
+              <span
+                class="badge"
+                [ngClass]="{
+                  'badge-sell': it.type === 'Sell',
+                  'badge-rent': it.type === 'Rent',
+                  'badge-exchange': it.type === 'Exchange',
+                  'badge-service': it.type === 'Service',
+                }"
+              >
+                {{ it.type }}
+              </span>
+            </div>
+            <a [routerLink]="['/ad', it.id]" class="card-details-btn">
+              <span>Details</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="mobile-pagination" *ngIf="totalPages > 1">
+        <button
+          type="button"
+          class="btn-pagination-prev"
+          [disabled]="page === 1"
+          (click)="prevPage()"
+          aria-label="Previous page"
+        >
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <span class="pagination-info">{{ page }} / {{ totalPages }}</span>
+        <button
+          type="button"
+          class="btn-pagination-next"
+          [disabled]="page >= totalPages"
+          (click)="nextPage()"
+          aria-label="Next page"
+        >
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Filter Sheet (Mobile) -->
+  <div class="filter-sheet" *ngIf="showFilterSheet">
+    <div class="filter-sheet-overlay" (click)="closeFilterSheet()"></div>
+    <div class="filter-sheet-content">
+      <div class="filter-sheet-header">
+        <h3 class="filter-sheet-title">Filters</h3>
+        <button
+          type="button"
+          class="filter-sheet-close"
+          (click)="closeFilterSheet()"
+          aria-label="Close filters"
+        >
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="filter-sheet-body">
+        <!-- Location Filter -->
+        <div class="filter-section">
+          <h4 class="filter-section-title">Location</h4>
+          <az-osm-autocomplete
+            [(ngModel)]="filters.location"
+            (placeSelected)="onPlaceSelected($event.value)"
+            [placeholder]="'Enter location'"
+          ></az-osm-autocomplete>
+        </div>
+
+        <!-- Verification Filter -->
+        <div class="filter-section">
+          <h4 class="filter-section-title">Verification</h4>
+          <div class="filter-radio-group">
+            <label class="filter-radio">
+              <input
+                type="radio"
+                name="verified"
+                value="all"
+                [(ngModel)]="filters.verified"
+              />
+              <span>All</span>
+            </label>
+            <label class="filter-radio">
+              <input
+                type="radio"
+                name="verified"
+                value="verified"
+                [(ngModel)]="filters.verified"
+              />
+              <span>Verified only</span>
+            </label>
+            <label class="filter-radio">
+              <input
+                type="radio"
+                name="verified"
+                value="unverified"
+                [(ngModel)]="filters.verified"
+              />
+              <span>Unverified only</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Categories Filter -->
+        <div class="filter-section">
+          <div class="filter-section-header">
+            <h4 class="filter-section-title">Categories</h4>
+            <button
+              type="button"
+              class="filter-clear-btn"
+              (click)="clearSelectedCategories()"
+              aria-label="Clear categories"
+            >
+              Clear
+            </button>
+          </div>
+          <div class="filter-categories">
+            <div class="category-item" *ngFor="let sc of superCategories()">
+              <button
+                type="button"
+                class="category-toggle"
+                (click)="toggleSuper(sc.id)"
+                [attr.aria-expanded]="expandedSuperIds.has(sc.id)"
+              >
+                <i
+                  class="bi me-2"
+                  [ngClass]="expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'"
+                ></i>
+                <span>{{ sc.title }}</span>
+                <span class="category-count">{{ sc.categories.length }}</span>
+              </button>
+              <div class="category-sub-items" *ngIf="expandedSuperIds.has(sc.id)">
+                <label class="category-checkbox" *ngFor="let c of sc.categories">
+                  <input
+                    type="checkbox"
+                    [value]="c.name"
+                    [checked]="isSubSelected(c.name)"
+                    (change)="toggleSubCategory(c.name)"
+                  />
+                  <span>{{ c.name }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-sheet-footer">
+        <button type="button" class="btn-apply-filters" (click)="applyFilters()">
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

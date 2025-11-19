@@ -108,7 +108,6 @@ export class MobileLandingComponent implements OnInit {
     items: CategoryItem[];
   }> = [];
 
-
   featuredAds: FeaturedAd[] = [
     {
       title: 'Electric Panel Repairing Service',
@@ -302,6 +301,8 @@ export class MobileLandingComponent implements OnInit {
 
   openCategorySelection(supercategory: ApiSuperCategory | null): void {
     if (!supercategory) return;
-    this.router.navigate(['/category-selection'], { queryParams: { supercategoryId: supercategory.id } });
+    this.router.navigate(['/category-selection'], {
+      queryParams: { supercategoryId: supercategory.id },
+    });
   }
 }

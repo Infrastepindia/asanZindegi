@@ -20,7 +20,11 @@ import { CategorySelectionPageComponent } from './pages/category-selection/categ
 export const routes: Routes = [
   { path: '', component: LandingComponent, title: 'AsanZindegi' },
   { path: 'home', component: HomeComponent, title: 'Home' },
-  { path: 'category-selection', component: CategorySelectionPageComponent, title: 'Select Category' },
+  {
+    path: 'category-selection',
+    component: CategorySelectionPageComponent,
+    title: 'Select Category',
+  },
   { path: 'listings/:slug', component: ListingsComponent, title: 'Listings' },
   { path: 'listings', component: ListingsComponent, title: 'Listings' },
   { path: 'login', component: LoginComponent, title: 'Login' },

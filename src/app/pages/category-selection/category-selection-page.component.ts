@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -56,7 +51,8 @@ export class CategorySelectionPageComponent implements OnInit {
     this.api.getCategories().subscribe({
       next: (res) => {
         const categories = (res as any).data || [];
-        this.supercategory = categories.find((c: ApiSuperCategory) => c.id === this.supercategoryId) || null;
+        this.supercategory =
+          categories.find((c: ApiSuperCategory) => c.id === this.supercategoryId) || null;
         if (!this.supercategory) {
           this.router.navigate(['/']);
         }

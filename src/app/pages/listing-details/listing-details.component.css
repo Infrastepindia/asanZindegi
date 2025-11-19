@@ -1,94 +1,12 @@
-.details-wrap {
-  background: #f8f9fb;
-}
-.details-card {
-  background: #fff;
-  border: 1px solid #e7e9f3;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-}
-.media-wrap img {
+/* Wrapper component - CSS is delegated to mobile/desktop components */
+app-mobile-listing-details {
+  display: block;
   width: 100%;
-  height: auto;
-}
-.thumbs .thumb-sm {
-  width: 80px;
-  height: 60px;
-  object-fit: cover;
-  border: 1px solid #e7e9f3;
-}
-.meta-list li {
-  padding: 6px 0;
-  border-bottom: 1px dashed #eef1f6;
-}
-.meta-list li:last-child {
-  border-bottom: 0;
-}
-.video-box iframe {
-  border: 0;
-}
-.map-box {
-  width: 100%;
-  height: 300px;
-  overflow: hidden;
-}
-.verified-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #e8f5e9;
-  color: #1b5e20;
-  font-size: 12px;
-}
-.avatar-md {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-}
-.price {
-  font-size: 20px;
-}
-.badge-sell {
-  background: #e3f2fd;
-  color: #0d47a1;
-}
-.badge-rent {
-  background: #e8f5e9;
-  color: #1b5e20;
-}
-.badge-exchange {
-  background: #fff3e0;
-  color: #e65100;
-}
-.badge-service {
-  background: #ede7f6;
-  color: #4a148c;
-}
-@media (max-width: 575px) {
-  .thumbs .thumb-sm {
-    width: 72px;
-    height: 54px;
-  }
-  .map-box {
-    height: 260px;
-  }
+  height: 100%;
 }
 
-/* Ad size modifiers (use with global .ad-slot) */
-.ad-banner-sm {
-  height: 60px;
-}
-.ad-banner-lg {
-  height: 120px;
-}
-.ad-rect-md {
-  height: 200px;
-}
-.ad-square-md {
-  height: 250px;
-}
-.ad-tall {
-  height: 320px;
+app-desktop-listing-details {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

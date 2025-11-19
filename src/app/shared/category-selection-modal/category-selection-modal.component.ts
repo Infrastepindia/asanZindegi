@@ -2,18 +2,11 @@ import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef, inje
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiSuperCategory, ApiCategory } from '../../services/api.service';
-import { PhotonService } from '../../services/photon.service';
+import { PhotonService, LocationResult } from '../../services/photon.service';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  class: string;
-  type: string;
-  address?: Record<string, string>;
-}
+type NominatimResult = LocationResult;
 
 interface CategorySelectionResult {
   supercategoryId: number;

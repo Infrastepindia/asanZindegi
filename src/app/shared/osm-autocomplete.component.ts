@@ -152,7 +152,18 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
   }
 
   private search(q: string) {
-    return this.photon.searchLocation(q, 'IN', 8);
+    const currentCity = this.cityService.city();
+    const bounds = currentCity ? this.cityService.getBoundsForCity(currentCity) : null;
+
+    let lat: number | undefined;
+    let lon: number | undefined;
+
+    if (bounds) {
+      lat = (bounds.bottom + bounds.top) / 2;
+      lon = (bounds.left + bounds.right) / 2;
+    }
+
+    return this.photon.searchLocation(q, 'IN', 8, lat, lon);
   }
 
   private localFallback(q: string): NominatimResult[] {

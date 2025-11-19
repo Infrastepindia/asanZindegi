@@ -6,7 +6,6 @@ import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } fro
 import { BehaviorSubject, of } from 'rxjs';
 import { CityService } from './city.service';
 import { PhotonService, LocationResult } from '../services/photon.service';
-import { computed } from '@angular/core';
 
 type NominatimResult = LocationResult;
 

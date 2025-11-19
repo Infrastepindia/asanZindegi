@@ -65,8 +65,7 @@ export class PhotonService {
     let params = new HttpParams()
       .set('q', query.trim())
       .set('limit', limit.toString())
-      .set('lang', 'en')
-      .set('filter', `countrycode:${countryCode}`);
+      .set('lang', 'en');
 
     if (lat !== undefined && lon !== undefined) {
       params = params.set('lat', lat.toString()).set('lon', lon.toString());

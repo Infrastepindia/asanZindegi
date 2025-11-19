@@ -8,6 +8,7 @@ import { OsmAutocompleteComponent } from '../../shared/osm-autocomplete.componen
 import { HttpClient } from '@angular/common/http';
 import { Meta } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
+import { PLACEHOLDER_IMAGE } from '../../constants';
 
 interface ListingItem {
   id: number;
@@ -36,6 +37,8 @@ interface ListingItem {
 export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
+  private failedImages = new Set<string>();
+
   constructor(
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,
@@ -719,6 +722,17 @@ export class ListingsComponent implements OnInit {
 
   distanceBadge(itemLocation: string): string {
     return this.distanceFromSearch(itemLocation) || 'Set location';
+  }
+
+  getImageSource(item: ListingItem): string {
+    if (this.failedImages.has(item.id.toString())) {
+      return PLACEHOLDER_IMAGE;
+    }
+    return item.cover && item.cover.trim() ? item.cover : PLACEHOLDER_IMAGE;
+  }
+
+  onImageLoadError(item: ListingItem): void {
+    this.failedImages.add(item.id.toString());
   }
 
   onPlaceSelected(val: string) {

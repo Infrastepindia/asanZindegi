@@ -169,7 +169,12 @@
             <div class="row g-3 align-items-stretch">
               <div class="col-md-4">
                 <a class="thumb-wrap" [routerLink]="['/ad', it.id]">
-                  <img [src]="it.cover" [alt]="it.title" class="thumb" />
+                  <img
+                    [src]="getImageSource(it)"
+                    [alt]="it.title"
+                    class="thumb"
+                    (error)="onImageLoadError(it)"
+                  />
                   <span class="tag badge bg-light text-dark">{{ it.category }}</span>
                 </a>
               </div>

@@ -1,4 +1,11 @@
-import { Component, inject, PLATFORM_ID, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  PLATFORM_ID,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
@@ -7,6 +14,7 @@ import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
 import { of, Subject } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
+import { PLACEHOLDER_IMAGE } from '../../constants';
 
 declare const L: any;
 
@@ -42,6 +50,7 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   overview = '';
   isLoading = false;
   error: string | null = null;
+  private failedImages = new Set<string>();
 
   // Contact visibility flags
   showPhone = false;
@@ -94,7 +103,7 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
     }
     return [min, max];
   }
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef) {}
   // ngOnInit() {
   //   this.route.paramMap
   //     .pipe(
@@ -158,12 +167,12 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   // }
   ngOnInit() {
     this.isLoading = true;
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.listingId = Number(params.get('id'));
       console.log('Listing ID (live):', this.listingId);
     });
     if (this.listingId) {
-      this.loadAdDetails(this.listingId)
+      this.loadAdDetails(this.listingId);
     }
   }
 
@@ -219,10 +228,10 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
         this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services in ${this.item.location}.`;
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
-        console.log(this.item)
+        console.log(this.item);
         this.isLoading = false; // ✅ Always hide spinner at end
       }
-    })
+    });
   }
 
   private loadRelatedListings() {
@@ -365,6 +374,22 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   //     fillOpacity: 0.12,
   //   }).addTo(this.map);
   // }
+  getImageSource(imageUrl: string | undefined): string {
+    if (!imageUrl || imageUrl.trim() === '') {
+      return PLACEHOLDER_IMAGE;
+    }
+    if (this.failedImages.has(imageUrl)) {
+      return PLACEHOLDER_IMAGE;
+    }
+    return imageUrl;
+  }
+
+  onImageLoadError(imageUrl: string): void {
+    if (imageUrl && imageUrl !== PLACEHOLDER_IMAGE) {
+      this.failedImages.add(imageUrl);
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();

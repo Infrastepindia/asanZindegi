@@ -42,6 +42,11 @@
   color: #1b5e20;
   font-size: 12px;
 }
+.avatar-md {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
 .price {
   font-size: 20px;
 }

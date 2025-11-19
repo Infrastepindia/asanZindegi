@@ -1,14 +1,14 @@
 <!-- <section class="details-wrap py-5"> -->
- <!-- Loading Spinner -->
-  <!-- <div *ngIf="isLoading" class="text-center py-5">
+<!-- Loading Spinner -->
+<!-- <div *ngIf="isLoading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status"></div>
     <p class="mt-2">Loading service details...</p>
   </div> -->
- <!-- Error -->
-  <!-- <div *ngIf="error && !isLoading" class="alert alert-danger text-center mt-4">
+<!-- Error -->
+<!-- <div *ngIf="error && !isLoading" class="alert alert-danger text-center mt-4">
     {{ error }}
   </div> -->
-   <!-- <div *ngIf="!isLoading && item">
+<!-- <div *ngIf="!isLoading && item">
     <div class="container" *ngIf="item as it">
      
       <div class="small text-secondary mb-3">
@@ -199,8 +199,8 @@
       </div>
     </div>
   </div>   -->
-  
-  <!-- <ng-template #notFound>
+
+<!-- <ng-template #notFound>
     <div class="container py-5">
       <div class="details-card p-4">
         <h2 class="h5 text-danger">{{ error ? 'Error Loading Listing' : 'Listing not found' }}</h2>
@@ -211,8 +211,8 @@
       </div>
     </div>
   </ng-template> -->
-  <!-- Pricing Modal -->
-  <!-- <div class="modal fade" id="priceModal" tabindex="-1" aria-hidden="true">
+<!-- Pricing Modal -->
+<!-- <div class="modal fade" id="priceModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -249,8 +249,8 @@
     </div>
   </div> -->
 
-  <!-- Service Types Modal -->
-  <!-- <div class="modal fade" id="typesModal" tabindex="-1" aria-hidden="true">
+<!-- Service Types Modal -->
+<!-- <div class="modal fade" id="typesModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -286,7 +286,7 @@
   </div>
 
   <!-- Content -->
-  <div *ngIf="item != null && !isLoading"  class="container">
+  <div *ngIf="item != null && !isLoading" class="container">
     <div class="row g-4">
       <div class="col-lg-8">
         <div class="details-card p-3 p-md-4 mb-3">
@@ -300,7 +300,12 @@
           </div>
 
           <div class="media-wrap mb-3">
-            <img [src]="item.cover" [alt]="item.title" class="img-fluid rounded-4 shadow" />
+            <img
+              [src]="getImageSource(item.cover)"
+              [alt]="item.title"
+              class="img-fluid rounded-4 shadow"
+              (error)="onImageLoadError(item.cover)"
+            />
           </div>
 
           <div class="text-secondary">
@@ -325,9 +330,14 @@
       <aside class="col-lg-4">
         <div class="details-card p-3 p-md-4">
           <div class="text-center">
-            <img [src]="provider.avatar" alt="Provider" class="rounded-circle avatar-md mb-2" />
+            <img
+              [src]="getImageSource(provider.avatar)"
+              alt="Provider"
+              class="rounded-circle avatar-md mb-2"
+              (error)="onImageLoadError(provider.avatar)"
+            />
             <div class="fw-semibold">{{ provider.name }}</div>
-            <div class="text-secondary small">Member Since {{ provider.memberSince}}</div>
+            <div class="text-secondary small">Member Since {{ provider.memberSince }}</div>
           </div>
           <ul class="list-unstyled small text-secondary mt-2">
             <li><i class="bi bi-envelope me-2"></i>{{ showEmail ? provider.email : 'Hidden' }}</li>

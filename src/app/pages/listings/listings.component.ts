@@ -724,6 +724,18 @@ export class ListingsComponent implements OnInit {
     return this.distanceFromSearch(itemLocation) || 'Set location';
   }
 
+  getImageSource(item: ListingItem): string {
+    if (this.failedImages.has(item.id.toString())) {
+      return PLACEHOLDER_IMAGE;
+    }
+    return item.cover && item.cover.trim() ? item.cover : PLACEHOLDER_IMAGE;
+  }
+
+  onImageLoadError(item: ListingItem): void {
+    this.failedImages.add(item.id.toString());
+    this.cd.detectChanges();
+  }
+
   onPlaceSelected(val: string) {
     this.filters.location = val || '';
     if (typeof window !== 'undefined')

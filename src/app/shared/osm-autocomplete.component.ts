@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, forwardRef, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 import { CityService } from './city.service';
+import { PhotonService, LocationResult } from '../services/photon.service';
 
 interface NominatimResult {
   display_name: string;

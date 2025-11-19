@@ -405,21 +405,6 @@ export class ListingsComponent implements OnInit {
 
   types: Array<ListingItem['type']> = ['Sell', 'Rent', 'Exchange', 'Service'];
 
-  private serviceTypeMap: Record<string, string[]> = {
-    Plumbing: ['Leak Fix', 'Pipe Installation', 'Bathroom Fittings', 'Kitchen Plumbing'],
-    Electrical: ['Wiring Service', 'Appliance Install', 'Lighting Setup', 'Panel Repair'],
-    Cleaning: ['Home Cleaning', 'Deep Cleaning', 'Office Cleaning', 'Sofa Shampoo'],
-    Tutoring: ['Math Tuition', 'English Coaching', 'Science Tutor', 'Exam Prep'],
-    Carpentry: ['Furniture Repair', 'Custom Shelves', 'Door Fix', 'Wardrobe Build'],
-    Painting: ['Interior Paint', 'Exterior Paint', 'Texture Work', 'Ceiling Paint'],
-    Moving: ['House Shifting', 'Office Relocation', 'Packing Service', 'Local Transport'],
-    'Appliance Repair': ['AC Repair', 'Fridge Repair', 'Washer Repair', 'Microwave Fix'],
-  };
-
-  get serviceTypesForSelected(): string[] {
-    const cat = this.filters.category;
-    return cat && (this.serviceTypeMap as any)[cat] ? this.serviceTypeMap[cat] : [];
-  }
 
   private prng(seed: number) {
     return function () {

@@ -66,7 +66,7 @@ export class PhotonService {
       .set('lang', 'en');
 
     return this.http
-      .get<PhotonResponse>(`${this.PHOTON_API}/search`, { params })
+      .get<PhotonResponse>(`${this.PHOTON_API}/`, { params })
       .pipe(
         map((response) => {
           return response.features

@@ -236,6 +236,7 @@
   display: flex;
   align-items: baseline;
   gap: 4px;
+  margin: 4px 0;
 }
 
 .price-value {
@@ -251,33 +252,38 @@
 }
 
 .card-type-badge {
-  margin: 4px 0;
+  margin: 6px 0 4px 0;
 }
 
 .card-type-badge .badge {
-  font-size: 11px;
-  padding: 3px 8px;
+  font-size: 12px;
+  padding: 4px 10px;
   border-radius: 4px;
+  font-weight: 500;
 }
 
 .badge-sell {
   background: #e3f2fd;
   color: #0d47a1;
+  border: 1px solid #bbdefb;
 }
 
 .badge-rent {
   background: #e8f5e9;
   color: #1b5e20;
+  border: 1px solid #c8e6c9;
 }
 
 .badge-exchange {
   background: #fff3e0;
   color: #e65100;
+  border: 1px solid #ffe0b2;
 }
 
 .badge-service {
   background: #ede7f6;
   color: #4a148c;
+  border: 1px solid #d1c4e9;
 }
 
 .card-details-btn {
@@ -285,17 +291,24 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 10px 12px;
   margin-top: auto;
   background: linear-gradient(90deg, #7b61ff 0%, #ff4dd2 100%);
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: box-shadow 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 480px) {
+  .card-details-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
 }
 
 .card-details-btn:active {

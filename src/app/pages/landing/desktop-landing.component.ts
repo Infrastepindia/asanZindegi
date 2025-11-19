@@ -309,30 +309,12 @@ export class DesktopLandingComponent implements OnInit {
     this.locDebounce = setTimeout(() => this.queryPhoton(value.trim()), 300);
   }
 
-  private getLocationBias(): { lat: string; lon: string; country: string } {
-    const lat = this.getLocalStorage('userLat') || '22.5726';
-    const lon = this.getLocalStorage('userLon') || '88.3639';
-    const country = this.getLocalStorage('userCountry') || 'IN';
-    return { lat, lon, country };
-  }
-
-  private getLocalStorage(key: string): string | null {
-    if (typeof localStorage === 'undefined') return null;
-    return localStorage.getItem(key);
-  }
-
-  private setLocalStorage(key: string, value: string): void {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.setItem(key, value);
-  }
-
   private queryPhoton(q: string) {
     if (!q || !q.trim()) return;
 
     this.locationLoading = true;
-    const bias = this.getLocationBias();
 
-    this.photon.searchLocation(q, bias.country, 8).subscribe({
+    this.photon.searchLocation(q, 'IN', 8).subscribe({
       next: (results) => {
         this.locationResults = results;
         this.locationLoading = false;
@@ -348,8 +330,6 @@ export class DesktopLandingComponent implements OnInit {
     this.search.location = item.display_name;
     this.search.lat = parseFloat(item.lat);
     this.search.lon = parseFloat(item.lon);
-    this.setLocalStorage('userLat', item.lat);
-    this.setLocalStorage('userLon', item.lon);
     this.locationResults = [];
   }
 

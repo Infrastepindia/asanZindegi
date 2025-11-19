@@ -426,6 +426,13 @@
   gap: 16px;
 }
 
+@media (max-width: 480px) {
+  .filter-sheet-body {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
 .filter-section {
   display: flex;
   flex-direction: column;
@@ -440,11 +447,17 @@
 
 .filter-section-title {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #333;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+@media (max-width: 480px) {
+  .filter-section-title {
+    font-size: 12px;
+  }
 }
 
 .filter-clear-btn {
@@ -476,6 +489,13 @@
 .filter-radio span {
   font-size: 13px;
   color: #666;
+  word-break: break-word;
+}
+
+@media (max-width: 480px) {
+  .filter-radio span {
+    font-size: 12px;
+  }
 }
 
 .filter-categories {
@@ -529,11 +549,18 @@
 
 .category-checkbox {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   cursor: pointer;
   font-size: 13px;
   color: #666;
+  word-break: break-word;
+}
+
+@media (max-width: 480px) {
+  .category-checkbox {
+    font-size: 12px;
+  }
 }
 
 .category-checkbox input[type='checkbox'] {

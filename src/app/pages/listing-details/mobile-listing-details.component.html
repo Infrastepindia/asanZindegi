@@ -31,14 +31,10 @@
     <div class="details-header p-16">
       <h1 class="title">{{ item.title }}</h1>
       <div class="info-row">
-        <span class="info-item">
-          <i class="bi bi-geo-alt"></i>{{ item.location }}
-        </span>
+        <span class="info-item"> <i class="bi bi-geo-alt"></i>{{ item.location }} </span>
       </div>
       <div class="info-row">
-        <span class="info-item">
-          <i class="bi bi-tag"></i>{{ item.category }}
-        </span>
+        <span class="info-item"> <i class="bi bi-tag"></i>{{ item.category }} </span>
       </div>
     </div>
 
@@ -72,9 +68,7 @@
     <div class="details-section">
       <h2 class="section-title">What's Included</h2>
       <ul class="includes-list">
-        <li *ngFor="let inc of includes">
-          <i class="bi bi-check-circle"></i>{{ inc }}
-        </li>
+        <li *ngFor="let inc of includes"><i class="bi bi-check-circle"></i>{{ inc }}</li>
       </ul>
     </div>
 

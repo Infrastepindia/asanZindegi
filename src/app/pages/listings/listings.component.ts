@@ -762,7 +762,7 @@ export class ListingsComponent implements OnInit {
       this.locationResults = [];
       return;
     }
-    this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
+    this.locDebounce = setTimeout(() => this.queryPhoton(value.trim()), 300);
   }
 
   selectLocation(item: { display_name: string; lat: string; lon: string }) {

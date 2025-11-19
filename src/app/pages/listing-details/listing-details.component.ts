@@ -1,4 +1,11 @@
-import { Component, inject, PLATFORM_ID, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  PLATFORM_ID,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
@@ -96,7 +103,7 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
     }
     return [min, max];
   }
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef) {}
   // ngOnInit() {
   //   this.route.paramMap
   //     .pipe(
@@ -160,12 +167,12 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
   // }
   ngOnInit() {
     this.isLoading = true;
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.listingId = Number(params.get('id'));
       console.log('Listing ID (live):', this.listingId);
     });
     if (this.listingId) {
-      this.loadAdDetails(this.listingId)
+      this.loadAdDetails(this.listingId);
     }
   }
 
@@ -221,10 +228,10 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
         this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services in ${this.item.location}.`;
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
-        console.log(this.item)
+        console.log(this.item);
         this.isLoading = false; // ✅ Always hide spinner at end
       }
-    })
+    });
   }
 
   private loadRelatedListings() {

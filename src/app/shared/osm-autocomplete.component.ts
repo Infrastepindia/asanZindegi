@@ -38,6 +38,11 @@ type NominatimResult = LocationResult;
   `,
   styles: [
     `
+      .osm-ac-wrap {
+        position: relative;
+        z-index: 1;
+      }
+
       .osm-ac-dropdown {
         position: absolute;
         left: 0;
@@ -46,17 +51,30 @@ type NominatimResult = LocationResult;
         background: #fff;
         border: 1px solid #e7e9f3;
         border-top: none;
-        z-index: 1040;
+        z-index: 10000;
         border-radius: 0 0 10px 10px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
+
       .osm-ac-item {
-        padding: 8px 12px;
+        padding: 12px;
         background: #fff;
         border: 0;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.2s ease;
       }
+
       .osm-ac-item:hover {
         background: #f8f9fb;
+      }
+
+      .osm-ac-item:active {
+        background: #e7e9f3;
       }
     `,
   ],

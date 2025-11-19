@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
 import { PhotonService } from '../../services/photon.service';
-import { CategorySelectionModalComponent } from '../../shared/category-selection-modal/category-selection-modal.component';
 import { CityService } from '../../shared/city.service';
 
 interface CategoryItem {
@@ -45,7 +44,7 @@ interface BlogItem {
 @Component({
   selector: 'app-mobile-landing',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CategorySelectionModalComponent],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './mobile-landing.component.html',
   styleUrl: './mobile-landing.component.css',
 })
@@ -108,10 +107,6 @@ export class MobileLandingComponent implements OnInit {
     icon: string;
     items: CategoryItem[];
   }> = [];
-
-  // Modal state
-  showCategoryModal = false;
-  selectedSupercategoryForModal: ApiSuperCategory | null = null;
 
   featuredAds: FeaturedAd[] = [
     {
@@ -304,29 +299,10 @@ export class MobileLandingComponent implements OnInit {
     return this.apiSuperCategories.find((s) => String(s.id) === String(key)) || null;
   }
 
-  openCategoryModal(supercategory: ApiSuperCategory | null): void {
+  openCategorySelection(supercategory: ApiSuperCategory | null): void {
     if (!supercategory) return;
-    this.selectedSupercategoryForModal = supercategory;
-    this.showCategoryModal = true;
-  }
-
-  closeCategoryModal(): void {
-    this.showCategoryModal = false;
-    this.selectedSupercategoryForModal = null;
-  }
-
-  onCategoryModalSubmit(result: any): void {
-    const queryParams: any = {
-      supercategory: result.supercategoryId,
-      category: result.categoryName,
-      location: result.location,
-      lat: result.lat,
-      lon: result.lon,
-    };
-
-    this.showCategoryModal = false;
-    this.selectedSupercategoryForModal = null;
-
-    this.router.navigate(['/listings'], { queryParams });
+    this.router.navigate(['/category-selection'], {
+      queryParams: { supercategoryId: supercategory.id },
+    });
   }
 }

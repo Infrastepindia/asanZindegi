@@ -39,6 +39,7 @@ export class ListingsComponent implements OnInit {
   private ads = inject(AdsService);
   private api = inject(ApiService);
   private photon = inject(PhotonService);
+  private cityService = inject(CityService);
   private failedImages = new Set<string>();
 
   constructor(

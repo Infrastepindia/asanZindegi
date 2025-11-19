@@ -77,9 +77,23 @@
   font-size: 12px;
 }
 
+@media (max-width: 991px) {
+  .thumb {
+    height: 150px;
+  }
+}
+
 @media (max-width: 575px) {
   .thumb {
-    height: 140px;
+    height: 120px;
+  }
+
+  .list-group-v .listing-row {
+    padding: 10px;
+  }
+
+  .price {
+    font-size: 16px;
   }
 }
 
@@ -152,6 +166,17 @@
 
 .smart-pagination .ellipsis .page-link {
   cursor: default;
+}
+
+@media (max-width: 768px) {
+  .smart-pagination {
+    justify-content: center;
+  }
+
+  .smart-pagination .page-link {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
 }
 
 .category-tree .super-group .btn {

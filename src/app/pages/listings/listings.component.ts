@@ -733,7 +733,6 @@ export class ListingsComponent implements OnInit {
 
   onImageLoadError(item: ListingItem): void {
     this.failedImages.add(item.id.toString());
-    this.cd.detectChanges();
   }
 
   onPlaceSelected(val: string) {

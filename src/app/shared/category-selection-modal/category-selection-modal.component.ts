@@ -53,6 +53,7 @@ export class CategorySelectionModalComponent implements OnInit {
   private locationDebounceSubscription: any;
   private photon = inject(PhotonService);
   private cdr = inject(ChangeDetectorRef);
+  private cityService = inject(CityService);
 
   ngOnInit(): void {
     if (!this.supercategory) {

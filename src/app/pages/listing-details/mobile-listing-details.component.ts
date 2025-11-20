@@ -26,7 +26,7 @@ declare const L: any;
   styleUrl: './mobile-listing-details.component.css',
 })
 export class MobileListingDetailsComponent implements OnInit, OnDestroy {
-  @ViewChild('mapContainer') mapContainer?: ElementRef;
+  @ViewChild('mapContainer', { static: false, read: ElementRef }) mapContainer?: ElementRef;
 
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);

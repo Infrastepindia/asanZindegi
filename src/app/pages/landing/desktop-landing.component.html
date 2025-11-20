@@ -152,14 +152,29 @@
             <div class="supercat-section mb-3" [ngClass]="sc.colorClass">
               <div class="d-flex align-items-center justify-content-between mb-2 px-2 pt-2">
                 <h3 class="h6 mb-0">{{ sc.title }}</h3>
-                <a class="small text-decoration-none" [routerLink]="'/listings'">View all</a>
+                <button
+                  type="button"
+                  class="small text-decoration-none"
+                  style="
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    cursor: pointer;
+                    color: inherit;
+                  "
+                  (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key))"
+                >
+                  View all
+                </button>
               </div>
               <div class="row g-3 supercat-grid px-2 pb-2">
                 <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of sc.items">
-                  <a
-                    class="text-decoration-none text-dark"
-                    [routerLink]="'/listings'"
-                    [queryParams]="{ category: c.name }"
+                  <button
+                    type="button"
+                    class="text-decoration-none text-dark w-100"
+                    style="background: none; border: none; padding: 0; cursor: pointer"
+                    (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key), c.name)"
+                    [attr.aria-label]="'Select ' + c.name + ' category'"
                   >
                     <div class="category-card p-3 text-center h-100">
                       <span class="category-icon mb-2">
@@ -173,7 +188,7 @@
                       <div class="fw-semibold">{{ c.name }}</div>
                       <small class="text-secondary">{{ c.count }} listings</small>
                     </div>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

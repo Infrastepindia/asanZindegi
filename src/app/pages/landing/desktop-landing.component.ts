@@ -350,4 +350,17 @@ export class DesktopLandingComponent implements OnInit {
     if (icon.startsWith('bi-')) return ['bi', icon];
     return [icon];
   }
+
+  apiSuperCategoryFromVisibleData(key: string | number): ApiSuperCategory | null {
+    return this.apiSuperCategories.find((s) => String(s.id) === String(key)) || null;
+  }
+
+  openCategorySelection(supercategory: ApiSuperCategory | null, categoryName?: string): void {
+    if (!supercategory) return;
+    const params: any = { supercategoryId: supercategory.id };
+    if (categoryName) {
+      params.category = categoryName;
+    }
+    this.router.navigate(['/category-selection'], { queryParams: params });
+  }
 }

@@ -108,7 +108,8 @@ export class ApiService {
     options?: {
       superCategory?: string;
       category?: string;
-      location?: string;
+      lat?: number;
+      lon?: number;
     },
   ): Observable<ApiListingResponse> {
     let url = `${this.resolveBase()}/api/Listing?page=${page}&perPage=${perPage}`;
@@ -118,8 +119,8 @@ export class ApiService {
     if (options?.category) {
       url += `&category=${encodeURIComponent(options.category)}`;
     }
-    if (options?.location) {
-      url += `&location=${encodeURIComponent(options.location)}`;
+    if (options?.lat !== undefined && options?.lon !== undefined) {
+      url += `&lat=${options.lat}&lon=${options.lon}`;
     }
     return this.http.get<ApiListingResponse>(url);
   }

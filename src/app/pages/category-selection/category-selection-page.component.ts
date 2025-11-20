@@ -27,6 +27,7 @@ export class CategorySelectionPageComponent implements OnInit {
 
   supercategory: ApiSuperCategory | null = null;
   supercategoryId: number | null = null;
+  preSelectedCategoryName: string | null = null;
 
   // Location search
   locationInput = '';
@@ -42,12 +43,14 @@ export class CategorySelectionPageComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('supercategoryId');
+    const categoryName = this.route.snapshot.queryParamMap.get('category');
     if (!id) {
       this.router.navigate(['/']);
       return;
     }
 
     this.supercategoryId = parseInt(id, 10);
+    this.preSelectedCategoryName = categoryName;
     this.api.getCategories().subscribe({
       next: (res) => {
         const categories = (res as any).data || [];
@@ -55,6 +58,13 @@ export class CategorySelectionPageComponent implements OnInit {
           categories.find((c: ApiSuperCategory) => c.id === this.supercategoryId) || null;
         if (!this.supercategory) {
           this.router.navigate(['/']);
+        } else if (this.preSelectedCategoryName && this.supercategory.categories) {
+          const preSelected = this.supercategory.categories.find(
+            (c) => c.name === this.preSelectedCategoryName,
+          );
+          if (preSelected) {
+            this.selectedCategory = preSelected;
+          }
         }
         this.cdr.detectChanges();
       },

@@ -119,13 +119,15 @@ export class DesktopListingsComponent implements OnInit {
     this.isLoadingListings = true;
     const superCategory = this.route.snapshot.queryParamMap.get('super') || undefined;
     const category = this.route.snapshot.queryParamMap.get('category') || undefined;
-    const location = this.route.snapshot.queryParamMap.get('location') || undefined;
+    const lat = this.route.snapshot.queryParamMap.get('lat');
+    const lon = this.route.snapshot.queryParamMap.get('lon');
 
     this.api
       .getListings(this.apiPage, this.apiPerPage, {
         superCategory,
         category,
-        location,
+        lat: lat ? parseFloat(lat) : undefined,
+        lon: lon ? parseFloat(lon) : undefined,
       })
       .subscribe({
         next: (res) => {

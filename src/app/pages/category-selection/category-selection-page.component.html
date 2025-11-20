@@ -8,7 +8,12 @@
       <i class="me-2" [ngClass]="iconClass(supercategory.icon)"></i>
       {{ supercategory.title }}
     </h1>
-    <p class="category-page-subtitle">Complete the information to find services</p>
+    <p class="category-page-subtitle" *ngIf="!preSelectedCategoryName">
+      Complete the information to find services
+    </p>
+    <p class="category-page-subtitle" *ngIf="preSelectedCategoryName">
+      Enter your location to find services
+    </p>
   </div>
 </div>
 
@@ -87,7 +92,7 @@
   </div>
 
   <!-- Category Card -->
-  <div class="category-page-card" *ngIf="supercategory">
+  <div class="category-page-card" *ngIf="supercategory && !preSelectedCategoryName">
     <div class="category-page-card-header">
       <i class="bi bi-grid card-icon"></i>
       <h2 class="category-page-card-title">What exact service do you need?</h2>

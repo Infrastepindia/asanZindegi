@@ -192,7 +192,66 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
     this.showProviderInfo = !this.showProviderInfo;
   }
 
+  private initializeMap(): void {
+    if (!this.mapContainer) return;
+
+    try {
+      if (this.map) {
+        this.map.remove();
+      }
+
+      this.map = L.map(this.mapContainer.nativeElement).setView(this.centerPoint, 11);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(this.map);
+
+      if (this.item?.areaCoveredPolygon) {
+        this.renderPolygon();
+      }
+
+      this.mapLoaded = true;
+    } catch (error) {
+      console.error('Map initialization error:', error);
+    }
+  }
+
+  private renderPolygon(): void {
+    if (!this.item?.areaCoveredPolygon || !this.map) return;
+
+    try {
+      const geoJson = JSON.parse(this.item.areaCoveredPolygon);
+
+      if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
+        const coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
+          coord[0],
+          coord[1],
+        ]);
+
+        if (this.polygon) {
+          this.map.removeLayer(this.polygon);
+        }
+
+        this.polygon = L.polygon(coordinates, {
+          color: '#4CAF50',
+          weight: 2,
+          opacity: 0.7,
+          fillColor: '#4CAF50',
+          fillOpacity: 0.2,
+        }).addTo(this.map);
+
+        this.map.fitBounds(this.polygon.getBounds());
+      }
+    } catch (error) {
+      console.error('Polygon rendering error:', error);
+    }
+  }
+
   ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

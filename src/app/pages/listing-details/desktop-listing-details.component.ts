@@ -286,6 +286,9 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

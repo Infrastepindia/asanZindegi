@@ -35,7 +35,13 @@ export class CityService {
   constructor() {
     if (typeof window !== 'undefined') {
       const saved = window.localStorage.getItem(this.key);
-      if (saved) this.citySig.set(saved);
+      if (saved) {
+        this.citySig.set(saved);
+      } else {
+        // Set default city to Kolkata
+        this.citySig.set('Kolkata, India');
+        window.localStorage.setItem(this.key, 'Kolkata, India');
+      }
     }
   }
 

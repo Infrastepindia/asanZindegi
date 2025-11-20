@@ -6,10 +6,10 @@ import { AuthService } from '../../../services/auth.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { NotificationService } from '../../../services/notification.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
+import { GoogleAutocompleteComponent } from '../../../shared/google-autocomplete.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
 import { environment } from '../../../../environments/environment';
-import { connect } from 'node:http2';
 
 interface AddressForm {
   line1: string;

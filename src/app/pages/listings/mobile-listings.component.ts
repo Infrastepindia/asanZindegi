@@ -350,6 +350,7 @@ export class MobileListingsComponent implements OnInit {
 
   applyFilters() {
     this.setPage(1);
+    this.cd.detectChanges();
     this.closeFilterSheet();
   }
 

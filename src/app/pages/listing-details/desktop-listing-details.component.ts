@@ -176,14 +176,20 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   private initializeMap(): void {
-    if (!this.mapContainer) return;
+    if (!this.mapContainer?.nativeElement) {
+      console.error('Map container not found');
+      return;
+    }
 
     try {
       if (this.map) {
         this.map.remove();
       }
 
-      this.map = L.map(this.mapContainer.nativeElement).setView(this.centerPoint, 11);
+      const container = this.mapContainer.nativeElement;
+      container.style.height = '400px';
+
+      this.map = L.map(container).setView(this.centerPoint, 11);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',

@@ -33,6 +33,7 @@ export interface PhotonResponse {
 
 export interface LocationResult {
   display_name: string;
+  locationName: string;
   lat: string;
   lon: string;
   class: string;

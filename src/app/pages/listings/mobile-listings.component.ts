@@ -194,9 +194,7 @@ export class MobileListingsComponent implements OnInit {
   toggleSubCategory(name: string) {
     const idx = this.filters.selectedCategories.indexOf(name);
     if (idx >= 0) {
-      this.filters.selectedCategories = this.filters.selectedCategories.filter(
-        (_, i) => i !== idx,
-      );
+      this.filters.selectedCategories = this.filters.selectedCategories.filter((_, i) => i !== idx);
     } else {
       this.filters.selectedCategories = [...this.filters.selectedCategories, name];
     }

@@ -33,6 +33,7 @@ export interface PhotonResponse {
 
 export interface LocationResult {
   display_name: string;
+  locationName: string;
   lat: string;
   lon: string;
   class: string;
@@ -106,10 +107,12 @@ export class PhotonService {
     const props = feature.properties;
     const [lon, lat] = feature.geometry.coordinates;
 
+    const locationName = this.getLocationName(props);
     const display_name = this.buildDisplayName(props);
 
     return {
       display_name,
+      locationName,
       lat: lat.toString(),
       lon: lon.toString(),
       class: props.osm_key || 'place',
@@ -123,6 +126,13 @@ export class PhotonService {
         postcode: props.postcode || '',
       },
     };
+  }
+
+  private getLocationName(props: PhotonFeature['properties']): string {
+    if (props.city) return props.city;
+    if (props.town) return props.town;
+    if (props.village) return props.village;
+    return props.name || 'Location';
   }
 
   private buildDisplayName(props: PhotonFeature['properties']): string {

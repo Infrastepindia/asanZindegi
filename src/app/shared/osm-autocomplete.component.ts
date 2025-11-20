@@ -193,6 +193,7 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
       .slice(0, 8)
       .map((name) => ({
         display_name: name,
+        locationName: name.replace(', India', ''),
         lat: '',
         lon: '',
         class: 'place',

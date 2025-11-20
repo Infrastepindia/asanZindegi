@@ -247,9 +247,10 @@
 }
 
 .suggest-item {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  text-align: left;
+  gap: 10px;
   background: transparent;
   border: 0;
   padding: 10px 12px;
@@ -257,10 +258,35 @@
   color: #0b1220;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  text-align: left;
 }
 
 .suggest-item:hover {
   background: #f6f8fc;
+}
+
+.suggest-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.suggest-name {
+  font-weight: 600;
+  color: #0b1220;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggest-details {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Category grid */

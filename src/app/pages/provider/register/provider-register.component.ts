@@ -303,6 +303,19 @@ export class ProviderRegisterComponent {
     this.otpError = this.phoneVerified ? null : 'Invalid code';
   }
 
+  onPlaceSelected(data: any) {
+    if (!data || !data.address) {
+      return;
+    }
+
+    // Store the full address in line1
+    this.address.line1 = data.address;
+
+    // Extract city, state, and pin from Google Places API response if available
+    // For now, keep the existing city/state/pin fields for manual entry/editing
+    // Users can manually update these fields if needed
+  }
+
   // Submit
   submit() {
     if (!this.validateAllSteps()) {

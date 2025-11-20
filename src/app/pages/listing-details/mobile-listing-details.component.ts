@@ -148,6 +148,9 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
           areaCoveredPolygon: apiData.areaCoveredPolygon,
         };
 
+        console.log('Listing item loaded (mobile):', this.item);
+        console.log('areaCoveredPolygon (mobile):', apiData.areaCoveredPolygon);
+
         this.provider = {
           name: apiData.providerName || 'Service Provider',
           email: apiData.providerEmail || 'Hidden',

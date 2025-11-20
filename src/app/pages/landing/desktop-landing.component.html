@@ -167,7 +167,7 @@
                     type="button"
                     class="text-decoration-none text-dark w-100"
                     style="background: none; border: none; padding: 0; cursor: pointer;"
-                    (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key))"
+                    (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key), c.name)"
                     [attr.aria-label]="'Select ' + c.name + ' category'"
                   >
                     <div class="category-card p-3 text-center h-100">

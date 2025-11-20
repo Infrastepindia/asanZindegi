@@ -152,7 +152,14 @@
             <div class="supercat-section mb-3" [ngClass]="sc.colorClass">
               <div class="d-flex align-items-center justify-content-between mb-2 px-2 pt-2">
                 <h3 class="h6 mb-0">{{ sc.title }}</h3>
-                <a class="small text-decoration-none" [routerLink]="'/listings'">View all</a>
+                <button
+                  type="button"
+                  class="small text-decoration-none"
+                  style="background: none; border: none; padding: 0; cursor: pointer; color: inherit;"
+                  (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key))"
+                >
+                  View all
+                </button>
               </div>
               <div class="row g-3 supercat-grid px-2 pb-2">
                 <div class="col-6 col-md-3 col-lg-2" *ngFor="let c of sc.items">

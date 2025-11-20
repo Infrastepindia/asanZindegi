@@ -27,6 +27,7 @@ export class CategorySelectionPageComponent implements OnInit {
 
   supercategory: ApiSuperCategory | null = null;
   supercategoryId: number | null = null;
+  preSelectedCategoryName: string | null = null;
 
   // Location search
   locationInput = '';

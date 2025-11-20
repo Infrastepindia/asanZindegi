@@ -37,7 +37,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   private meta = inject(Meta);
   private destroy$ = new Subject<void>();
 
-  @ViewChild('mapContainer') mapContainer?: ElementRef;
+  @ViewChild('mapContainer', { static: false, read: ElementRef }) mapContainer?: ElementRef;
 
   item: any;
   listingId: any;
@@ -148,7 +148,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
-          areaCoveredPolygon: apiData.areaCoveredPolygon,
+          areaCoveredPolygon: apiData.location,
         };
 
         this.provider = {
@@ -161,7 +161,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
 
         this.thumbnails = normalizedCover ? [normalizedCover] : [];
 
-        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services in ${this.item.location}.`;
+        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services .`;
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
         console.log(this.item);
@@ -176,14 +176,20 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   private initializeMap(): void {
-    if (!this.mapContainer) return;
+    if (!this.mapContainer?.nativeElement) {
+      console.error('Map container not found');
+      return;
+    }
 
     try {
       if (this.map) {
         this.map.remove();
       }
 
-      this.map = L.map(this.mapContainer.nativeElement).setView(this.centerPoint, 11);
+      const container = this.mapContainer.nativeElement;
+      container.style.height = '400px';
+
+      this.map = L.map(container).setView(this.centerPoint, 11);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
@@ -204,14 +210,34 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
     if (!this.item?.areaCoveredPolygon || !this.map) return;
 
     try {
-      const geoJson = JSON.parse(this.item.areaCoveredPolygon);
+      let coordinates: [number, number][] = [];
 
-      if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
-        const coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
-          coord[0],
-          coord[1],
-        ]);
+      // Check if it's a semicolon-separated string of coordinates
+      if (
+        typeof this.item.areaCoveredPolygon === 'string' &&
+        this.item.areaCoveredPolygon.includes(';')
+      ) {
+        // Parse "lat,lng;lat,lng;..." format
+        const coordinateStrings = this.item.areaCoveredPolygon.split(';');
+        coordinates = coordinateStrings
+          .map((coord: string) => {
+            const [lat, lng] = coord.split(',').map((v: string) => parseFloat(v.trim()));
+            return isFinite(lat) && isFinite(lng) ? [lat, lng] : null;
+          })
+          .filter((coord: any) => coord !== null) as [number, number][];
+      } else {
+        // Try parsing as GeoJSON
+        const geoJson = JSON.parse(this.item.areaCoveredPolygon);
 
+        if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
+          coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
+            coord[0],
+            coord[1],
+          ]);
+        }
+      }
+
+      if (coordinates.length > 0) {
         if (this.polygon) {
           this.map.removeLayer(this.polygon);
         }

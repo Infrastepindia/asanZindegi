@@ -701,6 +701,7 @@ app.get('/api/Listing/Details/:id', async (req, res, next) => {
                 verified && verifiedType === 'Company' ? 'Prime Services Ltd.' : undefined,
               contactEmail: 'contact@services.com',
               contactPhone: '+91 99999 99999',
+              areaCoveredPolygon: generatePolygonForLocation(location, currentId),
             };
 
             return res.json({ data: item, status_code: 200, status_message: 'OK', message: 'OK' });

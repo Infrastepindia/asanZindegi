@@ -61,7 +61,13 @@ interface RegistrationDraft {
 @Component({
   selector: 'app-provider-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, GoogleAutocompleteComponent, OtpInputComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    OsmAutocompleteComponent,
+    GoogleAutocompleteComponent,
+    OtpInputComponent,
+  ],
   templateUrl: './provider-register.component.html',
   styleUrl: './provider-register.component.css',
 })
@@ -377,12 +383,11 @@ export class ProviderRegisterComponent {
     this.api.addProviderDetails(payload, files).subscribe({
       next: (response) => {
         this.clearDraft();
-        console.log(response)
+        console.log(response);
         if (response.status_code == 200) {
           this.notification.success(response.message);
           this.router.navigate(['/login']);
-        }
-        else {
+        } else {
           this.notification.error(`Submission failed: ${response.message}`);
         }
       },

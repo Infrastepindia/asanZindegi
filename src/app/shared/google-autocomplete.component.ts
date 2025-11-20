@@ -47,9 +47,7 @@ declare global {
     },
   ],
 })
-export class GoogleAutocompleteComponent
-  implements AfterViewInit, OnDestroy, ControlValueAccessor
-{
+export class GoogleAutocompleteComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
   @Input() placeholder = 'Search location';
@@ -87,13 +85,10 @@ export class GoogleAutocompleteComponent
 
     const bias = this.getLocationBias();
 
-    this.autocomplete = new window.google.maps.places.Autocomplete(
-      this.inputRef.nativeElement,
-      {
-        fields: ['geometry', 'formatted_address'],
-        locationBias: bias || undefined,
-      }
-    );
+    this.autocomplete = new window.google.maps.places.Autocomplete(this.inputRef.nativeElement, {
+      fields: ['geometry', 'formatted_address'],
+      locationBias: bias || undefined,
+    });
 
     this.autocomplete.addListener('place_changed', () => {
       this.handlePlaceChanged();
@@ -124,14 +119,8 @@ export class GoogleAutocompleteComponent
 
     const data: PlaceData = {
       address: place.formatted_address || '',
-      lat:
-        place.geometry && place.geometry.location
-          ? place.geometry.location.lat()
-          : null,
-      lng:
-        place.geometry && place.geometry.location
-          ? place.geometry.location.lng()
-          : null,
+      lat: place.geometry && place.geometry.location ? place.geometry.location.lat() : null,
+      lng: place.geometry && place.geometry.location ? place.geometry.location.lng() : null,
     };
 
     this.value = data.address;

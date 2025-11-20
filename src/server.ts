@@ -234,6 +234,10 @@ app.get('/api/listings', async (req, res, next) => {
             rating,
             verified,
             verifiedType,
+            areaCoveredPolygon: generatePolygonForLocation(location, id),
+            providerName: 'Service Provider',
+            providerEmail: 'provider@example.com',
+            providerPhone: '+91 98765 43210',
           });
         }
       }

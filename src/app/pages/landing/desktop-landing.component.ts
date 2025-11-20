@@ -3,7 +3,7 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
-import { PhotonService } from '../../services/photon.service';
+import { PhotonService, LocationResult } from '../../services/photon.service';
 import { CityService } from '../../shared/city.service';
 
 interface CategoryItem {

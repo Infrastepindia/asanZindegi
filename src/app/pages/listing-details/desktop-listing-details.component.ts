@@ -151,6 +151,9 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           areaCoveredPolygon: apiData.areaCoveredPolygon,
         };
 
+        console.log('Listing item loaded:', this.item);
+        console.log('areaCoveredPolygon:', apiData.areaCoveredPolygon);
+
         this.provider = {
           name: apiData.providerName || 'Service Provider',
           email: apiData.providerEmail || 'Hidden',

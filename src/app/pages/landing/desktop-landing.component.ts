@@ -126,7 +126,7 @@ export class DesktopLandingComponent implements OnInit {
   popularKeywords: string[] = ['Plumber', 'Cleaner', 'Electrician'];
 
   // OpenStreetMap Nominatim autocomplete state
-  locationResults: Array<{ display_name: string; lat: string; lon: string }> = [];
+  locationResults: LocationResult[] = [];
   locationLoading = false;
   private locDebounce?: any;
 

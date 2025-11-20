@@ -37,7 +37,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   private meta = inject(Meta);
   private destroy$ = new Subject<void>();
 
-  @ViewChild('mapContainer') mapContainer?: ElementRef;
+  @ViewChild('mapContainer', { static: false, read: ElementRef }) mapContainer?: ElementRef;
 
   item: any;
   listingId: any;

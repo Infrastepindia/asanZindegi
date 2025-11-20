@@ -145,11 +145,11 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
-          areaCoveredPolygon: apiData.areaCoveredPolygon,
+          areaCoveredPolygon: apiData.location,
         };
 
         console.log('Listing item loaded (mobile):', this.item);
-        console.log('areaCoveredPolygon (mobile):', apiData.areaCoveredPolygon);
+        console.log('areaCoveredPolygon (mobile):', apiData.location);
 
         this.provider = {
           name: apiData.providerName || 'Service Provider',

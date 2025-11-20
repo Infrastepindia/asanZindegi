@@ -71,6 +71,7 @@ export interface ApiListingDetails {
   companyName?: string;
   contactEmail?: string;
   contactPhone?: string;
+  areaCoveredPolygon?: string;
 }
 
 export interface ApiListingDetailsResponse {

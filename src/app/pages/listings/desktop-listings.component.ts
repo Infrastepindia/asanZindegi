@@ -196,14 +196,19 @@ export class DesktopListingsComponent implements OnInit {
 
   toggleSubCategory(name: string) {
     const idx = this.filters.selectedCategories.indexOf(name);
-    if (idx >= 0) this.filters.selectedCategories.splice(idx, 1);
-    else this.filters.selectedCategories.push(name);
+    if (idx >= 0) {
+      this.filters.selectedCategories = this.filters.selectedCategories.filter((_, i) => i !== idx);
+    } else {
+      this.filters.selectedCategories = [...this.filters.selectedCategories, name];
+    }
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   clearSelectedCategories() {
     this.filters.selectedCategories = [];
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   private serviceTypeMap: Record<string, string[]> = {};
@@ -382,6 +387,7 @@ export class DesktopListingsComponent implements OnInit {
     if (typeof window !== 'undefined')
       window.localStorage.setItem(this.cityPrefKey, this.filters.location);
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   chooseCity(name: string) {
@@ -411,6 +417,7 @@ export class DesktopListingsComponent implements OnInit {
     this.filters.location = item.display_name;
     this.locationResults = [];
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   private queryPhoton(q: string) {

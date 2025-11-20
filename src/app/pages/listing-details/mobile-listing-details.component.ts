@@ -145,6 +145,7 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
+          areaCoveredPolygon: apiData.areaCoveredPolygon,
         };
 
         this.provider = {
@@ -161,6 +162,11 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
         console.log(this.item);
+
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.initializeMap(), 100);
+        }
+
         this.isLoading = false;
       }
     });

@@ -56,6 +56,11 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
   showEmail = false;
   showProviderInfo = false;
 
+  private map: any;
+  private polygon: any;
+  private centerPoint: [number, number] = [22.9734, 78.6569];
+  mapLoaded = false;
+
   get serviceTypes(): string[] {
     const cat = this.item?.category || '';
     return cat ? this.svc.getServiceTypesByCategoryName(cat).map((t) => t.name) : [];

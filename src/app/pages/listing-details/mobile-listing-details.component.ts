@@ -5,14 +5,18 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
 import { ApiService } from '../../services/api.service';
 import { of, Subject } from 'rxjs';
 import { PLACEHOLDER_IMAGE } from '../../constants';
+
+declare const L: any;
 
 @Component({
   selector: 'app-mobile-listing-details',

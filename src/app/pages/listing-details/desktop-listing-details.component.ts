@@ -26,6 +26,11 @@ declare const L: any;
   imports: [CommonModule, RouterLink],
   templateUrl: './desktop-listing-details.component.html',
   styleUrl: './desktop-listing-details.component.css',
+  styles: [
+    `
+      @import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    `,
+  ],
 })
 export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

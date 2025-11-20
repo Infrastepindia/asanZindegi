@@ -247,9 +247,10 @@
 }
 
 .suggest-item {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  text-align: left;
+  gap: 10px;
   background: transparent;
   border: 0;
   padding: 10px 12px;
@@ -257,12 +258,7 @@
   color: #0b1220;
   cursor: pointer;
   transition: background-color 0.2s ease;
-}
-
-.suggest-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  text-align: left;
 }
 
 .suggest-item:hover {

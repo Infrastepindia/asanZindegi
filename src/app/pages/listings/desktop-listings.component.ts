@@ -210,6 +210,7 @@ export class DesktopListingsComponent implements OnInit {
   clearSelectedCategories() {
     this.filters.selectedCategories = [];
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   private serviceTypeMap: Record<string, string[]> = {};

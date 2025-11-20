@@ -42,9 +42,9 @@ function prng(seed: number) {
 function generatePolygonForLocation(location: string, seed: number): string {
   const locationCoords: Record<string, [number, number]> = {
     'Delhi, India': [28.7041, 77.1025],
-    'Mumbai, India': [19.0760, 72.8777],
+    'Mumbai, India': [19.076, 72.8777],
     'Bengaluru, India': [12.9716, 77.5946],
-    'Hyderabad, India': [17.3850, 78.4867],
+    'Hyderabad, India': [17.385, 78.4867],
     'Chennai, India': [13.0827, 80.2707],
     'Kolkata, India': [22.5726, 88.3639],
     'Pune, India': [18.5204, 73.8567],

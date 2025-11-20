@@ -107,21 +107,16 @@
             <!-- Step 2: Address Details -->
             <form *ngIf="step === 2" (ngSubmit)="next()" class="wizard-form">
               <div class="mb-3">
-                <label class="form-label">Address Line 1</label>
-                <input class="form-control" [(ngModel)]="address.line1" name="line1" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Address Line 2</label>
-                <input class="form-control" [(ngModel)]="address.line2" name="line2" />
+                <label class="form-label">Search Address</label>
+                <az-google-autocomplete
+                  placeholder="Search your address"
+                  (placeSelected)="onPlaceSelected($event)"
+                ></az-google-autocomplete>
               </div>
               <div class="row g-3">
                 <div class="col-md-5">
                   <label class="form-label">City</label>
-                  <az-osm-autocomplete
-                    [(ngModel)]="address.city"
-                    name="city"
-                    [placeholder]="'Enter location'"
-                  ></az-osm-autocomplete>
+                  <input class="form-control" [(ngModel)]="address.city" name="city" required />
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">State</label>

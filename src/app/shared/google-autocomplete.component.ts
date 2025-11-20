@@ -8,10 +8,10 @@ import {
   AfterViewInit,
   OnDestroy,
   Inject,
-  forwardRef,
+  forwardRef,PLATFORM_ID
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, Inject } from '@angular/core';
+
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 interface PlaceData {

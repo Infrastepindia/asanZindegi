@@ -10,7 +10,7 @@ import {
   Inject,
   forwardRef,
 } from '@angular/core';
-import { CommonModule, PLATFORM_ID, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 interface PlaceData {

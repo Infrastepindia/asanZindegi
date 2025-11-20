@@ -5,6 +5,8 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -35,6 +37,8 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   private meta = inject(Meta);
   private destroy$ = new Subject<void>();
 
+  @ViewChild('mapContainer') mapContainer?: ElementRef;
+
   item: any;
   listingId: any;
   thumbnails: string[] = [];
@@ -61,9 +65,9 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   private map: any;
-  private circle: any;
-  private center: [number, number] = [22.9734, 78.6569];
-  private radiusMeters = 15000;
+  private polygon: any;
+  private centerPoint: [number, number] = [22.9734, 78.6569];
+  mapLoaded = false;
 
   selectedForPricing?: ListingItem;
   private baseRanges: Record<string, [number, number]> = {
@@ -144,6 +148,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
+          areaCoveredPolygon: apiData.areaCoveredPolygon,
         };
 
         this.provider = {
@@ -160,9 +165,70 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
         console.log(this.item);
+
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.initializeMap(), 100);
+        }
+
         this.isLoading = false;
       }
     });
+  }
+
+  private initializeMap(): void {
+    if (!this.mapContainer) return;
+
+    try {
+      if (this.map) {
+        this.map.remove();
+      }
+
+      this.map = L.map(this.mapContainer.nativeElement).setView(this.centerPoint, 11);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(this.map);
+
+      if (this.item?.areaCoveredPolygon) {
+        this.renderPolygon();
+      }
+
+      this.mapLoaded = true;
+    } catch (error) {
+      console.error('Map initialization error:', error);
+    }
+  }
+
+  private renderPolygon(): void {
+    if (!this.item?.areaCoveredPolygon || !this.map) return;
+
+    try {
+      const geoJson = JSON.parse(this.item.areaCoveredPolygon);
+
+      if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
+        const coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
+          coord[0],
+          coord[1],
+        ]);
+
+        if (this.polygon) {
+          this.map.removeLayer(this.polygon);
+        }
+
+        this.polygon = L.polygon(coordinates, {
+          color: '#4CAF50',
+          weight: 2,
+          opacity: 0.7,
+          fillColor: '#4CAF50',
+          fillOpacity: 0.2,
+        }).addTo(this.map);
+
+        this.map.fitBounds(this.polygon.getBounds());
+      }
+    } catch (error) {
+      console.error('Polygon rendering error:', error);
+    }
   }
 
   private loadRelatedListings() {
@@ -220,6 +286,9 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

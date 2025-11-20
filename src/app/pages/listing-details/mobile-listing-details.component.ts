@@ -5,14 +5,18 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ListingsService, ListingItem } from '../../services/listings.service';
 import { AdsService } from '../../services/ads.service';
 import { ApiService } from '../../services/api.service';
 import { of, Subject } from 'rxjs';
 import { PLACEHOLDER_IMAGE } from '../../constants';
+
+declare const L: any;
 
 @Component({
   selector: 'app-mobile-listing-details',
@@ -22,10 +26,13 @@ import { PLACEHOLDER_IMAGE } from '../../constants';
   styleUrl: './mobile-listing-details.component.css',
 })
 export class MobileListingDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('mapContainer') mapContainer?: ElementRef;
+
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
   private ads = inject(AdsService);
   private apiService = inject(ApiService);
+  private platformId = inject(PLATFORM_ID);
   private destroy$ = new Subject<void>();
 
   item: any;
@@ -48,6 +55,11 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
   showPhone = false;
   showEmail = false;
   showProviderInfo = false;
+
+  private map: any;
+  private polygon: any;
+  private centerPoint: [number, number] = [22.9734, 78.6569];
+  mapLoaded = false;
 
   get serviceTypes(): string[] {
     const cat = this.item?.category || '';
@@ -133,6 +145,7 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
+          areaCoveredPolygon: apiData.areaCoveredPolygon,
         };
 
         this.provider = {
@@ -149,6 +162,11 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
         console.log(this.item);
+
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.initializeMap(), 100);
+        }
+
         this.isLoading = false;
       }
     });
@@ -174,7 +192,66 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
     this.showProviderInfo = !this.showProviderInfo;
   }
 
+  private initializeMap(): void {
+    if (!this.mapContainer) return;
+
+    try {
+      if (this.map) {
+        this.map.remove();
+      }
+
+      this.map = L.map(this.mapContainer.nativeElement).setView(this.centerPoint, 11);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(this.map);
+
+      if (this.item?.areaCoveredPolygon) {
+        this.renderPolygon();
+      }
+
+      this.mapLoaded = true;
+    } catch (error) {
+      console.error('Map initialization error:', error);
+    }
+  }
+
+  private renderPolygon(): void {
+    if (!this.item?.areaCoveredPolygon || !this.map) return;
+
+    try {
+      const geoJson = JSON.parse(this.item.areaCoveredPolygon);
+
+      if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
+        const coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
+          coord[0],
+          coord[1],
+        ]);
+
+        if (this.polygon) {
+          this.map.removeLayer(this.polygon);
+        }
+
+        this.polygon = L.polygon(coordinates, {
+          color: '#4CAF50',
+          weight: 2,
+          opacity: 0.7,
+          fillColor: '#4CAF50',
+          fillOpacity: 0.2,
+        }).addTo(this.map);
+
+        this.map.fitBounds(this.polygon.getBounds());
+      }
+    } catch (error) {
+      console.error('Polygon rendering error:', error);
+    }
+  }
+
   ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

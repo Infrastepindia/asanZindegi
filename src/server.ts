@@ -39,6 +39,41 @@ function prng(seed: number) {
   };
 }
 
+function generatePolygonForLocation(location: string, seed: number): string {
+  const locationCoords: Record<string, [number, number]> = {
+    'Delhi, India': [28.7041, 77.1025],
+    'Mumbai, India': [19.076, 72.8777],
+    'Bengaluru, India': [12.9716, 77.5946],
+    'Hyderabad, India': [17.385, 78.4867],
+    'Chennai, India': [13.0827, 80.2707],
+    'Kolkata, India': [22.5726, 88.3639],
+    'Pune, India': [18.5204, 73.8567],
+    'Ahmedabad, India': [23.0225, 72.5714],
+    'Jaipur, India': [26.9124, 75.7873],
+    'Surat, India': [21.1458, 72.8336],
+  };
+
+  const [lat, lon] = locationCoords[location] || [28.7041, 77.1025];
+  const radiusKm = 5 + (seed % 15);
+  const radiusDeg = radiusKm / 111.32;
+
+  const points = [];
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    const x = lon + radiusDeg * Math.cos(angle);
+    const y = lat + radiusDeg * Math.sin(angle);
+    points.push([y, x]);
+  }
+  points.push(points[0]);
+
+  const polygon = {
+    type: 'Polygon',
+    coordinates: [points],
+  };
+
+  return JSON.stringify(polygon);
+}
+
 app.get('/api/categories', async (_req, res, next) => {
   try {
     const data = await readJson('categories.json');
@@ -199,6 +234,10 @@ app.get('/api/listings', async (req, res, next) => {
             rating,
             verified,
             verifiedType,
+            areaCoveredPolygon: generatePolygonForLocation(location, id),
+            providerName: 'Service Provider',
+            providerEmail: 'provider@example.com',
+            providerPhone: '+91 98765 43210',
           });
         }
       }
@@ -488,6 +527,10 @@ app.get('/api/Listing', async (req, res, next) => {
             rating,
             verified,
             verifiedType,
+            areaCoveredPolygon: generatePolygonForLocation(location, id),
+            providerName: 'Service Provider',
+            providerEmail: 'provider@example.com',
+            providerPhone: '+91 98765 43210',
           });
         }
       }

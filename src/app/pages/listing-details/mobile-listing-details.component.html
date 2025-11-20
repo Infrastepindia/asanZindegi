@@ -77,6 +77,12 @@
       </ul>
     </div>
 
+    <!-- Service Area Map -->
+    <div class="details-section" *ngIf="item?.areaCoveredPolygon">
+      <h2 class="section-title">Service Area</h2>
+      <div #mapContainer class="service-area-map"></div>
+    </div>
+
     <!-- Gallery Section -->
     <div class="details-section" *ngIf="thumbnails.length">
       <h2 class="section-title">Gallery</h2>

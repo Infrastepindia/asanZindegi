@@ -36,7 +36,6 @@ declare global {
       class="form-control"
       [placeholder]="placeholder"
       [(ngModel)]="value"
-      (blur)="onTouched()"
     />
   `,
   providers: [

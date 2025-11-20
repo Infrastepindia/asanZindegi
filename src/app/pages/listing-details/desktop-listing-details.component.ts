@@ -211,11 +211,11 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
         // Parse "lat,lng;lat,lng;..." format
         const coordinateStrings = this.item.areaCoveredPolygon.split(';');
         coordinates = coordinateStrings
-          .map((coord) => {
-            const [lat, lng] = coord.split(',').map((v) => parseFloat(v.trim()));
+          .map((coord: string) => {
+            const [lat, lng] = coord.split(',').map((v: string) => parseFloat(v.trim()));
             return isFinite(lat) && isFinite(lng) ? [lat, lng] : null;
           })
-          .filter((coord) => coord !== null) as [number, number][];
+          .filter((coord: any) => coord !== null) as [number, number][];
       } else {
         // Try parsing as GeoJSON
         const geoJson = JSON.parse(this.item.areaCoveredPolygon);

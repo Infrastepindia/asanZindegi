@@ -37,6 +37,8 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   private meta = inject(Meta);
   private destroy$ = new Subject<void>();
 
+  @ViewChild('mapContainer') mapContainer?: ElementRef;
+
   item: any;
   listingId: any;
   thumbnails: string[] = [];
@@ -63,9 +65,9 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   private map: any;
-  private circle: any;
-  private center: [number, number] = [22.9734, 78.6569];
-  private radiusMeters = 15000;
+  private polygon: any;
+  private centerPoint: [number, number] = [22.9734, 78.6569];
+  mapLoaded = false;
 
   selectedForPricing?: ListingItem;
   private baseRanges: Record<string, [number, number]> = {

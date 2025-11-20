@@ -6,6 +6,7 @@ import { AccountService } from '../../../services/account.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { NotificationService } from '../../../services/notification.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
+import { GoogleAutocompleteComponent } from '../../../shared/google-autocomplete.component';
 import { OtpInputComponent } from '../../../shared/otp-input.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';

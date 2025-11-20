@@ -54,13 +54,13 @@
                   <div class="suggestion-name">
                     {{ suggestion.locationName }}
                   </div>
-                  <div class="suggestion-full">
-                    <span *ngIf="suggestion.address?.['county']">{{ suggestion.address['county'] }}</span>
-                    <span *ngIf="suggestion.address?.['state']">
-                      <span *ngIf="suggestion.address?.['county']">, </span>{{ suggestion.address['state'] }}
+                  <div class="suggestion-full" *ngIf="suggestion.address?.county || suggestion.address?.state || suggestion.address?.country">
+                    <span *ngIf="suggestion.address?.county">{{ suggestion.address!['county'] }}</span>
+                    <span *ngIf="suggestion.address?.state">
+                      <span *ngIf="suggestion.address?.county">, </span>{{ suggestion.address!['state'] }}
                     </span>
-                    <span *ngIf="suggestion.address?.['country']">
-                      <span *ngIf="suggestion.address?.['county'] || suggestion.address?.['state']">, </span>{{ suggestion.address['country'] }}
+                    <span *ngIf="suggestion.address?.country">
+                      <span *ngIf="suggestion.address?.county || suggestion.address?.state">, </span>{{ suggestion.address!['country'] }}
                     </span>
                   </div>
                 </div>

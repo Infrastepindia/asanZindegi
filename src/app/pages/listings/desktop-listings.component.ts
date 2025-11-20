@@ -419,6 +419,7 @@ export class DesktopListingsComponent implements OnInit {
     this.filters.location = item.display_name;
     this.locationResults = [];
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   private queryPhoton(q: string) {

@@ -355,10 +355,12 @@ export class DesktopLandingComponent implements OnInit {
     return this.apiSuperCategories.find((s) => String(s.id) === String(key)) || null;
   }
 
-  openCategorySelection(supercategory: ApiSuperCategory | null): void {
+  openCategorySelection(supercategory: ApiSuperCategory | null, categoryName?: string): void {
     if (!supercategory) return;
-    this.router.navigate(['/category-selection'], {
-      queryParams: { supercategoryId: supercategory.id },
-    });
+    const params: any = { supercategoryId: supercategory.id };
+    if (categoryName) {
+      params.category = categoryName;
+    }
+    this.router.navigate(['/category-selection'], { queryParams: params });
   }
 }

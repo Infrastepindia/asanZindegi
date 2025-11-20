@@ -5,6 +5,8 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';

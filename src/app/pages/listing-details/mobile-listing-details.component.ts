@@ -26,10 +26,13 @@ declare const L: any;
   styleUrl: './mobile-listing-details.component.css',
 })
 export class MobileListingDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('mapContainer') mapContainer?: ElementRef;
+
   private route = inject(ActivatedRoute);
   private svc = inject(ListingsService);
   private ads = inject(AdsService);
   private apiService = inject(ApiService);
+  private platformId = inject(PLATFORM_ID);
   private destroy$ = new Subject<void>();
 
   item: any;

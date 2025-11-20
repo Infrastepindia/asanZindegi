@@ -61,7 +61,7 @@ interface RegistrationDraft {
 @Component({
   selector: 'app-provider-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, OtpInputComponent],
+  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, GoogleAutocompleteComponent, OtpInputComponent],
   templateUrl: './provider-register.component.html',
   styleUrl: './provider-register.component.css',
 })

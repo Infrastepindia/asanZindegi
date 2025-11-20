@@ -207,6 +207,7 @@ export class MobileListingsComponent implements OnInit {
   clearSelectedCategories() {
     this.filters.selectedCategories = [];
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   private cityCoords: Record<string, { lat: number; lon: number }> = {

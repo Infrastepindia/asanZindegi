@@ -400,7 +400,7 @@ export class ProviderRegisterComponent {
     if (this.account.password !== this.account.confirmPassword) {
       return false;
     }
-    if (!this.address.line1 || !this.address.city || !this.address.state || !this.address.pin) {
+    if (!this.address.line1) {
       return false;
     }
     if (!this.provider.name) {

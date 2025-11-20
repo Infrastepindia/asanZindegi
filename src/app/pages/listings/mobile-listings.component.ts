@@ -284,6 +284,7 @@ export class MobileListingsComponent implements OnInit {
     if (typeof window !== 'undefined')
       window.localStorage.setItem(this.cityPrefKey, this.filters.location);
     this.setPage(1);
+    this.cd.detectChanges();
   }
 
   chooseCity(name: string) {

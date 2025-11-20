@@ -230,7 +230,10 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
       let coordinates: [number, number][] = [];
 
       // Check if it's a semicolon-separated string of coordinates
-      if (typeof this.item.areaCoveredPolygon === 'string' && this.item.areaCoveredPolygon.includes(';')) {
+      if (
+        typeof this.item.areaCoveredPolygon === 'string' &&
+        this.item.areaCoveredPolygon.includes(';')
+      ) {
         // Parse "lat,lng;lat,lng;..." format
         const coordinateStrings = this.item.areaCoveredPolygon.split(';');
         coordinates = coordinateStrings
@@ -244,7 +247,10 @@ export class MobileListingDetailsComponent implements OnInit, OnDestroy {
         const geoJson = JSON.parse(this.item.areaCoveredPolygon);
 
         if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
-          coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [coord[0], coord[1]]);
+          coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
+            coord[0],
+            coord[1],
+          ]);
         }
       }
 

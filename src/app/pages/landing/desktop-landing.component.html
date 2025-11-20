@@ -72,7 +72,19 @@
                       *ngFor="let r of locationResults"
                       (click)="selectLocation(r)"
                     >
-                      <i class="bi bi-geo-alt me-2"></i>{{ r.display_name }}
+                      <i class="bi bi-geo-alt me-2"></i>
+                      <div class="suggest-content">
+                        <div class="suggest-name">{{ r.locationName }}</div>
+                        <div class="suggest-details" *ngIf="r.address?.['county'] || r.address?.['state'] || r.address?.['country']">
+                          <span *ngIf="r.address?.['county']">{{ r.address['county'] }}</span>
+                          <span *ngIf="r.address?.['state']">
+                            <span *ngIf="r.address?.['county']">, </span>{{ r.address['state'] }}
+                          </span>
+                          <span *ngIf="r.address?.['country']">
+                            <span *ngIf="r.address?.['county'] || r.address?.['state']">, </span>{{ r.address['country'] }}
+                          </span>
+                        </div>
+                      </div>
                     </button>
                   </div>
                 </div>

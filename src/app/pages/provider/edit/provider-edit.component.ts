@@ -51,7 +51,7 @@ interface FileWithUrl {
 @Component({
   selector: 'app-provider-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, OsmAutocompleteComponent],
+  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, GoogleAutocompleteComponent],
   templateUrl: './provider-edit.component.html',
   styleUrl: './provider-edit.component.css',
 })

@@ -155,7 +155,13 @@
                 <button
                   type="button"
                   class="small text-decoration-none"
-                  style="background: none; border: none; padding: 0; cursor: pointer; color: inherit;"
+                  style="
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    cursor: pointer;
+                    color: inherit;
+                  "
                   (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key))"
                 >
                   View all
@@ -166,7 +172,7 @@
                   <button
                     type="button"
                     class="text-decoration-none text-dark w-100"
-                    style="background: none; border: none; padding: 0; cursor: pointer;"
+                    style="background: none; border: none; padding: 0; cursor: pointer"
                     (click)="openCategorySelection(apiSuperCategoryFromVisibleData(sc.key), c.name)"
                     [attr.aria-label]="'Select ' + c.name + ' category'"
                   >

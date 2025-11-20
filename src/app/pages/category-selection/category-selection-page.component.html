@@ -8,8 +8,12 @@
       <i class="me-2" [ngClass]="iconClass(supercategory.icon)"></i>
       {{ supercategory.title }}
     </h1>
-    <p class="category-page-subtitle" *ngIf="!preSelectedCategoryName">Complete the information to find services</p>
-    <p class="category-page-subtitle" *ngIf="preSelectedCategoryName">Enter your location to find services</p>
+    <p class="category-page-subtitle" *ngIf="!preSelectedCategoryName">
+      Complete the information to find services
+    </p>
+    <p class="category-page-subtitle" *ngIf="preSelectedCategoryName">
+      Enter your location to find services
+    </p>
   </div>
 </div>
 

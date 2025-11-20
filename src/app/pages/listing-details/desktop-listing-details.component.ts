@@ -161,7 +161,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
 
         this.thumbnails = normalizedCover ? [normalizedCover] : [];
 
-        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services in ${this.item.location}.`;
+        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services .`;
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
         console.log(this.item);

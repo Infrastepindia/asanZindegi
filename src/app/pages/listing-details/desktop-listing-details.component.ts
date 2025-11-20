@@ -204,14 +204,28 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
     if (!this.item?.areaCoveredPolygon || !this.map) return;
 
     try {
-      const geoJson = JSON.parse(this.item.areaCoveredPolygon);
+      let coordinates: [number, number][] = [];
 
-      if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
-        const coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
-          coord[0],
-          coord[1],
-        ]);
+      // Check if it's a semicolon-separated string of coordinates
+      if (typeof this.item.areaCoveredPolygon === 'string' && this.item.areaCoveredPolygon.includes(';')) {
+        // Parse "lat,lng;lat,lng;..." format
+        const coordinateStrings = this.item.areaCoveredPolygon.split(';');
+        coordinates = coordinateStrings
+          .map((coord) => {
+            const [lat, lng] = coord.split(',').map((v) => parseFloat(v.trim()));
+            return isFinite(lat) && isFinite(lng) ? [lat, lng] : null;
+          })
+          .filter((coord) => coord !== null) as [number, number][];
+      } else {
+        // Try parsing as GeoJSON
+        const geoJson = JSON.parse(this.item.areaCoveredPolygon);
 
+        if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
+          coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [coord[0], coord[1]]);
+        }
+      }
+
+      if (coordinates.length > 0) {
         if (this.polygon) {
           this.map.removeLayer(this.polygon);
         }

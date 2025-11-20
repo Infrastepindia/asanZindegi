@@ -6,6 +6,7 @@ import { AccountService } from '../../../services/account.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { NotificationService } from '../../../services/notification.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
+import { GoogleAutocompleteComponent } from '../../../shared/google-autocomplete.component';
 import { OtpInputComponent } from '../../../shared/otp-input.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
@@ -60,7 +61,13 @@ interface RegistrationDraft {
 @Component({
   selector: 'app-provider-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, OtpInputComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    OsmAutocompleteComponent,
+    GoogleAutocompleteComponent,
+    OtpInputComponent,
+  ],
   templateUrl: './provider-register.component.html',
   styleUrl: './provider-register.component.css',
 })
@@ -302,6 +309,19 @@ export class ProviderRegisterComponent {
     this.otpError = this.phoneVerified ? null : 'Invalid code';
   }
 
+  onPlaceSelected(data: any) {
+    if (!data || !data.address) {
+      return;
+    }
+
+    // Store the full address in line1
+    this.address.line1 = data.address;
+
+    // Extract city, state, and pin from Google Places API response if available
+    // For now, keep the existing city/state/pin fields for manual entry/editing
+    // Users can manually update these fields if needed
+  }
+
   // Submit
   submit() {
     if (!this.validateAllSteps()) {
@@ -363,12 +383,11 @@ export class ProviderRegisterComponent {
     this.api.addProviderDetails(payload, files).subscribe({
       next: (response) => {
         this.clearDraft();
-        console.log(response)
+        console.log(response);
         if (response.status_code == 200) {
           this.notification.success(response.message);
           this.router.navigate(['/login']);
-        }
-        else {
+        } else {
           this.notification.error(`Submission failed: ${response.message}`);
         }
       },
@@ -386,7 +405,7 @@ export class ProviderRegisterComponent {
     if (this.account.password !== this.account.confirmPassword) {
       return false;
     }
-    if (!this.address.line1 || !this.address.city || !this.address.state || !this.address.pin) {
+    if (!this.address.line1) {
       return false;
     }
     if (!this.provider.name) {

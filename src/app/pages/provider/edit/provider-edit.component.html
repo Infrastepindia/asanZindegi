@@ -85,36 +85,17 @@
             <!-- Step 2: Address Details -->
             <form *ngIf="step === 2 && !loading" (ngSubmit)="next()" class="wizard-form">
               <div class="mb-3">
-                <label class="form-label">Address Line 1</label>
-                <input class="form-control" [(ngModel)]="address.line1" name="line1" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Address Line 2</label>
-                <input class="form-control" [(ngModel)]="address.line2" name="line2" />
-              </div>
-              <div class="row g-3">
-                <div class="col-md-5">
-                  <label class="form-label">City</label>
-                  <az-osm-autocomplete
-                    [(ngModel)]="address.city"
-                    name="city"
-                    [placeholder]="'Enter location'"
-                  ></az-osm-autocomplete>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">State</label>
-                  <input class="form-control" [(ngModel)]="address.state" name="state" required />
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">PIN Code</label>
-                  <input class="form-control" [(ngModel)]="address.pin" name="pin" required />
-                </div>
+                <label class="form-label">Search Address</label>
+                <az-google-autocomplete
+                  placeholder="Search your address"
+                  (placeSelected)="onPlaceSelected($event)"
+                ></az-google-autocomplete>
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
                 <button type="button" class="btn btn-outline-secondary" (click)="back()">
                   Back
                 </button>
-                <button type="submit" class="btn btn-join btn-lg">Continue</button>
+                <button type="submit" class="btn btn-join btn-lg">Complete</button>
               </div>
             </form>
 
@@ -393,7 +374,7 @@
                     >
                       <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
                       <!-- <span class="file-name">{{ f.name | slice: 0 : 20 }}</span> -->
-                    <span class="file-name">View</span>
+                      <span class="file-name">View</span>
                     </a>
                   </div>
                 </div>
@@ -411,7 +392,7 @@
                     >
                       <i class="bi" [ngClass]="getFileIcon(f.name)"></i>
                       <!-- <span class="file-name">{{ f.name | slice: 0 : 20 }}</span> -->
-                       <span class="file-name">View</span>
+                      <span class="file-name">View</span>
                     </a>
                   </div>
                 </div>
@@ -423,7 +404,7 @@
                     <div *ngFor="let f of portfolioFiles" class="portfolio-image-item">
                       <a [href]="f.url" target="_blank" rel="noopener noreferrer" class="file-link">
                         <!-- <img [src]="f.url" [alt]="f.name" class="portfolio-image" /> -->
-                         <span class="file-name">View</span>
+                        <span class="file-name">View</span>
                       </a>
                     </div>
                   </div>

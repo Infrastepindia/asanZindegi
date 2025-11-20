@@ -6,10 +6,10 @@ import { AuthService } from '../../../services/auth.service';
 import { ApiService, ApiSuperCategory } from '../../../services/api.service';
 import { NotificationService } from '../../../services/notification.service';
 import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.component';
+import { GoogleAutocompleteComponent } from '../../../shared/google-autocomplete.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
 import { environment } from '../../../../environments/environment';
-import { connect } from 'node:http2';
 
 interface AddressForm {
   line1: string;
@@ -51,7 +51,7 @@ interface FileWithUrl {
 @Component({
   selector: 'app-provider-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, OsmAutocompleteComponent],
+  imports: [CommonModule, FormsModule, OsmAutocompleteComponent, GoogleAutocompleteComponent],
   templateUrl: './provider-edit.component.html',
   styleUrl: './provider-edit.component.css',
 })
@@ -100,7 +100,7 @@ export class ProviderEditComponent implements OnInit {
   portfolioFiles: (FileWithUrl | { name: string; url: string })[] = [];
   advertisementImageFiles: Record<number, (FileWithUrl | { name: string; url: string })[]> = {};
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     const user = this.authService.getUser();
@@ -113,10 +113,9 @@ export class ProviderEditComponent implements OnInit {
       return;
     }
 
-
     this.api.getCategories().subscribe({
       next: (res) => {
-        (this.superCategories = res?.data || [])
+        this.superCategories = res?.data || [];
         if (this.superCategories.length > 0) {
           this.loadProviderData();
         }
@@ -154,7 +153,7 @@ export class ProviderEditComponent implements OnInit {
       phone: data.contactInfo.phoneNumber || '',
       password: '',
       confirmPassword: '',
-      profileImage: environment.file_path + "/" + data.profileImageUrl || '',
+      profileImage: environment.file_path + '/' + data.profileImageUrl || '',
     };
 
     this.address = {
@@ -169,7 +168,7 @@ export class ProviderEditComponent implements OnInit {
       name: data.providerName || '',
       title: data.profileTitle || '',
       isCompany: data.isCompany || false,
-      logo: environment.file_path + "/" + data.logo.url || '',
+      logo: environment.file_path + '/' + data.logo.url || '',
     };
 
     if (data.categories && Array.isArray(data.categories)) {
@@ -192,29 +191,29 @@ export class ProviderEditComponent implements OnInit {
   private loadDocumentFiles(data: any) {
     // Load registration certificates
     if (data.registrationFile) {
-      let regFiles = [data.registrationFile]
+      let regFiles = [data.registrationFile];
       this.regFiles = regFiles.map((f: any) => ({
         name: f.filename,
-        url: environment.file_path + "/" + f.url,
+        url: environment.file_path + '/' + f.url,
       }));
     }
 
     // Load licenses
     if (data.licenseFile) {
-      let licenseFiles = [data.licenseFile]
+      let licenseFiles = [data.licenseFile];
       this.licenseFiles = licenseFiles.map((l: any) => ({
         name: l.fileName,
-        url: environment.file_path + "/" + l.url,
+        url: environment.file_path + '/' + l.url,
       }));
     }
 
     // Load portfolio images
 
     if (data.portfolioFile) {
-      let portfolioFiles = [data.portfolioFile]
+      let portfolioFiles = [data.portfolioFile];
       this.portfolioFiles = portfolioFiles.map((l: any) => ({
         name: l.fileName,
-        url: environment.file_path + "/" + l.url,
+        url: environment.file_path + '/' + l.url,
       }));
     }
 
@@ -234,7 +233,6 @@ export class ProviderEditComponent implements OnInit {
 
     if (data.advertisements && Array.isArray(data.advertisements)) {
       data.advertisements.forEach((ad: any) => {
-
         // Ensure object exists
         this.advertisementImageFiles[ad.categoryId] = [];
 
@@ -242,13 +240,11 @@ export class ProviderEditComponent implements OnInit {
         if (ad.mainImage && ad.mainImage.url) {
           this.advertisementImageFiles[ad.categoryId].push({
             name: ad.mainImage.fileName ?? this.extractFilenameFromUrl(ad.mainImage.url),
-            url: environment.file_path + "/" + ad.mainImage.url
+            url: environment.file_path + '/' + ad.mainImage.url,
           });
         }
-
       });
     }
-
   }
 
   private extractFilenameFromUrl(url: string): string {
@@ -283,7 +279,7 @@ export class ProviderEditComponent implements OnInit {
         videoLink: ad.videoLink || '',
         detailDescription: ad.detailDescription || '',
         availabilityHours: ad.availabilityHours || '',
-        advertisementImage: environment.file_path + "/" + ad.mainImage?.url || '',
+        advertisementImage: environment.file_path + '/' + ad.mainImage?.url || '',
       };
     });
   }
@@ -421,6 +417,19 @@ export class ProviderEditComponent implements OnInit {
       reader.onerror = rej;
       reader.readAsDataURL(f);
     });
+  }
+
+  onPlaceSelected(data: any) {
+    if (!data || !data.address) {
+      return;
+    }
+
+    // Store the full address in line1
+    this.address.line1 = data.address;
+
+    // Extract city, state, and pin from Google Places API response if available
+    // For now, keep the existing city/state/pin fields for manual entry/editing
+    // Users can manually update these fields if needed
   }
 
   hasUploadedDocuments(): boolean {
@@ -561,9 +570,9 @@ export class ProviderEditComponent implements OnInit {
 
     this.api.updateProviderDetails(payload, files).subscribe({
       next: (response) => {
-        console.log(response)
+        console.log(response);
         this.submitting = false;
-        window.alert(response.message)
+        window.alert(response.message);
         //response.status_code == 200? this.notification.success(response.message) :this.notification.error(`Update failed: ${response.message}`); ;
         //this.notification.success('Provider details updated successfully!');
         this.router.navigate(['/provider/dashboard']);
@@ -583,7 +592,7 @@ export class ProviderEditComponent implements OnInit {
     if (this.account.password && this.account.password !== this.account.confirmPassword) {
       return false;
     }
-    if (!this.address.line1 || !this.address.city || !this.address.state || !this.address.pin) {
+    if (!this.address.line1) {
       return false;
     }
     if (!this.provider.name) {

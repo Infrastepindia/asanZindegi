@@ -148,11 +148,11 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
-          areaCoveredPolygon: apiData.areaCoveredPolygon,
+          areaCoveredPolygon: apiData.location,
         };
 
         console.log('Listing item loaded:', this.item);
-        console.log('areaCoveredPolygon:', apiData.areaCoveredPolygon);
+        console.log('areaCoveredPolygon:', apiData.location);
 
         this.provider = {
           name: apiData.providerName || 'Service Provider',

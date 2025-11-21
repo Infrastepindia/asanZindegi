@@ -1,43 +1,32 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  ChangeDetectorRef,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiSuperCategory, ApiCategory } from '../../services/api.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiSuperCategory, ApiCategory, ApiService } from '../../services/api.service';
 import { PhotonService, LocationResult } from '../../services/photon.service';
-import { CityService } from '../city.service';
+import { CityService } from '../../shared/city.service';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 
 type NominatimResult = LocationResult;
 
-interface CategorySelectionResult {
-  supercategoryId: number;
-  supercategoryTitle: string;
-  categoryId: number;
-  categoryName: string;
-  location: string;
-  lat: number;
-  lon: number;
-}
-
 @Component({
-  selector: 'app-category-selection-modal',
+  selector: 'app-category-selection-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './category-selection-modal.component.html',
-  styleUrl: './category-selection-modal.component.css',
+  templateUrl: './category-selection-page.component.html',
+  styleUrl: './category-selection-page.component.css',
 })
-export class CategorySelectionModalComponent implements OnInit {
-  @Input() supercategory!: ApiSuperCategory;
-  @Output() closed = new EventEmitter<void>();
-  @Output() submitted = new EventEmitter<CategorySelectionResult>();
+export class CategorySelectionPageComponent implements OnInit {
+  private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private photon = inject(PhotonService);
+  private cdr = inject(ChangeDetectorRef);
+  private cityService = inject(CityService);
+
+  supercategory: ApiSuperCategory | null = null;
+  supercategoryId: number | null = null;
 
   // Location search
   locationInput = '';
@@ -50,16 +39,29 @@ export class CategorySelectionModalComponent implements OnInit {
   selectedCategory: ApiCategory | null = null;
 
   private locationQuery$ = new BehaviorSubject<string>('');
-  private locationDebounceSubscription: any;
-  private photon = inject(PhotonService);
-  private cdr = inject(ChangeDetectorRef);
-  private cityService = inject(CityService);
 
   ngOnInit(): void {
-    if (!this.supercategory) {
-      this.closed.emit();
+    const id = this.route.snapshot.queryParamMap.get('supercategoryId');
+    if (!id) {
+      this.router.navigate(['/']);
       return;
     }
+
+    this.supercategoryId = parseInt(id, 10);
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        const categories = (res as any).data || [];
+        this.supercategory =
+          categories.find((c: ApiSuperCategory) => c.id === this.supercategoryId) || null;
+        if (!this.supercategory) {
+          this.router.navigate(['/']);
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.router.navigate(['/']);
+      },
+    });
 
     // Setup location search debounce
     this.locationQuery$
@@ -101,21 +103,23 @@ export class CategorySelectionModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.isFormValid() || !this.selectedLocation) {
+    if (!this.isFormValid() || !this.selectedLocation || !this.selectedCategory) {
       return;
     }
 
-    const result: CategorySelectionResult = {
-      supercategoryId: this.supercategory.id,
-      supercategoryTitle: this.supercategory.title,
-      categoryId: this.selectedCategory!.id,
-      categoryName: this.selectedCategory!.name,
+    const queryParams: any = {
+      supercategory: this.supercategoryId,
+      category: this.selectedCategory.name,
       location: this.selectedLocation.display_name,
       lat: parseFloat(this.selectedLocation.lat),
       lon: parseFloat(this.selectedLocation.lon),
     };
 
-    this.submitted.emit(result);
+    this.router.navigate(['/listings'], { queryParams });
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/']);
   }
 
   private searchLocation(q: string) {

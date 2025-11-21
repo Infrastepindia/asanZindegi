@@ -1,0 +1,166 @@
+<div class="mobile-details-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="details-loading">
+    <div class="spinner-wrapper">
+      <div class="spinner"></div>
+      <p class="loader-text">Loading details...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !isLoading" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="item != null && !isLoading" class="details-content">
+    <!-- Header with Image -->
+    <div class="details-hero">
+      <img
+        [src]="getImageSource(item.cover)"
+        [alt]="item.title"
+        class="hero-image"
+        (error)="onImageLoadError(item.cover)"
+      />
+      <span class="hero-badge" [ngClass]="'badge-' + item.type?.toLowerCase()">
+        {{ item.type }}
+      </span>
+    </div>
+
+    <!-- Title & Basic Info -->
+    <div class="details-header p-16">
+      <h1 class="title">{{ item.title }}</h1>
+      <div class="info-row">
+        <span class="info-item"> <i class="bi bi-geo-alt"></i>{{ item.location }} </span>
+      </div>
+      <div class="info-row">
+        <span class="info-item"> <i class="bi bi-tag"></i>{{ item.category }} </span>
+      </div>
+    </div>
+
+    <!-- Price Section -->
+    <div class="price-section">
+      <div class="price-tag">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">₹{{ item.price }}</span>
+      </div>
+    </div>
+
+    <!-- Contact Buttons -->
+    <div class="contact-buttons">
+      <button type="button" class="btn-contact" (click)="showPhone = true">
+        <i class="bi bi-telephone"></i>
+        <span>{{ showPhone ? provider.phone : 'Show Phone' }}</span>
+      </button>
+      <button type="button" class="btn-contact" (click)="showEmail = true">
+        <i class="bi bi-envelope"></i>
+        <span>{{ showEmail ? provider.email : 'Show Email' }}</span>
+      </button>
+    </div>
+
+    <!-- Advertisement Section 1 -->
+    <div class="details-section mobile-ad-slot-wrapper">
+      <div class="ad-slot">Advertisement</div>
+    </div>
+
+    <!-- Overview Section -->
+    <div class="details-section">
+      <h2 class="section-title">Overview</h2>
+      <p class="section-content">{{ overview }}</p>
+    </div>
+
+    <!-- Includes Section -->
+    <div class="details-section">
+      <h2 class="section-title">What's Included</h2>
+      <ul class="includes-list">
+        <li *ngFor="let inc of includes"><i class="bi bi-check-circle"></i>{{ inc }}</li>
+      </ul>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="details-section" *ngIf="thumbnails.length">
+      <h2 class="section-title">Gallery</h2>
+      <div class="gallery-grid">
+        <img
+          *ngFor="let t of thumbnails"
+          [src]="getImageSource(t)"
+          [alt]="item.title"
+          class="gallery-image"
+          (error)="onImageLoadError(t)"
+        />
+      </div>
+    </div>
+
+    <!-- Provider Section -->
+    <div class="details-section provider-section">
+      <button type="button" class="section-toggle" (click)="toggleProviderInfo()">
+        <div class="provider-preview">
+          <img
+            [src]="getImageSource(provider.avatar)"
+            [alt]="provider.name"
+            class="provider-avatar"
+            (error)="onImageLoadError(provider.avatar)"
+          />
+          <div class="provider-name">
+            <span>{{ provider.name }}</span>
+            <small>Service Provider</small>
+          </div>
+        </div>
+        <i class="bi" [ngClass]="showProviderInfo ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </button>
+
+      <div class="provider-details" *ngIf="showProviderInfo">
+        <div class="detail-item">
+          <i class="bi bi-calendar3"></i>
+          <div>
+            <span class="detail-label">Member Since</span>
+            <span class="detail-value">{{ provider.memberSince | date: 'd MMM yyyy' }}</span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <i class="bi bi-geo-alt"></i>
+          <div>
+            <span class="detail-label">Location</span>
+            <span class="detail-value">{{ item.location }}</span>
+          </div>
+        </div>
+        <div class="detail-item" *ngIf="showEmail">
+          <i class="bi bi-envelope"></i>
+          <div>
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ provider.email }}</span>
+          </div>
+        </div>
+        <div class="detail-item" *ngIf="showPhone">
+          <i class="bi bi-telephone"></i>
+          <div>
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ provider.phone }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Services -->
+    <div class="details-section" *ngIf="related.length">
+      <h2 class="section-title">Related Services</h2>
+      <div class="related-grid">
+        <a *ngFor="let r of related" [routerLink]="['/ad', r.id]" class="related-card">
+          <img
+            [src]="getImageSource(r.cover)"
+            [alt]="r.title"
+            class="related-image"
+            (error)="onImageLoadError(r.cover)"
+          />
+          <div class="related-info">
+            <h3 class="related-title">{{ r.title }}</h3>
+            <span class="related-price">₹{{ r.price }}</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Spacer -->
+    <div class="spacer"></div>
+  </div>
+</div>

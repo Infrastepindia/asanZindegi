@@ -2,19 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, forwardRef, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 import { CityService } from './city.service';
+import { PhotonService, LocationResult } from '../services/photon.service';
 
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  class: string;
-  type: string;
-  address?: Record<string, string>;
-}
+type NominatimResult = LocationResult;
 
 @Component({
   selector: 'az-osm-autocomplete',
@@ -45,6 +38,11 @@ interface NominatimResult {
   `,
   styles: [
     `
+      .osm-ac-wrap {
+        position: relative;
+        z-index: 1;
+      }
+
       .osm-ac-dropdown {
         position: absolute;
         left: 0;
@@ -53,17 +51,30 @@ interface NominatimResult {
         background: #fff;
         border: 1px solid #e7e9f3;
         border-top: none;
-        z-index: 1040;
+        z-index: 10000;
         border-radius: 0 0 10px 10px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
+
       .osm-ac-item {
-        padding: 8px 12px;
+        padding: 12px;
         background: #fff;
         border: 0;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.2s ease;
       }
+
       .osm-ac-item:hover {
         background: #f8f9fb;
+      }
+
+      .osm-ac-item:active {
+        background: #e7e9f3;
       }
     `,
   ],
@@ -76,7 +87,7 @@ interface NominatimResult {
   ],
 })
 export class OsmAutocompleteComponent implements ControlValueAccessor {
-  private http = inject(HttpClient);
+  private photon = inject(PhotonService);
   private cityService = inject(CityService);
 
   @Input() placeholder = 'Enter location';
@@ -106,8 +117,7 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         catchError(() => of([] as NominatimResult[])),
       )
       .subscribe((res) => {
-        const filtered = this.filterCityResults(res);
-        this.suggestions = filtered.length ? filtered : this.localFallback(this.value);
+        this.suggestions = res.length ? res : this.localFallback(this.value);
       });
   }
 
@@ -159,16 +169,18 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
   }
 
   private search(q: string) {
-    const params = new HttpParams()
-      .set('q', q)
-      .set('format', 'jsonv2')
-      .set('addressdetails', '1')
-      .set('countrycodes', 'in')
-      .set('limit', '8');
-    return this.http.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
-      params,
-      headers: { 'Accept-Language': 'en' } as any,
-    });
+    const currentCity = this.cityService.city();
+    const bounds = currentCity ? this.cityService.getBoundsForCity(currentCity) : null;
+
+    let lat: number | undefined;
+    let lon: number | undefined;
+
+    if (bounds) {
+      lat = (bounds.bottom + bounds.top) / 2;
+      lon = (bounds.left + bounds.right) / 2;
+    }
+
+    return this.photon.searchLocation(q, 'IN', 8, lat, lon);
   }
 
   private localFallback(q: string): NominatimResult[] {
@@ -187,15 +199,5 @@ export class OsmAutocompleteComponent implements ControlValueAccessor {
         type: 'city',
         address: { city: name.replace(', India', ''), state: '', country: 'India' },
       }));
-  }
-
-  private filterCityResults(list: NominatimResult[]): NominatimResult[] {
-    return list.filter((r) => {
-      if (r.class === 'place') {
-        return ['city', 'town', 'village', 'hamlet', 'suburb', 'neighbourhood'].includes(r.type);
-      }
-      if (r.class === 'boundary' && r.type === 'administrative') return true;
-      return false;
-    });
   }
 }

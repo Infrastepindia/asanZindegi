@@ -2,9 +2,9 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { ApiService, ApiSuperCategory } from '../../services/api.service';
-import { CategorySelectionModalComponent } from '../../shared/category-selection-modal/category-selection-modal.component';
+import { PhotonService } from '../../services/photon.service';
+import { CityService } from '../../shared/city.service';
 
 interface CategoryItem {
   name: string;
@@ -44,7 +44,7 @@ interface BlogItem {
 @Component({
   selector: 'app-mobile-landing',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CategorySelectionModalComponent],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './mobile-landing.component.html',
   styleUrl: './mobile-landing.component.css',
 })
@@ -75,10 +75,11 @@ export class MobileLandingComponent implements OnInit {
     });
   }
 
-  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly api = inject(ApiService);
+  private readonly photon = inject(PhotonService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly cityService = inject(CityService);
 
   search = {
     keyword: '',
@@ -106,10 +107,6 @@ export class MobileLandingComponent implements OnInit {
     icon: string;
     items: CategoryItem[];
   }> = [];
-
-  // Modal state
-  showCategoryModal = false;
-  selectedSupercategoryForModal: ApiSuperCategory | null = null;
 
   featuredAds: FeaturedAd[] = [
     {
@@ -253,56 +250,28 @@ export class MobileLandingComponent implements OnInit {
       this.locationResults = [];
       return;
     }
-    this.locDebounce = setTimeout(() => this.queryNominatim(value.trim()), 300);
+    this.locDebounce = setTimeout(() => this.queryPhoton(value.trim()), 300);
   }
 
-  private queryNominatim(q: string) {
+  private queryPhoton(q: string) {
     if (!q || !q.trim()) return;
 
     this.locationLoading = true;
 
-    const left = 85.8201,
-      right = 89.8859,
-      bottom = 21.5219,
-      top = 27.223;
+    const currentCity = this.cityService.city();
+    const bounds = currentCity ? this.cityService.getBoundsForCity(currentCity) : null;
 
-    const params = new URLSearchParams({
-      format: 'jsonv2',
-      addressdetails: '1',
-      namedetails: '1',
-      extratags: '0',
-      limit: '8',
-      countrycodes: 'in',
-      viewbox: `${left},${top},${right},${bottom}`,
-      bounded: '1',
-      'accept-language': 'en-IN,hi-IN',
-      q,
-    });
+    let lat: number | undefined;
+    let lon: number | undefined;
 
-    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+    if (bounds) {
+      lat = (bounds.bottom + bounds.top) / 2;
+      lon = (bounds.left + bounds.right) / 2;
+    }
 
-    this.http.get<any[]>(url).subscribe({
-      next: (res) => {
-        const allowed = new Set([
-          'city',
-          'town',
-          'village',
-          'suburb',
-          'state',
-          'district',
-          'county',
-          'locality',
-        ]);
-
-        const onlyIn = (res || []).filter(
-          (r) => (r.address?.country_code || '').toLowerCase() === 'in',
-        );
-
-        const cleaned = (onlyIn.length ? onlyIn : res || []).filter((r) =>
-          allowed.has((r.type || '').toLowerCase()),
-        );
-
-        this.locationResults = cleaned.slice(0, 8);
+    this.photon.searchLocation(q, 'IN', 10, lat, lon).subscribe({
+      next: (results) => {
+        this.locationResults = results;
         this.locationLoading = false;
       },
       error: () => {
@@ -330,29 +299,10 @@ export class MobileLandingComponent implements OnInit {
     return this.apiSuperCategories.find((s) => String(s.id) === String(key)) || null;
   }
 
-  openCategoryModal(supercategory: ApiSuperCategory | null): void {
+  openCategorySelection(supercategory: ApiSuperCategory | null): void {
     if (!supercategory) return;
-    this.selectedSupercategoryForModal = supercategory;
-    this.showCategoryModal = true;
-  }
-
-  closeCategoryModal(): void {
-    this.showCategoryModal = false;
-    this.selectedSupercategoryForModal = null;
-  }
-
-  onCategoryModalSubmit(result: any): void {
-    const queryParams: any = {
-      supercategory: result.supercategoryId,
-      category: result.categoryName,
-      location: result.location,
-      lat: result.lat,
-      lon: result.lon,
-    };
-
-    this.showCategoryModal = false;
-    this.selectedSupercategoryForModal = null;
-
-    this.router.navigate(['/listings'], { queryParams });
+    this.router.navigate(['/category-selection'], {
+      queryParams: { supercategoryId: supercategory.id },
+    });
   }
 }

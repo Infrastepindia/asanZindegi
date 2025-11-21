@@ -79,15 +79,19 @@ export class LoginComponent {
   private fetchAndSetAccountData(): Promise<void> {
     return new Promise((resolve) => {
       const userId = this.authService.getUserId();
+      const userRole = this.authService.getUser()?.type;
       if (userId) {
+        debugger
         this.api.getCompanyDetails(userId).subscribe({
           next: (response: any) => {
             if (response && response.data) {
               const data = response.data;
-              if (data.isCompany) {
+              if (data.isCompany || userRole == 'Provider') {
                 const companyAccount: CompanyAccount = {
                   id: data.providerId || 1,
-                  type: 'Company',
+                  type: userRole || '',
+                  firstName: data.firstName || '',
+                  lastName: data.lastName || '',
                   companyName: data.providerName || '',
                   contactName: data.contactName || data.providerName || '',
                   email: data.email || '',
@@ -103,6 +107,8 @@ export class LoginComponent {
                 const individualAccount: IndividualAccount = {
                   id: data.providerId || 1,
                   type: 'Individual',
+                  firstName: data.firstName || '',
+                  lastName: data.lastName || '',
                   fullName: data.providerName || '',
                   email: data.email || '',
                   phone: data.phone || '',

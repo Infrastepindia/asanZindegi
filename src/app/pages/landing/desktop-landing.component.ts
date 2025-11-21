@@ -308,6 +308,7 @@ export class DesktopLandingComponent implements OnInit {
   }
 
   private queryNominatim(q: string) {
+    debugger
     if (!q || !q.trim()) return;
 
     this.locationLoading = true;
@@ -330,8 +331,9 @@ export class DesktopLandingComponent implements OnInit {
       q,
     });
 
-    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
 
+    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+   //const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en`;
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
         const allowed = new Set([

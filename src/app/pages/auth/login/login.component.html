@@ -9,38 +9,21 @@
             </h1>
             <div class="social-auth mb-3">
               <div class="social-buttons d-grid gap-2">
-                <button
-                  type="button"
-                  class="btn btn-social btn-google w-100"
-                  aria-label="Continue with Google"
-                >
+                <button type="button" class="btn btn-social btn-google w-100" aria-label="Continue with Google">
                   <i class="bi bi-google me-2"></i>Continue with Google
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-social btn-facebook w-100"
-                  aria-label="Continue with Facebook"
-                >
+                <button type="button" class="btn btn-social btn-facebook w-100" aria-label="Continue with Facebook">
                   <i class="bi bi-facebook me-2"></i>Continue with Facebook
                 </button>
               </div>
             </div>
             <div class="auth-sep text-center text-secondary small mb-3">or</div>
             <div class="login-toggle mb-3">
-              <button
-                type="button"
-                class="toggle-btn"
-                [class.active]="loginMode === 'password'"
-                (click)="loginMode = 'password'"
-              >
+              <button type="button" class="toggle-btn" [class.active]="loginMode === 'password'"
+                (click)="loginMode = 'password'">
                 Email & Password
               </button>
-              <button
-                type="button"
-                class="toggle-btn"
-                [class.active]="loginMode === 'otp'"
-                (click)="loginMode = 'otp'"
-              >
+              <button type="button" class="toggle-btn" [class.active]="loginMode === 'otp'" (click)="loginMode = 'otp'">
                 Mobile & OTP
               </button>
             </div>
@@ -48,28 +31,25 @@
               <ng-container *ngIf="loginMode === 'password'; else otpTpl">
                 <div class="mb-3">
                   <label class="form-label">Email</label>
-                  <input
-                    class="form-control"
-                    type="email"
-                    [(ngModel)]="model.email"
-                    name="email"
-                    required
-                  />
+                  <input class="form-control" type="email" [(ngModel)]="model.email" name="email" #email="ngModel" required />
+                  <div *ngIf="email.invalid && email.touched" class="text-danger small mt-1">
+                    <ng-container *ngIf="email.errors?.['required']">
+                      Email is required
+                    </ng-container>
+                    <ng-container *ngIf="email.errors?.['email']">
+                      Enter a valid email address
+                    </ng-container>
+                  </div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Password</label>
-                  <input
-                    class="form-control"
-                    type="password"
-                    [(ngModel)]="model.password"
-                    name="password"
-                    required
-                  />
+                  <input class="form-control" type="password" [(ngModel)]="model.password" name="password" #password="ngModel" required />
+                  <div *ngIf="password.invalid && password.touched" class="text-danger small mt-1">
+                    Password is required
+                  </div>
                 </div>
                 <div class="d-flex justify-content-end mb-3">
-                  <a routerLink="/forgot-password" class="text-decoration-none small"
-                    >Forgot password?</a
-                  >
+                  <a routerLink="/forgot-password" class="text-decoration-none small">Forgot password?</a>
                 </div>
                 <div *ngIf="error" class="alert alert-danger py-2 small" role="alert">
                   {{ error }}
@@ -81,25 +61,12 @@
               <ng-template #otpTpl>
                 <div class="mb-3">
                   <label class="form-label">Mobile Number</label>
-                  <input
-                    class="form-control"
-                    type="tel"
-                    [(ngModel)]="model.phone"
-                    name="phone"
-                    placeholder="e.g. +1 555 123 4567"
-                    required
-                  />
+                  <input class="form-control" type="tel" [(ngModel)]="model.phone" name="phone" #phone="ngModel"
+                    placeholder="e.g. +1 555 123 4567" required />
                 </div>
                 <div class="mb-3" *ngIf="otpSent">
                   <label class="form-label">OTP Code</label>
-                  <input
-                    class="form-control"
-                    type="text"
-                    maxlength="6"
-                    [(ngModel)]="model.otp"
-                    name="otp"
-                    required
-                  />
+                  <input class="form-control" type="text" maxlength="6" [(ngModel)]="model.otp" name="otp" required />
                 </div>
                 <div class="d-grid gap-2" *ngIf="!otpSent; else verifyBtnTpl">
                   <button type="button" class="btn btn-join btn-lg" (click)="sendOtp()">

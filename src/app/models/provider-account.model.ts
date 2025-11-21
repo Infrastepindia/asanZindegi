@@ -16,7 +16,9 @@ export interface CompanyVerification {
 
 export interface ProviderAccountBase {
   id: number;
-  type: AccountType;
+  type: string;
+  firstName?: string,
+  lastName?: string,
   email: string;
   phone: string;
   createdAt: string;
@@ -28,7 +30,7 @@ export interface IndividualAccount extends ProviderAccountBase {
 }
 
 export interface CompanyAccount extends ProviderAccountBase {
-  type: 'Company' | 'Provider';  
+  type: string;  
   companyName: string;
   contactName: string;
   personnel: Personnel[];

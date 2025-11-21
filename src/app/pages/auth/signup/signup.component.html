@@ -9,18 +9,10 @@
             </h1>
             <div class="social-auth mb-3">
               <div class="social-buttons d-grid gap-2">
-                <button
-                  type="button"
-                  class="btn btn-social btn-google w-100"
-                  aria-label="Continue with Google"
-                >
+                <button type="button" class="btn btn-social btn-google w-100" aria-label="Continue with Google">
                   <i class="bi bi-google me-2"></i>Continue with Google
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-social btn-facebook w-100"
-                  aria-label="Continue with Facebook"
-                >
+                <button type="button" class="btn btn-social btn-facebook w-100" aria-label="Continue with Facebook">
                   <i class="bi bi-facebook me-2"></i>Continue with Facebook
                 </button>
               </div>
@@ -29,62 +21,34 @@
             <form #signupForm="ngForm" (ngSubmit)="onSubmit($event)" class="auth-form" novalidate>
               <div class="mb-3">
                 <label class="form-label">Full name</label>
-                <input
-                  class="form-control"
-                  [(ngModel)]="model.name"
-                  name="name"
-                  required
-                  minlength="2"
-                  #nameCtrl="ngModel"
-                  [class.is-invalid]="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="nameCtrl.errors && (nameCtrl.dirty || nameCtrl.touched)"
-                >
+                <input class="form-control" [(ngModel)]="model.name" name="name" required minlength="2"
+                  #nameCtrl="ngModel" pattern="^(?!\s*$).+"
+                  [class.is-invalid]="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)" />
+                <div class="invalid-feedback" *ngIf="nameCtrl.errors && (nameCtrl.dirty || nameCtrl.touched)">
                   <span *ngIf="nameCtrl.errors['required']">Full name is required.</span>
                   <span *ngIf="nameCtrl.errors['minlength']">Enter at least 2 characters.</span>
+                  <span *ngIf="nameCtrl.errors['pattern']">Name cannot be only spaces.</span>
                 </div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input
-                  class="form-control"
-                  type="email"
-                  [(ngModel)]="model.email"
-                  name="email"
-                  required
-                  email
-                  #emailCtrl="ngModel"
-                  [class.is-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)"
-                >
+                <input class="form-control" type="email" [(ngModel)]="model.email" name="email" required email
+                  #emailCtrl="ngModel" pattern="^(?!\s*$).+"
+                  [class.is-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" />
+                <div class="invalid-feedback" *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)">
                   <span *ngIf="emailCtrl.errors['required']">Email is required.</span>
                   <span *ngIf="emailCtrl.errors['email']">Enter a valid email.</span>
+                  <span *ngIf="emailCtrl.errors['pattern']">Email cannot be only spaces.</span>
                 </div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input
-                  class="form-control"
-                  type="password"
-                  [(ngModel)]="model.password"
-                  name="password"
-                  required
-                  minlength="8"
-                  pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
-                  #passwordCtrl="ngModel"
-                  [class.is-invalid]="
+                <input class="form-control" type="password" [(ngModel)]="model.password" name="password" required
+                  minlength="8" pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$" #passwordCtrl="ngModel" [class.is-invalid]="
                     passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)
-                  "
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="passwordCtrl.errors && (passwordCtrl.dirty || passwordCtrl.touched)"
-                >
+                  " />
+                <div class="invalid-feedback"
+                  *ngIf="passwordCtrl.errors && (passwordCtrl.dirty || passwordCtrl.touched)">
                   <span *ngIf="passwordCtrl.errors['required']">Password is required.</span>
                   <span *ngIf="passwordCtrl.errors['minlength']">Minimum 8 characters.</span>
                   <span *ngIf="passwordCtrl.errors['pattern']">Use letters and numbers.</span>
@@ -92,27 +56,17 @@
               </div>
               <div class="mb-3">
                 <label class="form-label">Confirm Password</label>
-                <input
-                  class="form-control"
-                  type="password"
-                  [(ngModel)]="model.confirmPassword"
-                  name="confirmPassword"
-                  required
-                  #confirmCtrl="ngModel"
-                  [class.is-invalid]="
+                <input class="form-control" type="password" [(ngModel)]="model.confirmPassword" name="confirmPassword"
+                  required #confirmCtrl="ngModel" [class.is-invalid]="
                     (confirmCtrl.dirty || confirmCtrl.touched) &&
                     model.confirmPassword &&
                     model.confirmPassword !== model.password
-                  "
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                  " />
+                <div class="invalid-feedback" *ngIf="
                     (confirmCtrl.dirty || confirmCtrl.touched) &&
                     model.confirmPassword &&
                     model.confirmPassword !== model.password
-                  "
-                >
+                  ">
                   Passwords must match.
                 </div>
               </div>
@@ -122,11 +76,7 @@
               <div *ngIf="success" class="alert alert-success py-2 small" role="alert">
                 {{ success }}
               </div>
-              <button
-                class="btn btn-join btn-lg w-100"
-                type="submit"
-                [disabled]="signupForm.invalid || loading"
-              >
+              <button class="btn btn-join btn-lg w-100" type="submit" [disabled]="signupForm.invalid || loading">
                 {{ loading ? 'Creating account…' : 'Sign up' }}
               </button>
             </form>

@@ -16,7 +16,7 @@ export interface PostedAd {
   verifiedType?: string;
   // Provider association
   accountId: number;
-  accountType: AccountType;
+  accountType: string;
   companyName?: string;
   contactName: string;
   contactEmail: string;

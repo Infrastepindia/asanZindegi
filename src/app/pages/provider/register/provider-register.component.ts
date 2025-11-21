@@ -99,7 +99,10 @@ export class ProviderRegisterComponent {
   superCategories: ApiSuperCategory[] = [];
   expandedSuperIds = new Set<number>();
   selection: ServiceSelection = { categories: [], serviceTypes: {}, advertisements: {} };
-
+  passwordError: string | null = null;           // 🟩 Added
+  confirmPasswordError: string | null = null;    // 🟩 Added
+  phoneError: string | null = null;  // 🟩 Add new variable
+ 
   // Upload previews (not persisted due to size constraints)
   profileImageFile?: File;
   logoFile?: File;
@@ -116,7 +119,51 @@ export class ProviderRegisterComponent {
       error: () => (this.superCategories = []),
     });
   }
-
+validatePhone() {  // 🟩 Phone validation logic
+  const phoneRegex = /^[0-9]{10}$/;
+  if (!this.account.phone) {
+    this.phoneError = 'Phone number is required';
+    return false;
+  } else if (!phoneRegex.test(this.account.phone)) {
+    this.phoneError = 'Phone number must be exactly 10 digits';
+    return false;
+  } else {
+    this.phoneError = null;
+    return true;
+  }
+}
+ 
+  /*** 🟩 VALIDATION HELPERS ADDED ***/
+  validatePassword(password: string): boolean {
+    // 🟩 Must contain: 1 uppercase, 1 number, 1 special char, 8+ chars
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  }
+ 
+  showPasswordValidation() {                    // 🟩 Added new method
+    if (!this.account.password) {
+      this.passwordError = 'Password is required';
+      return false;
+    } else if (!this.validatePassword(this.account.password)) {
+      this.passwordError =
+        'Password must be at least 8 chars, include 1 uppercase, 1 number, and 1 special character';
+      return false;
+    } else {
+      this.passwordError = null;
+      return true;
+    }
+  }
+ 
+  showConfirmPasswordValidation() {             // 🟩 Added new method
+    if (this.account.confirmPassword !== this.account.password) {
+      this.confirmPasswordError = 'Password do not matched';
+      return false;
+    } else {
+      this.confirmPasswordError = null;
+      return true;
+    }
+  }
+ 
   // Draft persistence (text fields only)
   writeDraft() {
     const advertisementImages: Record<number, string> = {};

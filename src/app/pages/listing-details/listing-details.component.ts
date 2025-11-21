@@ -7,6 +7,7 @@ import { ApiService } from '../../services/api.service';
 import { Meta } from '@angular/platform-browser';
 import { of, Subject } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
+import e from 'express';
 
 declare const L: any;
 
@@ -185,24 +186,30 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
         const normalizedCover = apiData.cover
           ? `${baseUrl}${apiData.cover.replace(/\\/g, '/')}`
           : '';
-
+          const rawDate = new Date(apiData.date);
         // ✅ Map data safely
         this.item = {
           id: apiData.id,
           title: apiData.title,
           category: apiData.category,
           type: apiData.type,
-          location: apiData.location,
+          // location: apiData.location,
           price: apiData.price,
           unit: apiData.unit,
           cover: normalizedCover,
-          date: apiData.date,
+          // date: apiData.date,
+          date: rawDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+          time: rawDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
           views: apiData.views,
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
+          location: apiData.providerAddress?.addressLine1 || apiData.location,
+          phonenumber: apiData.providerContact?.phoneNumber || 'Not Provided',
+          email: apiData.providerContact?.emailId || 'Not Provided',
+          detailDescription: apiData.detailDescription || '',
+          serviceOverview: apiData.serviceOverview || '',
         };
-
         // ✅ Provider info fallback
         this.provider = {
           name: apiData.providerName || 'Service Provider',
@@ -210,6 +217,7 @@ export class ListingDetailsComponent implements OnInit, OnDestroy {
           phone: apiData.providerPhone || 'Hidden',
           avatar: normalizedCover || 'assets/images/default-avatar.png',
           memberSince: new Date().toISOString(),
+          // memberSince,
         };
 
         // ✅ Ensure thumbnails exist

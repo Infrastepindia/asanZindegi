@@ -32,9 +32,11 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private routerSubscription?: Subscription;
-
+  environment = environment;  // ⬅ make it available in HTML
+  dashboardData: any = null;
   acc: ProviderAccount | null = null;
   providerAds: (PostedAd & { availabilityHours?: string; detailDescription?: string })[] = [];
+  advertisementImages: Array<{ fsId: number; fileName: string; fileType: string; url: string }> = []; // ✅ NEW
   categories = this.listingsService.getCategories();
   isLoading: boolean = false;
 
@@ -46,13 +48,19 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
       filePath: string;
       fileCategory: string;
       url: string;
+      isExportable?: boolean;  // ✅ NEW: for .pdf, .doc, etc.
+      exportType?: string;     // ✅ NEW: human-friendly label
     }>;
   } = {};
-
+  contactInfo: any = null;
+  addressInfo: any = null;
+  licenseFile: any = null;
+  registrationFile: any = null;
+  portfolioFile: any = null;
   person = { name: '', email: '', phone: '' };
   editingId: number | null = null;
   editModel = { id: 0, name: '', email: '', phone: '' };
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) { }
   ngOnInit() {
     this.loadDashboardData();
     this.subscribeToRouteChanges();
@@ -75,15 +83,21 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
           console.log('Provider Dashboard - API Response:', response);
           if (response && response.data) {
             const data = response.data;
-
+            this.dashboardData = data;
+            this.contactInfo = data.contactInfo || null;
+            this.addressInfo = data.addressInfo || null;
+            this.licenseFile = data.licenseFile || null;
+            this.registrationFile = data.registrationFile || null;
+            this.portfolioFile = data.portfolioFile || null;
+            let locationData = this.addressInfo != null ? this.addressInfo.addressLine1 + " " + this.addressInfo.addressLine2 + " ," + this.addressInfo.city : ""
             if (data.isCompany) {
               this.acc = {
                 id: data.providerId || 1,
                 type: 'Company',
                 companyName: data.providerName || '',
                 contactName: data.profileTitle || data.providerName || '',
-                email: data.email || '',
-                phone: data.phone || '',
+                email: data.contactInfo?.emailId || '',
+                phone: data.contactInfo?.mobileNumber || '',
                 personnel: [],
                 verification: {
                   status: data.isActive ? 'Verified' : 'Unverified',
@@ -104,7 +118,7 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
             if (data.files && typeof data.files === 'object') {
               this.files = data.files;
             }
-
+           
             if (this.acc && data.advertisements && Array.isArray(data.advertisements)) {
               this.providerAds = data.advertisements.map((ad: any) => {
                 const companyName =
@@ -117,10 +131,11 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
                   title: ad.serviceOverview || ad.detailDescription || '',
                   category: ad.categoryName || '',
                   type: 'Service' as const,
-                  location: ad.areaCoveredPolygon ? `${ad.areaCoveredPolygon} km radius` : '',
+                  //location: ad.areaCoveredPolygon ? `${ad.areaCoveredPolygon} km radius` : '',
+                  location: locationData,
                   price: parseFloat(ad.priceStartForm) || 0,
                   unit: ad.priceType || '',
-                  cover: ad.mainImage != null ?  environment.file_path +"/"+ ad.mainImage.url : "",
+                  cover: ad.mainImage != null ? environment.file_path + "/" + ad.mainImage.url : "",
                   date: new Date().toISOString().slice(0, 10),
                   views: 0,
                   rating: 5,
@@ -207,18 +222,18 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
     fileCategory: string;
     url: string;
   }): string {
-    return environment.file_path +"/"+file.url;
+    return environment.file_path + "/" + file.url;
   }
 
   getCompanyLogo(): string | null {
-    const logoFiles = this.files['logo'] || [];
-    if (logoFiles.length > 0) {
-      return logoFiles[0].url;
+    const logoFiles = this.dashboardData?.logo || [];
+    if (logoFiles) {
+      return environment.file_path + "/" + logoFiles.url;
     }
-    const brandingFiles = this.files['branding'] || [];
-    if (brandingFiles.length > 0) {
-      return brandingFiles[0].url;
-    }
+    // const brandingFiles = this.files['branding'] || [];
+    // if (brandingFiles.length > 0) {
+    //   return brandingFiles[0].url;
+    // }
     return null;
   }
 
@@ -266,4 +281,28 @@ export class ProviderDashboardComponent implements OnInit, OnDestroy {
       this.editingId = null;
     }
   }
+
+  viewFile(file: any) {
+    const fileUrl = environment.file_path + "/" + file.url;
+    const fileType = file.fileType?.toLowerCase();
+
+    // If it's a PDF or document, open in a new tab
+    if (['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].includes(fileType)) {
+      window.open(fileUrl, '_blank');
+    } else {
+      // For images or others, fallback to download
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = file.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
+  isImage(type: string): boolean {
+    const imgTypes = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+    return imgTypes.includes(type?.toLowerCase());
+  }
+
 }

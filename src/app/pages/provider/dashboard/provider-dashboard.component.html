@@ -26,12 +26,8 @@
             <div class="company-logo-section mb-4 pb-4 border-bottom">
               <h3 class="h6 mb-3">Company Logo</h3>
               <div class="logo-container">
-                <img
-                  *ngIf="getCompanyLogo(); else logoPlaceholder"
-                  [src]="getCompanyLogo()"
-                  alt="Company Logo"
-                  class="company-logo-image"
-                />
+                <img *ngIf="getCompanyLogo(); else logoPlaceholder" [src]="getCompanyLogo()" alt="Company Logo"
+                  class="company-logo-image" />
                 <ng-template #logoPlaceholder>
                   <div class="logo-placeholder">
                     <div class="placeholder-icon">🏢</div>
@@ -66,10 +62,7 @@
                 </div>
                 <div class="mb-2" *ngIf="company?.verification as verification">
                   <strong>Verification Status:</strong>
-                  <span
-                    class="verification-badge"
-                    [ngClass]="'status-' + verification.status.toLowerCase()"
-                  >
+                  <span class="verification-badge" [ngClass]="'status-' + verification.status.toLowerCase()">
                     {{ verification.status }}
                   </span>
                 </div>
@@ -129,18 +122,13 @@
         </div>
 
         <!-- Advertisement Images Gallery Section -->
-        <div class="card border-0 shadow-sm mb-4" *ngIf="providerAds.length > 0">
+        <!-- <div class="card border-0 shadow-sm mb-4" *ngIf="providerAds.length > 0">
           <div class="card-body p-4">
             <h3 class="h6 mb-4">Advertisement Images</h3>
             <div class="ad-images-gallery">
               <div class="ad-image-item" *ngFor="let ad of providerAds">
                 <div class="ad-image-wrapper">
-                  <img
-                    *ngIf="ad.cover"
-                    [src]="ad.cover"
-                    [alt]="ad.title"
-                    class="ad-gallery-image"
-                  />
+                  <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" class="ad-gallery-image" />
                   <div *ngIf="!ad.cover" class="ad-image-placeholder">
                     <div class="placeholder-icon">📷</div>
                   </div>
@@ -152,7 +140,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Advertisement Details Section -->
         <div class="card border-0 shadow-sm" *ngIf="providerAds.length > 0">
@@ -164,10 +152,7 @@
                   <img *ngIf="ad.cover" [src]="ad.cover" [alt]="ad.title" />
                   <div *ngIf="!ad.cover" class="ad-placeholder">No Image</div>
                   <span class="ad-type-badge">{{ ad.type }}</span>
-                  <span
-                    class="ad-status-badge"
-                    [ngClass]="ad.verified ? 'status-active' : 'status-inactive'"
-                  >
+                  <span class="ad-status-badge" [ngClass]="ad.verified ? 'status-active' : 'status-inactive'">
                     {{ ad.verified ? 'Active' : 'Inactive' }}
                   </span>
                 </div>
@@ -210,31 +195,104 @@
         <div class="card border-0 shadow-sm" *ngIf="providerAds.length === 0">
           <div class="card-body p-4 text-center">
             <p class="text-secondary mb-3">You haven't posted any advertisements yet.</p>
-            <a routerLink="/post-ad" class="btn btn-join btn-lg">Create Your First Ad</a>
+            <!-- <a routerLink="/post-ad" class="btn btn-join btn-lg">Create Your First Ad</a> -->
           </div>
         </div>
 
         <!-- Media Files Section -->
-        <div class="card border-0 shadow-sm" *ngIf="getFileCategories().length > 0">
-          <div class="card-body p-4">
-            <h3 class="h6 mb-4">Media Files</h3>
-            <div class="media-sections">
-              <div class="media-category" *ngFor="let category of getFileCategories()">
-                <h4 class="media-category-title">{{ category }}</h4>
-                <div class="media-grid">
-                  <div class="media-item" *ngFor="let file of getFilesByCategory(category)">
-                    <div class="media-preview">
-                      <img [src]="getImageUrl(file)" [alt]="file.fileName" class="media-image" />
-                    </div>
-                    <div class="media-info">
-                      <p class="media-filename">{{ file.fileName }}</p>
-                      <p class="media-type">{{ file.fileType }}</p>
-                    </div>
-                  </div>
+        <div class="media-grid">
+
+          <!-- ⭐ LICENSE FILE -->
+          <div class="media-item" *ngIf="licenseFile">
+            <h4 class="media-category-title">Business Licenses</h4>
+
+            <div class="media-file-box">
+
+              <ng-container *ngIf="isImage(licenseFile.fileType); else licenseDoc">
+                <div class="media-preview">
+                  <img [src]="environment.file_path + '/' + licenseFile.url" [alt]="licenseFile.fileName"
+                    class="media-image" />
                 </div>
+              </ng-container>
+
+              <ng-template #licenseDoc>
+                <div class="media-preview non-image-preview">
+                  📄
+                  <button class="btn btn-sm btn-outline-primary mt-2" (click)="viewFile(licenseFile)">
+                    View
+                  </button>
+                </div>
+              </ng-template>
+
+              <div class="media-info">
+                <p class="media-filename">{{ licenseFile.fileName }}</p>
               </div>
+
             </div>
           </div>
+
+
+
+          <!-- ⭐ REGISTRATION CERTIFICATE -->
+          <div class="media-item" *ngIf="registrationFile">
+            <h4 class="media-category-title">Registration Certificates</h4>
+
+            <div class="media-file-box">
+
+              <ng-container *ngIf="isImage(registrationFile.fileType); else regDoc">
+                <div class="media-preview">
+                  <img [src]="environment.file_path + '/' + registrationFile.url"
+                    [alt]="registrationFile.fileName" class="media-image" />
+                </div>
+              </ng-container>
+
+              <ng-template #regDoc>
+                <div class="media-preview non-image-preview">
+                  📄
+                  <button class="btn btn-sm btn-outline-primary mt-2" (click)="viewFile(registrationFile)">
+                    View
+                  </button>
+                </div>
+              </ng-template>
+
+              <div class="media-info">
+                <p class="media-filename">{{ registrationFile.fileName }}</p>
+              </div>
+
+            </div>
+          </div>
+
+
+
+          <!-- ⭐ PORTFOLIO FILE -->
+          <div class="media-item" *ngIf="portfolioFile">
+            <h4 class="media-category-title">Company Portfolio</h4>
+
+            <div class="media-file-box">
+
+              <ng-container *ngIf="isImage(portfolioFile.fileType); else portfolioDoc">
+                <div class="media-preview">
+                  <img [src]="environment.file_path + '/' + portfolioFile.url" [alt]="portfolioFile.fileName"
+                    class="media-image" />
+                </div>
+              </ng-container>
+
+              <ng-template #portfolioDoc>
+                <div class="media-preview non-image-preview">
+                  📄
+                  <button class="btn btn-sm btn-outline-primary mt-2" (click)="viewFile(portfolioFile)">
+                    View
+                  </button>
+                </div>
+              </ng-template>
+
+              <div class="media-info">
+                <p class="media-filename">{{ portfolioFile.fileName }}</p>
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
         <!-- <div class="card border-0 shadow-sm" *ngIf="isCompany">

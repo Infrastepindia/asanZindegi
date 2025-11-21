@@ -10,11 +10,7 @@
 
             <!-- Progress -->
             <ul class="wizard-steps list-unstyled d-flex flex-wrap gap-2 mb-4">
-              <li
-                *ngFor="let s of steps; let i = index"
-                class="wizard-step"
-                [class.active]="i + 1 <= step"
-              >
+              <li *ngFor="let s of steps; let i = index" class="wizard-step" [class.active]="i + 1 <= step">
                 <span class="idx">{{ i + 1 }}</span>
                 <span class="label">{{ s }}</span>
               </li>
@@ -25,73 +21,63 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label">First Name</label>
-                  <input
-                    class="form-control"
-                    [(ngModel)]="account.firstName"
-                    name="firstName"
-                    required
-                  />
+                  <input class="form-control" [(ngModel)]="account.firstName" name="firstName" #firstName="ngModel" required />
+                  <div *ngIf="firstName.invalid && firstName.touched" class="text-danger small mt-1">
+                    First Name is required
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Last Name</label>
-                  <input class="form-control" [(ngModel)]="account.lastName" name="lastName" />
+                  <input class="form-control" [(ngModel)]="account.lastName" name="lastName" #lastName="ngModel"  />
+                  <div *ngIf="lastName.invalid && lastName.touched" class="text-danger small mt-1">
+                    Last Name is required
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Email</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    [(ngModel)]="account.email"
-                    name="email"
-                    required
-                  />
+                  <input type="email" class="form-control" [(ngModel)]="account.email" name="email"  #email="ngModel" required />
+                  <div *ngIf="email.invalid && email.touched" class="text-danger small mt-1">
+                    <ng-container *ngIf="email.errors?.['required']">Email is required</ng-container>
+                    <ng-container *ngIf="email.errors?.['email']">Enter a valid email address</ng-container>
+                  </div>
                 </div>
+                <!-- Phone -->
                 <div class="col-md-6">
                   <label class="form-label">Phone</label>
-                  <input class="form-control" [(ngModel)]="account.phone" name="phone" required />
-                  <div class="small mt-1" *ngIf="phoneVerified">
+                  <input type="text" class="form-control" maxlength="10" [(ngModel)]="account.phone" name="phone"
+                    #phone="ngModel" required (input)="validatePhone()" />
+                  <div *ngIf="phoneError" class="text-danger small mt-1">{{ phoneError }}</div>
+                  <div class="small mt-1" *ngIf="phoneVerified && !phoneError">
                     <span class="badge bg-light text-dark">Verified</span>
                   </div>
                 </div>
-                <div class="col-12">
-                  <az-otp-input
-                    [phone]="account.phone"
-                    [length]="6"
-                    [cooldownSec]="30"
-                    [verified]="phoneVerified"
-                    [errorMessage]="otpError"
-                    (requestOtp)="onOtpRequest()"
-                    (verify)="onOtpVerify($event)"
-                  ></az-otp-input>
+
+                <!-- OTP -->
+                <div class="col-12" *ngIf="!phoneError && account.phone.length === 10">
+                  <az-otp-input [phone]="account.phone" [length]="6" [cooldownSec]="30" [verified]="phoneVerified"
+                    [errorMessage]="otpError" (requestOtp)="onOtpRequest()" (verify)="onOtpVerify($event)">
+                  </az-otp-input>
                 </div>
+
+                <!-- Password -->
                 <div class="col-md-6">
                   <label class="form-label">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    [(ngModel)]="account.password"
-                    name="password"
-                    required
-                  />
+                  <input type="password" class="form-control" [(ngModel)]="account.password" name="password" required
+                    (blur)="showPasswordValidation()" />
+                  <div *ngIf="passwordError" class="text-danger small mt-1">{{ passwordError }}</div>
                 </div>
+                <!-- Confirm Password -->
                 <div class="col-md-6">
                   <label class="form-label">Confirm Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    [(ngModel)]="account.confirmPassword"
-                    name="confirmPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" [(ngModel)]="account.confirmPassword"
+                    name="confirmPassword" required (blur)="showConfirmPasswordValidation()" />
+                  <div *ngIf="confirmPasswordError" class="text-danger small mt-1">{{ confirmPasswordError }}</div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Profile Image (optional)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    class="form-control"
-                    (change)="onProfileImage($event)"
-                  />
+                  <input type="file" accept="image/*" class="form-control" (change)="onProfileImage($event)" />
+                  <div *ngIf="!profileImageFile && step === 1" class="text-danger small mt-1">Profile Image is required.
+                  </div>
                 </div>
                 <div class="col-md-6" *ngIf="account.profileImage">
                   <label class="form-label">Preview</label>
@@ -117,11 +103,8 @@
               <div class="row g-3">
                 <div class="col-md-5">
                   <label class="form-label">City</label>
-                  <az-osm-autocomplete
-                    [(ngModel)]="address.city"
-                    name="city"
-                    [placeholder]="'Enter location'"
-                  ></az-osm-autocomplete>
+                  <az-osm-autocomplete [(ngModel)]="address.city" name="city"
+                    [placeholder]="'Enter location'"></az-osm-autocomplete>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">State</label>
@@ -142,28 +125,31 @@
 
             <!-- Step 3: Provider Profile -->
             <form *ngIf="step === 3" (ngSubmit)="next()" class="wizard-form">
+              <!-- 🟩 Provider / Business Name -->
               <div class="mb-3">
                 <label class="form-label">Provider / Business Name</label>
-                <input
-                  class="form-control"
-                  [(ngModel)]="provider.name"
-                  name="providerName"
-                  required
-                />
+                <input class="form-control" [(ngModel)]="provider.name" name="providerName" #providerName="ngModel"
+                  required pattern="^(?!\s*$).+"
+                  [class.is-invalid]="providerName.invalid && (providerName.dirty || providerName.touched)" />
+                <div *ngIf="providerName.invalid && (providerName.dirty || providerName.touched)"
+                  class="text-danger small mt-1">
+                  <span *ngIf="providerName.errors?.['required']">Provider / Business Name is required.</span>
+                  <span *ngIf="providerName.errors?.['pattern']">Cannot be only spaces.</span>
+                </div>
               </div>
+              <!-- 🟩 Profile Title -->
               <div class="mb-3">
                 <label class="form-label">Profile Title (short tagline)</label>
-                <input class="form-control" [(ngModel)]="provider.title" name="title" />
+                <input class="form-control" [(ngModel)]="provider.title" name="title" #title="ngModel"
+                  pattern="^(?!\s*$).+" [class.is-invalid]="title.invalid && (title.dirty || title.touched)" />
+                <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger small mt-1">
+                  <span *ngIf="title.errors?.['pattern']">Profile Title cannot be only spaces.</span>
+                </div>
               </div>
               <div class="row g-3 align-items-end">
                 <div class="col-md-6">
                   <label class="form-label">Business Logo</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    class="form-control"
-                    (change)="onLogo($event)"
-                  />
+                  <input type="file" accept="image/*" class="form-control" (change)="onLogo($event)" />
                 </div>
                 <div class="col-md-6" *ngIf="provider.logo">
                   <label class="form-label">Preview</label>
@@ -171,13 +157,8 @@
                 </div>
               </div>
               <div class="form-check mt-3">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="isCompany"
-                  [(ngModel)]="provider.isCompany"
-                  name="isCompany"
-                />
+                <input class="form-check-input" type="checkbox" id="isCompany" [(ngModel)]="provider.isCompany"
+                  name="isCompany" />
                 <label class="form-check-label" for="isCompany">I am a company</label>
               </div>
               <div class="d-flex justify-content-between gap-2 mt-3">
@@ -193,35 +174,22 @@
               <div class="row g-3">
                 <div class="col-md-6" *ngFor="let sc of superCategories">
                   <div class="filter-card p-3 h-100">
-                    <button
-                      type="button"
+                    <button type="button"
                       class="btn btn-sm w-100 d-flex align-items-center justify-content-between text-start mb-2"
                       (click)="
                         expandedSuperIds.has(sc.id)
                           ? expandedSuperIds.delete(sc.id)
                           : expandedSuperIds.add(sc.id)
-                      "
-                    >
-                      <span
-                        ><i
-                          class="bi me-2"
-                          [ngClass]="
+                      ">
+                      <span><i class="bi me-2" [ngClass]="
                             expandedSuperIds.has(sc.id) ? 'bi-chevron-down' : 'bi-chevron-right'
-                          "
-                        ></i
-                        >{{ sc.title }}</span
-                      >
+                          "></i>{{ sc.title }}</span>
                       <span class="badge bg-light text-dark">{{ sc.categories.length || 0 }}</span>
                     </button>
                     <div class="sub-list ms-3" *ngIf="expandedSuperIds.has(sc.id)">
                       <div class="form-check" *ngFor="let c of sc.categories">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          [id]="'pc-' + c.id"
-                          [checked]="isCategorySelected(c.id)"
-                          (change)="toggleCategory({ id: c.id, name: c.name })"
-                        />
+                        <input class="form-check-input" type="checkbox" [id]="'pc-' + c.id"
+                          [checked]="isCategorySelected(c.id)" (change)="toggleCategory({ id: c.id, name: c.name })" />
                         <label class="form-check-label" [for]="'pc-' + c.id">{{ c.name }}</label>
                       </div>
                     </div>
@@ -249,16 +217,9 @@
                   <div class="mb-3">
                     <label class="form-label">Service Types</label>
                     <div class="chip-list d-flex flex-wrap gap-2 mb-2">
-                      <span
-                        class="badge pill-badge bg-light text-dark"
-                        *ngFor="let s of serviceTypesFor(c.id)"
-                      >
+                      <span class="badge pill-badge bg-light text-dark" *ngFor="let s of serviceTypesFor(c.id)">
                         {{ s }}
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-link p-0 ms-1"
-                          (click)="removeServiceType(c.id, s)"
-                        >
+                        <button type="button" class="btn btn-sm btn-link p-0 ms-1" (click)="removeServiceType(c.id, s)">
                           <i class="bi bi-x"></i>
                         </button>
                       </span>
@@ -280,87 +241,51 @@
                   <div class="row g-3">
                     <div class="col-md-6">
                       <label class="form-label">Price Start From</label>
-                      <input
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).priceStartForm"
-                        [name]="'priceStart-' + c.id"
-                        placeholder="e.g., 500"
-                      />
+                      <input class="form-control" [(ngModel)]="getAdvertisement(c.id, c.name).priceStartForm"
+                        [name]="'priceStart-' + c.id" placeholder="e.g., 500" />
                     </div>
                     <div class="col-md-6">
                       <label class="form-label">Price Type</label>
-                      <input
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).priceType"
-                        [name]="'priceType-' + c.id"
-                        placeholder="e.g., per hour, per visit, flat rate"
-                      />
+                      <input class="form-control" [(ngModel)]="getAdvertisement(c.id, c.name).priceType"
+                        [name]="'priceType-' + c.id" placeholder="e.g., per hour, per visit, flat rate" />
                     </div>
                     <div class="col-12">
                       <label class="form-label">Service Overview</label>
-                      <textarea
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).serviceOverview"
-                        [name]="'serviceOverview-' + c.id"
-                        rows="3"
-                        placeholder="Brief overview of your service"
-                      ></textarea>
+                      <textarea class="form-control" [(ngModel)]="getAdvertisement(c.id, c.name).serviceOverview"
+                        [name]="'serviceOverview-' + c.id" rows="3"
+                        placeholder="Brief overview of your service"></textarea>
                     </div>
                     <div class="col-md-6">
                       <label class="form-label">Area Covered (in km)</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).areaCoveredPolygon"
-                        [name]="'areaCovered-' + c.id"
-                        placeholder="e.g., Downtown, Suburbs"
-                      />
+                      <input type="number" class="form-control"
+                        [(ngModel)]="getAdvertisement(c.id, c.name).areaCoveredPolygon" [name]="'areaCovered-' + c.id"
+                        placeholder="e.g., Downtown, Suburbs" />
                     </div>
                     <div class="col-md-6">
                       <label class="form-label">Video Link (optional)</label>
-                      <input
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).videoLink"
-                        [name]="'videoLink-' + c.id"
-                        type="url"
-                        placeholder="e.g., https://youtube.com/..."
-                      />
+                      <input class="form-control" [(ngModel)]="getAdvertisement(c.id, c.name).videoLink"
+                        [name]="'videoLink-' + c.id" type="url" placeholder="e.g., https://youtube.com/..." />
                     </div>
                     <div class="col-12">
                       <label class="form-label">Detailed Description</label>
-                      <textarea
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).detailDescription"
-                        [name]="'detailDescription-' + c.id"
-                        rows="3"
-                        placeholder="Detailed information about your service"
-                      ></textarea>
+                      <textarea class="form-control" [(ngModel)]="getAdvertisement(c.id, c.name).detailDescription"
+                        [name]="'detailDescription-' + c.id" rows="3"
+                        placeholder="Detailed information about your service"></textarea>
                     </div>
                     <div class="col-12">
                       <label class="form-label">Availability Hours (optional)</label>
-                      <input
-                        class="form-control"
-                        [(ngModel)]="getAdvertisement(c.id, c.name).availabilityHours"
-                        [name]="'availabilityHours-' + c.id"
-                        placeholder="e.g., Monday-Friday 9AM-6PM"
-                      />
+                      <input class="form-control" [(ngModel)]="getAdvertisement(c.id, c.name).availabilityHours"
+                        [name]="'availabilityHours-' + c.id" placeholder="e.g., Monday-Friday 9AM-6PM" />
                     </div>
                     <div class="col-md-6">
                       <label class="form-label">Advertisement Image (optional)</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        class="form-control"
-                        (change)="onAdvertisementImage(c.id, $event)"
-                      />
+                      <input type="file" accept="image/*" class="form-control"
+                        (change)="onAdvertisementImage(c.id, $event)" />
                     </div>
                     <div class="col-md-6" *ngIf="getAdvertisement(c.id, c.name).advertisementImage">
                       <label class="form-label">Image Preview</label>
-                      <img
-                        [src]="getAdvertisement(c.id, c.name).advertisementImage"
-                        alt="Advertisement"
-                        class="img-preview"
-                      />
+                      <img [src]="getAdvertisement(c.id, c.name).advertisementImage" alt="Advertisement"
+                        class="img-preview" />
                     </div>
                   </div>
                 </div>
@@ -378,31 +303,16 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label">Business Registration Certificate</label>
-                  <input
-                    type="file"
-                    class="form-control"
-                    multiple
-                    (change)="onFiles('reg', $event)"
-                  />
+                  <input type="file" class="form-control" multiple (change)="onFiles('reg', $event)" />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">License / Permit (if applicable)</label>
-                  <input
-                    type="file"
-                    class="form-control"
-                    multiple
-                    (change)="onFiles('lic', $event)"
-                  />
+                  <input type="file" class="form-control" multiple (change)="onFiles('lic', $event)" />
                 </div>
                 <div class="col-12">
                   <label class="form-label">Portfolio Images</label>
-                  <input
-                    type="file"
-                    class="form-control"
-                    accept="image/*"
-                    multiple
-                    (change)="onFiles('port', $event)"
-                  />
+                  <input type="file" class="form-control" accept="image/*" multiple
+                    (change)="onFiles('port', $event)" />
                 </div>
               </div>
               <div class="small text-secondary mt-2">
@@ -426,11 +336,7 @@
                     <div class="small text-secondary">
                       {{ account.email }} • {{ account.phone }}
                     </div>
-                    <img
-                      *ngIf="account.profileImage"
-                      [src]="account.profileImage"
-                      class="img-preview mt-2"
-                    />
+                    <img *ngIf="account.profileImage" [src]="account.profileImage" class="img-preview mt-2" />
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -488,11 +394,7 @@
               <button type="button" class="btn btn-sm btn-link p-0" (click)="resetForm()">
                 Reset Form
               </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-link text-danger p-0"
-                (click)="clearDraft()"
-              >
+              <button type="button" class="btn btn-sm btn-link text-danger p-0" (click)="clearDraft()">
                 Discard draft
               </button>
             </div>

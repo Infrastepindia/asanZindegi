@@ -5,6 +5,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  type:string;
   [key: string]: any;
   userData: any;
 }
@@ -53,6 +54,7 @@ export class AuthService {
    * Set user data after successful login
    */
   setUser(user: User): void {
+    debugger
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
       window.localStorage.setItem(USER_ID_STORAGE_KEY, String(user.id));
@@ -92,8 +94,8 @@ export class AuthService {
    */
   getUserFullName(): string {
     const user = this.userSignal();
-    if (user?.userData) {
-      return `${user.userData.firstName} ${user.userData.lastName}`.trim();
+    if (user) {
+      return `${user.firstName} ${user.lastName}`.trim();
     }
     return '';
   }

@@ -76,8 +76,8 @@
                 <div class="col-md-6">
                   <label class="form-label">Profile Image (optional)</label>
                   <input type="file" accept="image/*" class="form-control" (change)="onProfileImage($event)" />
-                  <div *ngIf="!profileImageFile && step === 1" class="text-danger small mt-1">Profile Image is required.
-                  </div>
+                  <!-- <div *ngIf="!profileImageFile && step === 1" class="text-danger small mt-1">Profile Image is required.
+                  </div> -->
                 </div>
                 <div class="col-md-6" *ngIf="account.profileImage">
                   <label class="form-label">Preview</label>

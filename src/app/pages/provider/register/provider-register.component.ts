@@ -9,6 +9,7 @@ import { OsmAutocompleteComponent } from '../../../shared/osm-autocomplete.compo
 import { OtpInputComponent } from '../../../shared/otp-input.component';
 import { ProviderDetailsPayload } from '../../../models/provider-details.model';
 import { Advertisement } from '../../../models/advertisement.model';
+import { ToastrService } from 'ngx-toastr';
 
 interface AddressForm {
   line1: string;
@@ -110,7 +111,7 @@ export class ProviderRegisterComponent {
   licenseFiles: File[] = [];
   portfolioFiles: File[] = [];
   advertisementImageFiles: Record<number, File> = {};
-
+  constructor(private toastr: ToastrService) {}
   ngOnInit() {
     const saved = this.readDraft();
     if (saved) this.loadDraft(saved);
@@ -352,7 +353,11 @@ validatePhone() {  // 🟩 Phone validation logic
   // Submit
   submit() {
     if (!this.validateAllSteps()) {
-      this.notification.error('Please complete all required fields.');
+      if(this.selection.categories.length === 0){
+        this.showError('Please select services.')
+        //this.notification.error('Please select services.');
+      }
+      else {this.showError('Please complete all required fields.');}
       return;
     }
 
@@ -412,16 +417,16 @@ validatePhone() {  // 🟩 Phone validation logic
         this.clearDraft();
         console.log(response)
         if (response.status_code == 200) {
-          this.notification.success(response.message);
+          this.showSuccess(response.message);
           this.router.navigate(['/login']);
         }
         else {
-          this.notification.error(`Submission failed: ${response.message}`);
+          this.showError(`Submission failed: ${response.message}`);
         }
       },
       error: (err) => {
         const errorInfo = this.api.extractError(err);
-        this.notification.error(`Submission failed: ${errorInfo.message}`);
+        this.showError(`Submission failed: ${errorInfo.message}`);
       },
     });
   }
@@ -443,5 +448,12 @@ validatePhone() {  // 🟩 Phone validation logic
       return false;
     }
     return true;
+  }
+   showSuccess(message : string) {
+    this.toastr.success(message, 'Success');
+  }
+
+  showError(message : string) {
+    this.toastr.error(message, 'Error');
   }
 }

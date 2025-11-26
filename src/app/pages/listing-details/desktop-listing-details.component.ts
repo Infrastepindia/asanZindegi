@@ -5,6 +5,8 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -15,7 +17,7 @@ import { Meta } from '@angular/platform-browser';
 import { of, Subject } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
 import { PLACEHOLDER_IMAGE } from '../../constants';
-
+import { environment } from '../../../environments/environment';
 declare const L: any;
 
 @Component({
@@ -34,6 +36,8 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   private doc = inject(DOCUMENT);
   private meta = inject(Meta);
   private destroy$ = new Subject<void>();
+
+  @ViewChild('mapContainer', { static: false, read: ElementRef }) mapContainer?: ElementRef;
 
   item: any;
   listingId: any;
@@ -61,9 +65,9 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
   }
 
   private map: any;
-  private circle: any;
-  private center: [number, number] = [22.9734, 78.6569];
-  private radiusMeters = 15000;
+  private polygon: any;
+  private centerPoint: [number, number] = [22.9734, 78.6569];
+  mapLoaded = false;
 
   selectedForPricing?: ListingItem;
   private baseRanges: Record<string, [number, number]> = {
@@ -124,7 +128,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const baseUrl = 'https://localhost:7139';
+        const baseUrl = environment.file_path;
 
         const normalizedCover = apiData.cover
           ? `${baseUrl}${apiData.cover.replace(/\\/g, '/')}`
@@ -135,7 +139,7 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           title: apiData.title,
           category: apiData.category,
           type: apiData.type,
-          location: apiData.location,
+          location: apiData.providerAddress != null ? apiData.providerAddress.location : "",
           price: apiData.price,
           unit: apiData.unit,
           cover: normalizedCover,
@@ -144,25 +148,115 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
           rating: apiData.rating,
           verified: apiData.verified,
           verifiedType: apiData.verifiedType,
+          detailDescription:apiData.detailDescription,
+          areaCoveredPolygon: apiData.location,
+          videoLink : apiData.videoLink
         };
 
         this.provider = {
-          name: apiData.providerName || 'Service Provider',
-          email: apiData.providerEmail || 'Hidden',
-          phone: apiData.providerPhone || 'Hidden',
+          name: apiData.providerContact.name || 'Service Provider',
+          email: apiData.providerContact.emailId || 'Hidden',
+          phone: apiData.providerContact.phoneNumber || 'Hidden',
           avatar: normalizedCover || 'assets/images/default-avatar.png',
-          memberSince: new Date().toISOString(),
+          memberSince: apiData.date,
         };
 
         this.thumbnails = normalizedCover ? [normalizedCover] : [];
 
-        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services in ${this.item.location}.`;
+        this.overview = `Trusted ${this.item.category} service provider offering reliable ${this.item.type} services .`;
         this.includes = ['Inspection', 'Support', 'Service Warranty'];
         this.cd.detectChanges();
         console.log(this.item);
+
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.initializeMap(), 100);
+        }
+
         this.isLoading = false;
       }
     });
+  }
+
+  private initializeMap(): void {
+    if (!this.mapContainer?.nativeElement) {
+      console.error('Map container not found');
+      return;
+    }
+
+    try {
+      if (this.map) {
+        this.map.remove();
+      }
+
+      const container = this.mapContainer.nativeElement;
+      container.style.height = '400px';
+
+      this.map = L.map(container).setView(this.centerPoint, 11);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(this.map);
+
+      if (this.item?.areaCoveredPolygon) {
+        this.renderPolygon();
+      }
+
+      this.mapLoaded = true;
+    } catch (error) {
+      console.error('Map initialization error:', error);
+    }
+  }
+
+  private renderPolygon(): void {
+    if (!this.item?.areaCoveredPolygon || !this.map) return;
+
+    try {
+      let coordinates: [number, number][] = [];
+
+      // Check if it's a semicolon-separated string of coordinates
+      if (
+        typeof this.item.areaCoveredPolygon === 'string' &&
+        this.item.areaCoveredPolygon.includes(';')
+      ) {
+        // Parse "lat,lng;lat,lng;..." format
+        const coordinateStrings = this.item.areaCoveredPolygon.split(';');
+        coordinates = coordinateStrings
+          .map((coord: string) => {
+            const [lat, lng] = coord.split(',').map((v: string) => parseFloat(v.trim()));
+            return isFinite(lat) && isFinite(lng) ? [lat, lng] : null;
+          })
+          .filter((coord: any) => coord !== null) as [number, number][];
+      } else {
+        // Try parsing as GeoJSON
+        const geoJson = JSON.parse(this.item.areaCoveredPolygon);
+
+        if (geoJson.type === 'Polygon' && geoJson.coordinates && geoJson.coordinates.length > 0) {
+          coordinates = geoJson.coordinates[0].map((coord: [number, number]) => [
+            coord[0],
+            coord[1],
+          ]);
+        }
+      }
+
+      if (coordinates.length > 0) {
+        if (this.polygon) {
+          this.map.removeLayer(this.polygon);
+        }
+
+        this.polygon = L.polygon(coordinates, {
+          color: '#4CAF50',
+          weight: 2,
+          opacity: 0.7,
+          fillColor: '#4CAF50',
+          fillOpacity: 0.2,
+        }).addTo(this.map);
+
+        this.map.fitBounds(this.polygon.getBounds());
+      }
+    } catch (error) {
+      console.error('Polygon rendering error:', error);
+    }
   }
 
   private loadRelatedListings() {
@@ -218,8 +312,17 @@ export class DesktopListingDetailsComponent implements OnInit, OnDestroy {
       this.failedImages.add(imageUrl);
     }
   }
+  //videoUrl = "https://www.youtube.com/watch?v=abcd1234";
+  thumbnailUrl = `https://img.youtube.com/vi/abcd1234/hqdefault.jpg`;
+
+  openVideo(videoLink :any) {
+    window.open(videoLink, "_blank");
+  }
 
   ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
